@@ -16,7 +16,7 @@ function App() {
     <Box px={5} mx="auto" maxW="1402px">
       <Navbar />
 
-      <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(200px, 1fr))">
+      <SimpleGrid spacing={4} templateColumns="repeat(3, 1fr)">
         <Card>
           <CardHeader>
             <Heading size="md"> Customer dashboard</Heading>
