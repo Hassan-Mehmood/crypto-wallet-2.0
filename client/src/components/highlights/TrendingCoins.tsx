@@ -1,9 +1,9 @@
 import { Box, Flex, Image, Text } from '@chakra-ui/react';
-import { TrendingCoin } from '../../../types';
+import { TrendingCoin } from '../../types';
 
 export default function TrendingCoins({ item }: TrendingCoin) {
   return (
-    <Box mb={3} key={item.coin_id}>
+    <Box mb={3}>
       <Box>
         <Flex align="center">
           <Image src={item.large} maxW="1rem" mr="0.5rem" />

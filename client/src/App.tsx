@@ -5,22 +5,21 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  Flex,
   Heading,
-  Image,
   SimpleGrid,
   Text,
 } from '@chakra-ui/react';
 
 import Navbar from './components/Navbar/Navbar';
-import { getTrendingCoins } from './api/axios';
+import { getHighlightsData } from './api/axios';
 import { useQuery } from 'react-query';
-import TrendingCoins from './components/Navbar/highlights/TrendingCoins';
+import TrendingCoins from './components/highlights/TrendingCoins';
+import GlobalData from './components/highlights/GlobalData';
 
 function App() {
-  const { data: trendingCoins } = useQuery('trendingCoins', getTrendingCoins);
-
-  console.log(trendingCoins);
+  const { data } = useQuery('trendingCoins', getHighlightsData);
+  const trendingCoins = data && data[0];
+  const globalData = data && data[1].data;
 
   return (
     <Box px={5} mx="auto" maxW="1402px">
@@ -39,25 +38,21 @@ function App() {
         </Card>
         <Card>
           <CardHeader>
-            <Heading size="md"> Customer dashboard</Heading>
+            <Heading size="md">Global News</Heading>
           </CardHeader>
           <CardBody>
-            <Text>View a summary of all your customers over the last month.</Text>
+            <GlobalData
+              activeCurrencies={globalData?.active_cryptocurrencies}
+              markets={globalData?.markets}
+              icos={globalData?.ongoing_icos}
+            />
           </CardBody>
-          <CardFooter>
-            <Button>View here</Button>
-          </CardFooter>
         </Card>
         <Card>
           <CardHeader>
-            <Heading size="md"> Customer dashboard</Heading>
+            <Heading size="md">Market Dominance</Heading>
           </CardHeader>
-          <CardBody>
-            <Text>View a summary of all your customers over the last month.</Text>
-          </CardBody>
-          <CardFooter>
-            <Button>View here</Button>
-          </CardFooter>
+          <CardBody></CardBody>
         </Card>
       </SimpleGrid>
     </Box>
