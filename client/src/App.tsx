@@ -15,6 +15,7 @@ import { getHighlightsData } from './api/axios';
 import { useQuery } from 'react-query';
 import TrendingCoins from './components/highlights/TrendingCoins';
 import GlobalData from './components/highlights/GlobalData';
+import MarketDominance from './components/highlights/MarketDominance';
 
 function App() {
   const { data } = useQuery('trendingCoins', getHighlightsData);
@@ -52,7 +53,9 @@ function App() {
           <CardHeader>
             <Heading size="md">Market Dominance</Heading>
           </CardHeader>
-          <CardBody></CardBody>
+          <CardBody>
+            <MarketDominance dominance={globalData?.market_cap_percentage} />
+          </CardBody>
         </Card>
       </SimpleGrid>
     </Box>
