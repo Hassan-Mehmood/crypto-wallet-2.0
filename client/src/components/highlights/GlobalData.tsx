@@ -1,12 +1,17 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Spinner, Text } from '@chakra-ui/react';
 
 type props = {
   activeCurrencies: number | undefined;
   markets: number | undefined;
   icos: number | undefined;
+  isLoading: boolean;
 };
 
-export default function GlobalData({ activeCurrencies, markets, icos }: props) {
+export default function GlobalData({ activeCurrencies, markets, icos, isLoading }: props) {
+  if (isLoading) {
+    return <Spinner position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)" />;
+  }
+
   return (
     <Box mb={3}>
       <Box>
