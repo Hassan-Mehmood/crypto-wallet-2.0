@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
+import bcrypt from 'bcrypt';
 import { body, validationResult } from 'express-validator';
 
 import { prisma } from './utils/client';
@@ -27,8 +28,16 @@ app.post(
 
     try {
       const { name, email, password } = req.body;
+
+      // Generate a salt for password hashing
+      const saltRounds = 10;
+      const salt = await bcrypt.genSalt(saltRounds);
+
+      // Hash the password with the salt
+      const hashPassword = await bcrypt.hash(password, salt);
+
       const user = await prisma.user.create({
-        data: { name, email, password },
+        data: { name, email, password: hashPassword },
       });
       return res.status(201).json(user);
     } catch (error) {
@@ -41,7 +50,10 @@ app.get('/api/user/:id', async (req: Request, res: Response) => {
   try {
     const id: number = parseInt(req.params.id);
 
-    const user = await prisma.user.findUnique({ where: { id } });
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: { id: true, name: true, email: true, createdAt: true, updatedAt: true },
+    });
 
     if (!user) return res.status(404).json({ error: 'User not found' });
 
