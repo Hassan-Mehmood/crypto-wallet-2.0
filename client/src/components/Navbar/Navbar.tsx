@@ -1,28 +1,41 @@
-import { Box, Button, Flex, Heading } from '@chakra-ui/react';
-// import { useState } from 'react';
-// import { FaUserCircle } from 'react-icons/fa';
-// import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from '@chakra-ui/react';
 
-// import Login from '../Login/Login';
-// import Signup from '../Signup/Signup';
-// import useCheckCurrentUser from '../../Hooks/useCheckCurrentUser';
+function LoginModal({ isOpen, onClose }: any) {
+  return (
+    <>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Modal Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>Hello</ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
 
 const Navbar = () => {
-  // const [showSignup, setShowSignup] = useState<boolean>(false);
-  // const [showLogin, setShowLogin] = useState<boolean>(false);
-  // const navigate = useNavigate();
-
-  // const { currentUser } = useCheckCurrentUser();
-
-  // const handleSignupModal = (e: React.MouseEvent<HTMLElement>) => {
-  //   e.preventDefault();
-  //   setShowSignup(true);
-  // };
-
-  // const handleLoginModal = (e: React.MouseEvent<HTMLElement>) => {
-  //   e.preventDefault();
-  //   setShowLogin(true);
-  // };
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <nav>
@@ -38,7 +51,7 @@ const Navbar = () => {
         </Heading>
         <Box display="flex" alignItems="center">
           <Button
-            // onClick={(e) => handleLoginModal(e)}
+            onClick={onOpen}
             fontSize="sm"
             border="1px solid rgb(105, 162, 53)"
             borderRadius="8px"
@@ -54,7 +67,6 @@ const Navbar = () => {
             Log in
           </Button>
           <Button
-            // onClick={(e) => handleSignupModal(e)}
             fontSize="sm"
             borderRadius="8px"
             color="#fff"
@@ -68,9 +80,8 @@ const Navbar = () => {
             Sign up
           </Button>
         </Box>
-        {/* {showSignup && <Signup setShowLogin={setShowLogin} setShowSignup={setShowSignup} />} */}
-        {/* {showLogin && <Login setShowLogin={setShowLogin} setShowSignup={setShowSignup} />} */}
       </Flex>
+      <LoginModal isOpen={isOpen} onClose={onClose} />
     </nav>
   );
 };
