@@ -13,7 +13,7 @@ function App() {
       <Navbar onLoginOpen={onOpenLogin} onSignupOpen={onOpenSignup} />
       <LoginModal isOpen={isOpenLogin} onClose={onCloseLogin} />
       <SignupModal isOpen={isOpenSignup} onClose={onCloseSignup} />
-      <Highlights />
+      {/* <Highlights /> */}
     </Box>
   );
 }

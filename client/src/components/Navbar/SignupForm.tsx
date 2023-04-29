@@ -12,29 +12,41 @@ import { FormEvent, useState } from 'react';
 import { Eye, EyeOff } from 'react-feather';
 import { useMutation } from 'react-query';
 
-type formType = {
+type FormDataType = {
   name: string;
   email: string;
   password: string;
   confirmPass: string;
 };
 
+type FormErrorsType = {
+  [key: string]: string;
+};
+
+type ServerResponseError = {
+  stack: string;
+  message: string;
+  name: string;
+  code: string;
+  config: {
+    [key: string]: any;
+  };
+  request: XMLHttpRequest;
+  response: {
+    [key: string]: any;
+  };
+};
+
 export default function SignupForm({ onClose }: any) {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPass: '',
-  });
-  const [formErrors, setFormErrors] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPass: '',
-  });
+  const [formErrors, setFormErrors] = useState<FormErrorsType>({});
 
-  console.log(formErrors);
+  const [formData, setFormData] = useState<FormDataType>({
+    name: '',
+    email: '',
+    password: '',
+    confirmPass: '',
+  });
 
   const submitForm = useMutation(
     async () => {
@@ -48,8 +60,15 @@ export default function SignupForm({ onClose }: any) {
       onSuccess: () => {
         onClose();
       },
-      onError: (error: any) => {
+      onError: (error: ServerResponseError) => {
         const { errors } = error.response.data;
+        const newErrors: FormErrorsType = {};
+
+        errors.forEach((err: any) => {
+          newErrors[err.path] = err.msg;
+        });
+
+        setFormErrors(newErrors);
       },
     }
   );
@@ -74,7 +93,7 @@ export default function SignupForm({ onClose }: any) {
 
   return (
     <form onSubmit={handleFormSubmit}>
-      <FormControl isInvalid={formErrors.name !== ''} mt={4}>
+      <FormControl isInvalid={!!formErrors.name} mt={4}>
         <FormLabel fontWeight="semibold">Name</FormLabel>
         <Input
           type="text"
@@ -85,7 +104,7 @@ export default function SignupForm({ onClose }: any) {
         <FormErrorMessage>{formErrors.name}</FormErrorMessage>
       </FormControl>
 
-      <FormControl mt={4} isInvalid={formErrors.email !== ''}>
+      <FormControl mt={4} isInvalid={!!formErrors.email}>
         <FormLabel fontWeight="semibold">Email address</FormLabel>
         <Input
           type="email"
@@ -96,7 +115,7 @@ export default function SignupForm({ onClose }: any) {
         <FormErrorMessage>{formErrors.email}</FormErrorMessage>
       </FormControl>
 
-      <FormControl mt={4} isInvalid={formErrors.password !== ''}>
+      <FormControl mt={4} isInvalid={!!formErrors.password}>
         <FormLabel fontWeight="semibold">Password</FormLabel>
         <InputGroup>
           <Input
@@ -114,7 +133,7 @@ export default function SignupForm({ onClose }: any) {
         <FormErrorMessage>{formErrors.password}</FormErrorMessage>
       </FormControl>
 
-      <FormControl mt={4} isInvalid={formErrors.confirmPass !== ''}>
+      <FormControl mt={4} isInvalid={!!formErrors.confirmPass}>
         <FormLabel fontWeight="semibold">Confirm password</FormLabel>
         <InputGroup>
           <Input
