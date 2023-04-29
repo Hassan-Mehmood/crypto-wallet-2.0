@@ -21,12 +21,12 @@ app.post(
     body('name').notEmpty().withMessage('Name is required'),
     body('email').isEmail().normalizeEmail().withMessage('Invalid email'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-    body('confirmPass').custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error('Password confirmation does not match password');
-      }
-      return true;
-    }),
+    body('confirmPass')
+      .custom((value, { req }) => {
+        if (value !== req.body.password) return false;
+        return true;
+      })
+      .withMessage('Password confirmation should be the same as password'),
   ],
   async (req: Request, res: Response) => {
     const errors = validationResult(req);

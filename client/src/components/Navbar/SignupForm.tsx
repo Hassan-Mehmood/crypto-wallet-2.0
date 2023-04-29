@@ -5,11 +5,19 @@ import {
   InputGroup,
   InputRightElement,
   Button,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { FormEvent, useState } from 'react';
 import { Eye, EyeOff } from 'react-feather';
 import { useMutation } from 'react-query';
+
+type formType = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPass: string;
+};
 
 export default function SignupForm({ onClose }: any) {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,6 +27,15 @@ export default function SignupForm({ onClose }: any) {
     password: '',
     confirmPass: '',
   });
+  const [formErrors, setFormErrors] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPass: '',
+  });
+
+  console.log(formErrors);
+
   const submitForm = useMutation(
     async () => {
       const response = await axios.post(
@@ -31,8 +48,8 @@ export default function SignupForm({ onClose }: any) {
       onSuccess: () => {
         onClose();
       },
-      onError: () => {
-        console.log('Error');
+      onError: (error: any) => {
+        const { errors } = error.response.data;
       },
     }
   );
@@ -57,7 +74,7 @@ export default function SignupForm({ onClose }: any) {
 
   return (
     <form onSubmit={handleFormSubmit}>
-      <FormControl>
+      <FormControl isInvalid={formErrors.name !== ''} mt={4}>
         <FormLabel fontWeight="semibold">Name</FormLabel>
         <Input
           type="text"
@@ -65,9 +82,10 @@ export default function SignupForm({ onClose }: any) {
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
         />
+        <FormErrorMessage>{formErrors.name}</FormErrorMessage>
       </FormControl>
 
-      <FormControl mt={4}>
+      <FormControl mt={4} isInvalid={formErrors.email !== ''}>
         <FormLabel fontWeight="semibold">Email address</FormLabel>
         <Input
           type="email"
@@ -75,9 +93,10 @@ export default function SignupForm({ onClose }: any) {
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
         />
+        <FormErrorMessage>{formErrors.email}</FormErrorMessage>
       </FormControl>
 
-      <FormControl mt={4}>
+      <FormControl mt={4} isInvalid={formErrors.password !== ''}>
         <FormLabel fontWeight="semibold">Password</FormLabel>
         <InputGroup>
           <Input
@@ -92,9 +111,10 @@ export default function SignupForm({ onClose }: any) {
             </Button>
           </InputRightElement>
         </InputGroup>
+        <FormErrorMessage>{formErrors.password}</FormErrorMessage>
       </FormControl>
 
-      <FormControl mt={4}>
+      <FormControl mt={4} isInvalid={formErrors.confirmPass !== ''}>
         <FormLabel fontWeight="semibold">Confirm password</FormLabel>
         <InputGroup>
           <Input
@@ -109,6 +129,7 @@ export default function SignupForm({ onClose }: any) {
             </Button>
           </InputRightElement>
         </InputGroup>
+        <FormErrorMessage>{formErrors.confirmPass}</FormErrorMessage>
       </FormControl>
 
       <Button type="submit" mt={7} colorScheme="green" w="100%">
