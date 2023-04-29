@@ -1,103 +1,11 @@
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Heading,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-} from '@chakra-ui/react';
-import { useState } from 'react';
-import { Eye, EyeOff } from 'react-feather';
+import { Box, Button, Flex, Heading } from '@chakra-ui/react';
 
-function UserForm() {
-  const [showPassword, setShowPassword] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  return (
-    <form>
-      <FormControl>
-        <FormLabel fontWeight="semibold">Name</FormLabel>
-        <Input type="text" placeholder="Enter your name" />
-      </FormControl>
-
-      <FormControl mt={4}>
-        <FormLabel fontWeight="semibold">Email address</FormLabel>
-        <Input type="email" placeholder="Enter your email address" />
-      </FormControl>
-
-      <FormControl mt={4}>
-        <FormLabel fontWeight="semibold">Password</FormLabel>
-        <InputGroup>
-          <Input type={showPassword ? 'text' : 'password'} placeholder="Enter your password" />
-          <InputRightElement mr={1}>
-            <Button h="1.75rem" size="sm" onClick={togglePasswordVisibility}>
-              {showPassword ? <Eye /> : <EyeOff />}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-    </form>
-  );
-}
-
-function LoginModal({ isOpen, onClose }: any) {
-  return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Login</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <UserForm />
-          </ModalBody>
-
-          <ModalFooter></ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
-}
-
-const SignupModal = ({ isOpen, onClose }: any) => {
-  return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Sign up</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>Signup</ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
+type props = {
+  onLoginOpen: () => void;
+  onSignupOpen: () => void;
 };
 
-const Navbar = () => {
-  const { isOpen: isLoginOpen, onOpen: onLoginOpen, onClose: onLoginClose } = useDisclosure();
-  const { isOpen: isSignupOpen, onOpen: onSignupOpen, onClose: onSignupClose } = useDisclosure();
-
+const Navbar = ({ onLoginOpen, onSignupOpen }: props) => {
   return (
     <nav>
       <Flex
@@ -143,8 +51,6 @@ const Navbar = () => {
           </Button>
         </Box>
       </Flex>
-      <LoginModal isOpen={isLoginOpen} onClose={onLoginClose} />
-      <SignupModal isOpen={isSignupOpen} onClose={onSignupClose} />
     </nav>
   );
 };
