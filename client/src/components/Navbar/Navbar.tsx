@@ -1,11 +1,10 @@
-import { Box, Button, Flex, Heading } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, useDisclosure } from '@chakra-ui/react';
+import LoginModal from './LoginModal';
+import SignupModal from './SignupModal';
 
-type props = {
-  onLoginOpen: () => void;
-  onSignupOpen: () => void;
-};
-
-const Navbar = ({ onLoginOpen, onSignupOpen }: props) => {
+const Navbar = () => {
+  const { isOpen: isOpenLogin, onOpen: onOpenLogin, onClose: onCloseLogin } = useDisclosure();
+  const { isOpen: isOpenSignup, onOpen: onOpenSignup, onClose: onCloseSignup } = useDisclosure();
   return (
     <nav>
       <Flex
@@ -20,7 +19,7 @@ const Navbar = ({ onLoginOpen, onSignupOpen }: props) => {
         </Heading>
         <Box display="flex" alignItems="center">
           <Button
-            onClick={onLoginOpen}
+            onClick={onOpenLogin}
             fontSize="sm"
             border="1px solid rgb(105, 162, 53)"
             borderRadius="8px"
@@ -36,7 +35,7 @@ const Navbar = ({ onLoginOpen, onSignupOpen }: props) => {
             Log in
           </Button>
           <Button
-            onClick={onSignupOpen}
+            onClick={onOpenSignup}
             fontSize="sm"
             borderRadius="8px"
             color="#fff"
@@ -51,6 +50,8 @@ const Navbar = ({ onLoginOpen, onSignupOpen }: props) => {
           </Button>
         </Box>
       </Flex>
+      <LoginModal isOpen={isOpenLogin} onClose={onCloseLogin} />
+      <SignupModal isOpen={isOpenSignup} onClose={onCloseSignup} />
     </nav>
   );
 };

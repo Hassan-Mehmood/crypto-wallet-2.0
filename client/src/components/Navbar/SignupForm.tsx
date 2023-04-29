@@ -11,6 +11,8 @@ import axios from 'axios';
 import { FormEvent, useState } from 'react';
 import { Eye, EyeOff } from 'react-feather';
 import { useMutation } from 'react-query';
+import { useSelector, useDispatch } from 'react-redux';
+import { login } from '../../slices/userSlice';
 
 type FormDataType = {
   name: string;
@@ -41,6 +43,8 @@ export default function SignupForm({ onClose }: any) {
   const [showPassword, setShowPassword] = useState(false);
   const [formErrors, setFormErrors] = useState<FormErrorsType>({});
 
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState<FormDataType>({
     name: '',
     email: '',
@@ -57,8 +61,9 @@ export default function SignupForm({ onClose }: any) {
       return response.data;
     },
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
         onClose();
+        dispatch(login(data));
       },
       onError: (error: ServerResponseError) => {
         const { errors } = error.response.data;
@@ -81,15 +86,6 @@ export default function SignupForm({ onClose }: any) {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  // TODO: Implement signup
-  // TODO: Add validation
-  // TODO: Add error handling
-  // TODO: Add success message
-  // TODO: Add loading state
-  // TODO: Add redirect to login
-  // TODO: Add redirect to login
-  // TODO: Add email verification
-  // TODO: Add password strength
 
   return (
     <form onSubmit={handleFormSubmit}>
