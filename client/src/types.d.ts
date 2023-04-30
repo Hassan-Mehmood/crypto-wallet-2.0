@@ -34,3 +34,33 @@ export type GlobalData = {
     updated_at: number;
   };
 };
+
+export type SignUpFormDataType = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPass: string;
+};
+
+export type FormErrorsType = {
+  [key: string]: string;
+};
+
+export type ServerSignupResponseError = {
+  stack: string;
+  message: string;
+  name: string;
+  code: string;
+  config: {
+    [key: string]: any;
+  };
+  request: XMLHttpRequest;
+  response: {
+    [key: string]: any;
+  };
+};
+
+export type LoginFormDataType = {
+  email: string;
+  password: string;
+};

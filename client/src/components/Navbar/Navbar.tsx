@@ -13,7 +13,7 @@ import {
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
 import { User } from 'react-feather';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 
 const Navbar = () => {
@@ -21,7 +21,7 @@ const Navbar = () => {
   const { isOpen: isOpenSignup, onOpen: onOpenSignup, onClose: onCloseSignup } = useDisclosure();
 
   const user = useSelector((state: RootState) => state.user);
-  console.log(user);
+  // console.log('User', user);
 
   return (
     <nav>

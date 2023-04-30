@@ -8,25 +8,53 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Eye, EyeOff } from 'react-feather';
+import { LoginFormDataType } from '../../types';
+import { useMutation } from 'react-query';
+import axios from 'axios';
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState<LoginFormDataType>({
+    email: '',
+    password: '',
+  });
 
-  const togglePasswordVisibility = () => {
+  const formSubmit = useMutation(async () => {
+    const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/login-user`, formData);
+    return response.data;
+  });
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    formSubmit.mutate();
+    console.log(formData);
+  }
+
+  function togglePasswordVisibility() {
     setShowPassword(!showPassword);
-  };
+  }
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <FormControl mt={4}>
         <FormLabel fontWeight="semibold">Email address</FormLabel>
-        <Input type="email" placeholder="Enter your email address" />
+        <Input
+          type="email"
+          placeholder="Enter your email address"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        />
       </FormControl>
 
       <FormControl mt={4}>
         <FormLabel fontWeight="semibold">Password</FormLabel>
         <InputGroup>
-          <Input type={showPassword ? 'text' : 'password'} placeholder="Enter your password" />
+          <Input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Enter your password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          />
           <InputRightElement mr={1}>
             <Button h="1.75rem" size="sm" onClick={togglePasswordVisibility}>
               {showPassword ? <Eye /> : <EyeOff />}

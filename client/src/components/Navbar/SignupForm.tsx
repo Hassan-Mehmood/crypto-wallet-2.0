@@ -6,46 +6,31 @@ import {
   InputRightElement,
   Button,
   FormErrorMessage,
+  useToast,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { FormEvent, useState } from 'react';
 import { Eye, EyeOff } from 'react-feather';
 import { useMutation } from 'react-query';
-import { useSelector, useDispatch } from 'react-redux';
-import { login } from '../../slices/userSlice';
-
-type FormDataType = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPass: string;
-};
-
-type FormErrorsType = {
-  [key: string]: string;
-};
-
-type ServerResponseError = {
-  stack: string;
-  message: string;
-  name: string;
-  code: string;
-  config: {
-    [key: string]: any;
-  };
-  request: XMLHttpRequest;
-  response: {
-    [key: string]: any;
-  };
-};
+import { FormErrorsType, ServerSignupResponseError, SignUpFormDataType } from '../../types';
 
 export default function SignupForm({ onClose }: any) {
   const [showPassword, setShowPassword] = useState(false);
   const [formErrors, setFormErrors] = useState<FormErrorsType>({});
 
-  const dispatch = useDispatch();
+  const toast = useToast();
+  function signupConfirmationToast() {
+    return toast({
+      title: 'Account registered.',
+      description: 'You can login to your accoutn',
+      position: 'top',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
+  }
 
-  const [formData, setFormData] = useState<FormDataType>({
+  const [formData, setFormData] = useState<SignUpFormDataType>({
     name: '',
     email: '',
     password: '',
@@ -61,11 +46,11 @@ export default function SignupForm({ onClose }: any) {
       return response.data;
     },
     {
-      onSuccess: (data) => {
+      onSuccess: () => {
         onClose();
-        dispatch(login(data));
+        signupConfirmationToast();
       },
-      onError: (error: ServerResponseError) => {
+      onError: (error: ServerSignupResponseError) => {
         const { errors } = error.response.data;
         const newErrors: FormErrorsType = {};
 

@@ -16,19 +16,18 @@ const initialState: UserState = {
 };
 
 export const userSlice = createSlice({
-  name: 'counter',
+  name: 'user',
   initialState,
   reducers: {
-    login: (state, action) => {
-      console.log(action.payload);
-      state = action.payload;
+    login: (state, action: PayloadAction<UserState>) => {
+      return {
+        ...state,
+        id: action.payload.id,
+        name: action.payload.name,
+        email: action.payload.email,
+        password: action.payload.password,
+      };
     },
-    // decrement: (state) => {
-    //   state.value -= 1;
-    // },
-    // incrementByAmount: (state, action: PayloadAction<number>) => {
-    //   state.value += action.payload;
-    // },
   },
 });
 
