@@ -20,14 +20,17 @@ export default function LoginForm() {
   });
 
   const formSubmit = useMutation(async () => {
-    const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/login-user`, formData);
+    const response = await axios.post(
+      `${process.env.REACT_APP_SERVER_URL}/users/login-user`,
+      formData
+    );
     return response.data;
   });
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     formSubmit.mutate();
-    console.log(formData);
+    console.log('form submit', formData);
   }
 
   function togglePasswordVisibility() {
