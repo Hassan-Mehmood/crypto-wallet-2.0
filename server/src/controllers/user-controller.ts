@@ -8,7 +8,7 @@ import { generateToken } from '../utils/jwt';
 interface ValidationError {
   value?: any;
   msg: string;
-  param?: string;
+  path?: string;
   location: string;
 }
 
@@ -54,8 +54,8 @@ export async function loginUser(req: Request, res: Response) {
     if (!user) {
       errorsArray.push({
         value: email,
-        msg: 'User not found',
-        param: 'email',
+        msg: 'Invalid email address',
+        path: 'email',
         location: 'body',
       });
       return res.status(400).json({ errors: errorsArray });
@@ -66,7 +66,7 @@ export async function loginUser(req: Request, res: Response) {
       errorsArray.push({
         value: password,
         msg: 'Incorrect password',
-        param: 'password',
+        path: 'password',
         location: 'body',
       });
       return res.status(400).json({ errors: errorsArray });
@@ -75,8 +75,9 @@ export async function loginUser(req: Request, res: Response) {
     const { password: _password, ...userWithoutPassword } = user;
     const token = generateToken(user.id);
 
+    const ONE_DAY = 24 * 60 * 60 * 1000; // 1 day in milliseconds
     return res
-      .cookie('access_token', token, { httpOnly: true })
+      .cookie('access_token', token, { httpOnly: true, maxAge: ONE_DAY })
       .status(200)
       .json(userWithoutPassword);
   } catch (error) {

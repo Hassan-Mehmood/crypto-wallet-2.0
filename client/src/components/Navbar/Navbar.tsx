@@ -21,7 +21,7 @@ const Navbar = () => {
   const { isOpen: isOpenSignup, onOpen: onOpenSignup, onClose: onCloseSignup } = useDisclosure();
 
   const user = useSelector((state: RootState) => state.user);
-  // console.log('User', user);
+  console.log('User', user);
 
   return (
     <nav>

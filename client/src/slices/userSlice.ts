@@ -5,14 +5,12 @@ export interface UserState {
   id: number;
   name: string;
   email: string;
-  password: string;
 }
 
 const initialState: UserState = {
   id: 0,
   name: '',
   email: '',
-  password: '',
 };
 
 export const userSlice = createSlice({
@@ -25,7 +23,6 @@ export const userSlice = createSlice({
         id: action.payload.id,
         name: action.payload.name,
         email: action.payload.email,
-        password: action.payload.password,
       };
     },
   },

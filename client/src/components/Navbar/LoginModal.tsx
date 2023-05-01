@@ -22,7 +22,7 @@ export default function LoginModal({ isOpen, onClose }: props) {
           <ModalHeader>Login</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={8}>
-            <LoginForm />
+            <LoginForm onClose={onClose} />
           </ModalBody>
         </ModalContent>
       </Modal>

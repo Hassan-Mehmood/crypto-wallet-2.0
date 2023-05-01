@@ -22,7 +22,7 @@ export default function SignupForm({ onClose }: any) {
   function signupConfirmationToast() {
     return toast({
       title: 'Account registered.',
-      description: 'You can login to your accoutn',
+      description: 'You can login to your account',
       position: 'top',
       status: 'success',
       duration: 3000,
