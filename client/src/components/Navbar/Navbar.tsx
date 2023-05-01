@@ -13,15 +13,16 @@ import {
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
 import { User } from 'react-feather';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { logout } from '../../slices/userSlice';
 
 const Navbar = () => {
   const { isOpen: isOpenLogin, onOpen: onOpenLogin, onClose: onCloseLogin } = useDisclosure();
   const { isOpen: isOpenSignup, onOpen: onOpenSignup, onClose: onCloseSignup } = useDisclosure();
 
-  const user = useSelector((state: RootState) => state.user);
-  console.log('User', user);
+  const user = useSelector((state: RootState) => state);
+  const dispatch = useDispatch();
 
   return (
     <nav>
@@ -35,22 +36,27 @@ const Navbar = () => {
         <Heading fontSize="1.4rem" mb={['0.75rem']} cursor="pointer">
           Wallet Track
         </Heading>
-        {user.id !== 0 ? (
+        {user.id !== null ? (
           <Menu>
             <MenuButton bg="rgba(0, 0, 0, 0.2)" p={3} borderRadius="50%">
               <User size={24} />
             </MenuButton>
             <MenuList p={0}>
               <MenuItem _hover={{ backgroundColor: 'rgba(0, 0, 0,0.1)' }}>
-                <Text textAlign="center" minW="100%" py="0.5rem">
+                <Text minW="100%" py="0.5rem">
                   {user.name}
-                </Text>
-                <Text textAlign="center" minW="100%" py="0.5rem">
-                  {user.email}
                 </Text>
               </MenuItem>
               <MenuItem _hover={{ backgroundColor: 'rgba(0, 0, 0,0.1)' }}>
-                <Text textAlign="center" minW="100%" py="0.5rem">
+                <Text minW="100%" py="0.5rem">
+                  {user.email}
+                </Text>
+              </MenuItem>
+              <MenuItem
+                _hover={{ backgroundColor: 'rgba(0, 0, 0,0.1)' }}
+                onClick={() => dispatch(logout())}
+              >
+                <Text minW="100%" py="0.5rem">
                   Logout
                 </Text>
               </MenuItem>

@@ -2,15 +2,15 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 export interface UserState {
-  id: number;
-  name: string;
-  email: string;
+  id: number | null;
+  name: string | null;
+  email: string | null;
 }
 
 const initialState: UserState = {
-  id: 0,
-  name: '',
-  email: '',
+  id: null,
+  name: null,
+  email: null,
 };
 
 export const userSlice = createSlice({
@@ -25,10 +25,18 @@ export const userSlice = createSlice({
         email: action.payload.email,
       };
     },
+    logout: (state) => {
+      return {
+        ...state,
+        id: null,
+        name: null,
+        email: null,
+      };
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { login } = userSlice.actions;
+export const { login, logout } = userSlice.actions;
 
 export default userSlice.reducer;
