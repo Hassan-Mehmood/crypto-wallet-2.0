@@ -10,8 +10,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use('/api/auth', router);
 app.get('/', async (req, res) => res.send('Hello World!'));
-app.get('/api/users', router);
 
 app.listen(port, () => {
   console.log(`App listening on port http://localhost:${port}`);

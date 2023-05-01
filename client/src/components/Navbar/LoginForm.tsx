@@ -21,7 +21,7 @@ export default function LoginForm() {
 
   const formSubmit = useMutation(async () => {
     const response = await axios.post(
-      `${process.env.REACT_APP_SERVER_URL}/users/login-user`,
+      `${process.env.REACT_APP_SERVER_URL}/auth/login-user`,
       formData
     );
     return response.data;

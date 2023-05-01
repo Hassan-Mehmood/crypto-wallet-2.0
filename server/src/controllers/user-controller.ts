@@ -3,6 +3,14 @@ import bcrypt from 'bcrypt';
 import { validationResult } from 'express-validator';
 
 import { prisma } from '../utils/client';
+import { generateToken } from '../utils/jwt';
+
+interface ValidationError {
+  value?: any;
+  msg: string;
+  param?: string;
+  location: string;
+}
 
 export async function registerUser(req: Request, res: Response) {
   const errors = validationResult(req);
@@ -29,6 +37,13 @@ export async function registerUser(req: Request, res: Response) {
 }
 
 export async function loginUser(req: Request, res: Response) {
+  const errors = validationResult(req);
+  const errorsArray = errors.array() as ValidationError[];
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errorsArray });
+  }
+
   try {
     const { email, password } = req.body;
 
@@ -36,13 +51,34 @@ export async function loginUser(req: Request, res: Response) {
       where: { email },
     });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (isMatch) {
-      res.status(200).json({ isMatch });
-    } else {
-      res.status(400).json({ isMatch });
+    if (!user) {
+      errorsArray.push({
+        value: email,
+        msg: 'User not found',
+        param: 'email',
+        location: 'body',
+      });
+      return res.status(400).json({ errors: errorsArray });
     }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      errorsArray.push({
+        value: password,
+        msg: 'Incorrect password',
+        param: 'password',
+        location: 'body',
+      });
+      return res.status(400).json({ errors: errorsArray });
+    }
+
+    const { password: _password, ...userWithoutPassword } = user;
+    const token = generateToken(user.id);
+
+    return res
+      .cookie('access_token', token, { httpOnly: true })
+      .status(200)
+      .json(userWithoutPassword);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
