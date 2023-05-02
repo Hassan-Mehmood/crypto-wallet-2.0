@@ -1,5 +1,5 @@
 import { Box, Flex, Image, Spinner, Text } from '@chakra-ui/react';
-import { TrendingCoin } from '../../types';
+import { TrendingCoin } from '../../../types';
 
 type props = {
   coin: TrendingCoin;

@@ -4,7 +4,7 @@ import GlobalData from './GlobalData';
 import MarketDominance from './MarketDominance';
 import TrendingCoins from './TrendingCoins';
 import { useQuery } from 'react-query';
-import { getHighlightsData } from '../../api/axios';
+import { getHighlightsData } from '../../../api/axios';
 
 export default function Highlights() {
   const { data, isLoading } = useQuery('trendingCoins', getHighlightsData);

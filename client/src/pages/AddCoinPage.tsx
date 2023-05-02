@@ -1,5 +1,12 @@
-import React from 'react';
+import { Box } from '@chakra-ui/react';
+import SearchCoin from '../components/AddCoin/SearchCoin';
+import AddCoinForm from '../components/AddCoin/AddCoinForm';
 
 export default function AddCoinPage() {
-  return <div>AddCoinPage</div>;
+  return (
+    <Box as="section">
+      <SearchCoin />
+      <AddCoinForm />
+    </Box>
+  );
 }

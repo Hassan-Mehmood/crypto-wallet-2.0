@@ -65,6 +65,23 @@ const Navbar = () => {
           </Menu>
         ) : (
           <Box display="flex" alignItems="center">
+            <Link to="/addcoin">
+              <Button
+                fontSize="sm"
+                border="1px solid rgb(105, 162, 53)"
+                borderRadius="8px"
+                background="none"
+                padding={'0 16px'}
+                mr="1rem"
+                _hover={{
+                  background: 'rgb(105, 162, 53)',
+                  color: '#fff',
+                  border: '1px solid rgb(105, 162, 53)',
+                }}
+              >
+                Temp btn
+              </Button>
+            </Link>
             <Button
               onClick={onOpenLogin}
               fontSize="sm"

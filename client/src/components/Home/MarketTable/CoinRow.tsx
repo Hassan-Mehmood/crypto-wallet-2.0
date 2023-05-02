@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Tr, Td, Flex, Image, Text } from '@chakra-ui/react';
-import { HomeTableCoin } from '../../types';
+import { HomeTableCoin } from '../../../types';
 
 type PropsType = {
   coin: HomeTableCoin;

@@ -1,8 +1,8 @@
 import { useQuery } from 'react-query';
-import { coinsList } from '../../api/axios';
 import { Table, Thead, Tbody, Tr, Th, TableContainer } from '@chakra-ui/react';
-import { HomeTableCoin } from '../../types';
 import CoinRow from './CoinRow';
+import { HomeTableCoin } from '../../../types';
+import { coinsList } from '../../../api/axios';
 
 export default function CoinsTable() {
   const { data } = useQuery('coinsList', () => coinsList());

@@ -1,5 +1,5 @@
 import React from 'react';
-import Highlights from '../components/highlights/Highlights';
+import Highlights from '../components/Home/highlights/Highlights';
 
 export default function HomePage() {
   return (
