@@ -16,6 +16,7 @@ import { User } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { logout } from '../../slices/userSlice';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const { isOpen: isOpenLogin, onOpen: onOpenLogin, onClose: onCloseLogin } = useDisclosure();
@@ -34,7 +35,7 @@ const Navbar = () => {
         minH="75px"
       >
         <Heading fontSize="1.4rem" mb={['0.75rem']} cursor="pointer">
-          Wallet Track
+          <Link to="/">Wallet Track</Link>
         </Heading>
         {user.id !== null ? (
           <Menu>

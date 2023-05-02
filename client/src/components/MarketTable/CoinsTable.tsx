@@ -8,7 +8,7 @@ export default function CoinsTable() {
   const { data } = useQuery('coinsList', () => coinsList());
 
   return (
-    <TableContainer>
+    <TableContainer mt="2rem">
       <Table variant="simple">
         <Thead>
           <Tr>
