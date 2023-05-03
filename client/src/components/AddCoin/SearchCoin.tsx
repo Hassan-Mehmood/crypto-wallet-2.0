@@ -7,9 +7,30 @@ import {
   NumberInputField,
   Button,
   Box,
+  Image,
 } from '@chakra-ui/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { removeCoin } from '../../slices/coinSlice';
+import { useState } from 'react';
 
 export default function SearchCoin() {
+  const [coinQuantity, setCoinQuantity] = useState<number>(0);
+  const [coinPrice, setCoinPrice] = useState<number>(0);
+
+  const coinData = useSelector((state: RootState) => state.searchCoinReducer);
+  const dispatch = useDispatch();
+
+  const handleQuantityInput = (value: number) => {
+    if (isNaN(value)) return;
+    setCoinQuantity(value);
+  };
+
+  const handlePriceInput = (value: number) => {
+    if (isNaN(value)) return;
+    setCoinPrice(value);
+  };
+
   return (
     <Box border="1px solid black" p="1rem" maxW="600px" w="100%">
       <Flex justifyContent="space-between">
@@ -21,9 +42,9 @@ export default function SearchCoin() {
         </Heading>
       </Flex>
       <Flex align="center" mb="1rem">
-        {/* <Image src={clickedCoin.thumb} /> */}
+        <Image src={coinData.thumb ? coinData.thumb : ''} />
         <Heading as="h6" size="sm" textTransform="capitalize" ml=".5rem">
-          No coin selected
+          {coinData.name || 'No coin selected'}
         </Heading>
       </Flex>
       <form>
@@ -32,22 +53,25 @@ export default function SearchCoin() {
             <FormLabel>Quantity</FormLabel>
             <NumberInput
               min={0}
-              // value={coinQuantity}
-              // onChange={(value) => hanldeQunatityInput(value)}
+              value={coinQuantity}
+              onChange={(valueString, valueNumber) => handleQuantityInput(valueNumber)}
             >
               <NumberInputField h="35px" border="1px solid black" p=".5rem" />
             </NumberInput>
           </FormControl>
           <FormControl>
             <FormLabel>Price</FormLabel>
-            <NumberInput>
+            <NumberInput
+              value={coinPrice}
+              onChange={(valueString, valueNumber) => handlePriceInput(valueNumber)}
+            >
               <NumberInputField h="35px" border="1px solid black" p=".5rem" />
             </NumberInput>
           </FormControl>
         </Flex>
         <Box>
           <Heading as="h6" size="sm" mt="1rem">
-            Total: 0
+            {coinData.name} ${coinPrice * coinQuantity}
           </Heading>
           <Box mt="1rem">
             <Button
@@ -66,7 +90,7 @@ export default function SearchCoin() {
               Add Transaction
             </Button>
             <Button
-              // onClick={cancelTransaction}
+              onClick={() => dispatch(removeCoin())}
               fontSize="sm"
               border="1px solid rgb(105, 162, 53)"
               borderRadius="8px"

@@ -22,7 +22,7 @@ const Navbar = () => {
   const { isOpen: isOpenLogin, onOpen: onOpenLogin, onClose: onCloseLogin } = useDisclosure();
   const { isOpen: isOpenSignup, onOpen: onOpenSignup, onClose: onCloseSignup } = useDisclosure();
 
-  const user = useSelector((state: RootState) => state);
+  const user = useSelector((state: RootState) => state.userReducer);
   const dispatch = useDispatch();
 
   return (

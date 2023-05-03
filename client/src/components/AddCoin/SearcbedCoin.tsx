@@ -1,11 +1,15 @@
 import { Box, Button, Flex, Image, Text } from '@chakra-ui/react';
 import { SearchCoin } from '../../types';
+import { useDispatch } from 'react-redux';
+import { addCoin } from '../../slices/coinSlice';
 
 interface Props {
   Coin: SearchCoin;
 }
 
 const SearchedCoin = ({ Coin }: Props) => {
+  const dispatch = useDispatch();
+
   return (
     <Box pt="1rem" px="1rem">
       <Flex align="center" justify="space-between">
@@ -19,7 +23,7 @@ const SearchedCoin = ({ Coin }: Props) => {
           </Text>
         </Flex>
         <Button
-          // onClick={(e) => handleAddCoinClick(Coin)}
+          onClick={(e) => dispatch(addCoin(Coin))}
           fontSize="sm"
           borderRadius="8px"
           color="#fff"

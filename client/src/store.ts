@@ -1,5 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import userReducer from './slices/userSlice';
+import searchCoinReducer from './slices/coinSlice';
 import storage from 'redux-persist/lib/storage';
 import {
   persistStore,
@@ -18,8 +19,8 @@ const persistConfig = {
   storage,
 };
 
-// const rootReducer = combineReducers(userReducer);
-const persistedReducer = persistReducer(persistConfig, userReducer);
+const rootReducer = combineReducers({ userReducer, searchCoinReducer });
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
