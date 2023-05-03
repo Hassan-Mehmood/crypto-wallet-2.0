@@ -12,7 +12,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { removeCoin } from '../../slices/coinSlice';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getCoinMarketData } from '../../api/axios';
 
 export default function SearchCoin() {
   const [coinQuantity, setCoinQuantity] = useState<number>(0);
@@ -22,14 +23,35 @@ export default function SearchCoin() {
   const dispatch = useDispatch();
 
   const handleQuantityInput = (value: number) => {
-    if (isNaN(value)) return;
+    if (isNaN(value)) {
+      setCoinQuantity(0);
+      return;
+    }
     setCoinQuantity(value);
   };
 
   const handlePriceInput = (value: number) => {
-    if (isNaN(value)) return;
+    if (isNaN(value)) {
+      setCoinPrice(0);
+      return;
+    }
     setCoinPrice(value);
   };
+
+  useEffect(() => {
+    if (!coinData.id) {
+      setCoinPrice(0);
+      return;
+    }
+
+    getCoinMarketData(coinData.id).then((res) => {
+      const marketData = res.market_data;
+
+      if (!marketData) return;
+
+      setCoinPrice(marketData.current_price?.usd || 0);
+    });
+  }, [coinData]);
 
   return (
     <Box border="1px solid black" p="1rem" maxW="600px" w="100%">

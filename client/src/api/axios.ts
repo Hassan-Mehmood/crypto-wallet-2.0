@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GlobalData, SearchCoin, TrendingCoin } from '../types';
+import { GlobalData, SearchCoin, TrendingCoin, getCoinMarketDataType } from '../types';
 
 const instance = axios.create({
   baseURL: 'https://api.coingecko.com/api/v3/',
@@ -30,4 +30,12 @@ export async function coinsList() {
 export async function getCoinByName(name: string): Promise<SearchCoin[]> {
   const { data } = await instance.get(`search?query=${name}`);
   return data.coins;
+}
+
+export async function getCoinMarketData(name: string): Promise<getCoinMarketDataType> {
+  const { data } = await instance.get(
+    `coins/${name}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`
+  );
+
+  return data;
 }
