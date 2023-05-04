@@ -62,6 +62,7 @@ export default function LoginForm({ onClose }: any) {
       },
     }
   );
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     formSubmit.mutate();

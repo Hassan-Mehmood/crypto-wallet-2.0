@@ -14,6 +14,8 @@ import { RootState } from '../../store';
 import { removeCoin } from '../../slices/coinSlice';
 import { useEffect, useState } from 'react';
 import { getCoinMarketData } from '../../api/axios';
+import { useMutation } from 'react-query';
+import axios from 'axios';
 
 export default function SearchCoin() {
   const [coinQuantity, setCoinQuantity] = useState<number>(0);
@@ -21,6 +23,25 @@ export default function SearchCoin() {
 
   const coinData = useSelector((state: RootState) => state.searchCoinReducer);
   const dispatch = useDispatch();
+
+  const addCoin = useMutation(
+    async () => {
+      const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/transaction/add`, {
+        bought_coin: coinData,
+        coinQuantity,
+        coinPrice,
+      });
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    }
+  );
 
   const handleQuantityInput = (value: number) => {
     if (isNaN(value)) {
@@ -52,6 +73,11 @@ export default function SearchCoin() {
       setCoinPrice(marketData.current_price?.usd || 0);
     });
   }, [coinData]);
+
+  function addTransaction(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    addCoin.mutate();
+  }
 
   return (
     <Box border="1px solid black" p="1rem" maxW="600px" w="100%">
@@ -97,7 +123,7 @@ export default function SearchCoin() {
           </Heading>
           <Box mt="1rem">
             <Button
-              // onClick={addTransaction}
+              onClick={(e) => addTransaction(e)}
               type="submit"
               fontSize="sm"
               borderRadius="8px"

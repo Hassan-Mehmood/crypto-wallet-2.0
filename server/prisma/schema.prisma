@@ -17,4 +17,30 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  coins     Coin[]
+}
+
+model Coin {
+  id            Int      @id @default(autoincrement())
+  name          String
+  apiSymbol     String   @unique
+  symbol        String   @unique
+  thump         String
+  large         String
+  marketCapRank Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  users         User     @relation(fields: [userId], references: [id])
+  userId        Int
+}
+
+model Transaction {
+  id         Int      @id @default(autoincrement())
+  price      Float
+  quantity   Float
+  timeBought DateTime
+  coinId     Int
+  userId     Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

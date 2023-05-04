@@ -1,7 +1,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import router from './routes/user-route';
+import userRouter from './routes/user-route';
+import transactionRouter from './routes/transaction-router';
 
 const app = express();
 const port = 3001;
@@ -10,8 +11,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use('/api/auth', router);
-app.get('/', async (req, res) => res.send('Hello World!'));
+app.use('/api/auth', userRouter);
+app.use('/api/transaction', transactionRouter);
 
 app.listen(port, () => {
   console.log(`App listening on port http://localhost:${port}`);

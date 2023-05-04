@@ -1,4 +1,4 @@
-import { Dispatch, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { SearchCoin } from '../types';
 
@@ -50,7 +50,6 @@ export const coinSlice = createSlice({
         large: null,
       };
     },
-    getCoinPrice: () => {},
   },
 });
 
