@@ -22,11 +22,13 @@ export default function SearchCoin() {
   const [coinPrice, setCoinPrice] = useState<number>(0);
 
   const coinData = useSelector((state: RootState) => state.searchCoinReducer);
+  const userData = useSelector((state: RootState) => state.userReducer);
   const dispatch = useDispatch();
 
   const addCoin = useMutation(
     async () => {
       const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/transaction/add`, {
+        user: userData.id,
         bought_coin: coinData,
         coinQuantity,
         coinPrice,

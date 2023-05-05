@@ -2,14 +2,14 @@ import express from 'express';
 import { body } from 'express-validator';
 import { addTransaction } from '../controllers/transaction-controller';
 
-type coinDataType = {
-  id: string | null;
-  name: string | null;
-  api_symbol: string | null;
-  symbol: string | null;
-  market_cap_rank: number | null;
-  thumb: string | null;
-  large: string | null;
+export type bought_coin = {
+  id: string;
+  name: string;
+  api_symbol: string;
+  symbol: string;
+  market_cap_rank: number;
+  thumb: string;
+  large: string;
 };
 
 const router = express.Router();
@@ -18,7 +18,7 @@ router.post(
   '/add',
 
   body('bought_coin')
-    .custom((coin: coinDataType) => coin.id !== null)
+    .custom((coin: bought_coin) => coin.id !== null)
     .withMessage('Coin Data is required'),
   body('coinQuantity')
     .notEmpty()

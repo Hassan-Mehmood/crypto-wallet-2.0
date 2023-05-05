@@ -40,7 +40,7 @@ export default function SignupForm({ onClose }: any) {
   const submitForm = useMutation(
     async () => {
       const response = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/register-user`,
+        `${process.env.REACT_APP_SERVER_URL}/auth/register-user`,
         formData
       );
       return response.data;

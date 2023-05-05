@@ -21,17 +21,18 @@ model User {
 }
 
 model Coin {
-  id            Int      @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   name          String
-  apiSymbol     String   @unique
-  symbol        String   @unique
+  apiSymbol     String        @unique
+  symbol        String        @unique
   thump         String
   large         String
   marketCapRank Int
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  users         User     @relation(fields: [userId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
+  transactions  Transaction[]
   userId        Int
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model Transaction {
@@ -39,8 +40,8 @@ model Transaction {
   price      Float
   quantity   Float
   timeBought DateTime
+  Coin       Coin     @relation(fields: [coinId], references: [id])
   coinId     Int
-  userId     Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
