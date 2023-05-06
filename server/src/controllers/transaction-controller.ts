@@ -48,7 +48,7 @@ export async function addTransaction(req: Request, res: Response) {
       });
     }
 
-    const transaction = await prisma.transaction.create({
+    await prisma.transaction.create({
       data: {
         price: coinPrice,
         quantity: coinQuantity,
@@ -57,8 +57,7 @@ export async function addTransaction(req: Request, res: Response) {
       },
     });
 
-    console.log('done without error');
-    res.status(201).json('Done');
+    res.status(201).json('Coin added to wallet');
   } catch (error) {
     console.log(error.message);
     res.status(500).json(error);

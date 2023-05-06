@@ -20,6 +20,9 @@ router.post(
   body('bought_coin')
     .custom((coin: bought_coin) => coin.id !== null)
     .withMessage('Coin Data is required'),
+  body('user')
+    .custom((userID: number) => userID !== null)
+    .withMessage('User not logged in'),
   body('coinQuantity')
     .notEmpty()
     .custom((num: number) => num > 0)
