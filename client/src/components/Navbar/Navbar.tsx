@@ -1,29 +1,16 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Flex, Heading, useDisclosure } from '@chakra-ui/react';
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
-import { User } from 'react-feather';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { logout } from '../../slices/userSlice';
 import { Link } from 'react-router-dom';
-
+import NavLinks from './NavLinks';
+import UserInfoAvatar from './UserInfoAvatar';
 const Navbar = () => {
   const { isOpen: isOpenLogin, onOpen: onOpenLogin, onClose: onCloseLogin } = useDisclosure();
   const { isOpen: isOpenSignup, onOpen: onOpenSignup, onClose: onCloseSignup } = useDisclosure();
 
   const user = useSelector((state: RootState) => state.userReducer);
-  const dispatch = useDispatch();
 
   return (
     <nav>
@@ -38,88 +25,9 @@ const Navbar = () => {
           <Link to="/">Wallet Track</Link>
         </Heading>
         {user.id !== null ? (
-          <Menu>
-            <MenuButton bg="rgba(0, 0, 0, 0.2)" p={3} borderRadius="50%">
-              <User size={24} />
-            </MenuButton>
-            <MenuList p={0}>
-              <MenuItem _hover={{ backgroundColor: 'rgba(0, 0, 0,0.1)' }}>
-                <Text minW="100%" py="0.5rem">
-                  {user.name}
-                </Text>
-              </MenuItem>
-              <MenuItem _hover={{ backgroundColor: 'rgba(0, 0, 0,0.1)' }}>
-                <Text minW="100%" py="0.5rem">
-                  {user.email}
-                </Text>
-              </MenuItem>
-              <MenuItem _hover={{ backgroundColor: 'rgba(0, 0, 0,0.1)' }}>
-                <Link to={'/addcoin'}>
-                  <Text minW="100%" py="0.5rem">
-                    Add Coins
-                  </Text>
-                </Link>
-              </MenuItem>
-              <MenuItem
-                _hover={{ backgroundColor: 'rgba(0, 0, 0,0.1)' }}
-                onClick={() => dispatch(logout())}
-              >
-                <Text minW="100%" py="0.5rem">
-                  Logout
-                </Text>
-              </MenuItem>
-            </MenuList>
-          </Menu>
+          <UserInfoAvatar user={user} />
         ) : (
-          <Box display="flex" alignItems="center">
-            <Link to="/addcoin">
-              <Button
-                fontSize="sm"
-                border="1px solid rgb(105, 162, 53)"
-                borderRadius="8px"
-                background="none"
-                padding={'0 16px'}
-                mr="1rem"
-                _hover={{
-                  background: 'rgb(105, 162, 53)',
-                  color: '#fff',
-                  border: '1px solid rgb(105, 162, 53)',
-                }}
-              >
-                Temp btn
-              </Button>
-            </Link>
-            <Button
-              onClick={onOpenLogin}
-              fontSize="sm"
-              border="1px solid rgb(105, 162, 53)"
-              borderRadius="8px"
-              background="none"
-              padding={'0 16px'}
-              mr="1rem"
-              _hover={{
-                background: 'rgb(105, 162, 53)',
-                color: '#fff',
-                border: '1px solid rgb(105, 162, 53)',
-              }}
-            >
-              Log in
-            </Button>
-            <Button
-              onClick={onOpenSignup}
-              fontSize="sm"
-              borderRadius="8px"
-              color="#fff"
-              background="rgb(105, 162, 53)"
-              padding={'0 16px'}
-              border="1px solid rgb(105, 162, 53)"
-              _hover={{
-                background: 'rgb(81, 126, 39)',
-              }}
-            >
-              Sign up
-            </Button>
-          </Box>
+          <NavLinks onOpenLogin={onOpenLogin} onOpenSignup={onOpenSignup} />
         )}
       </Flex>
       <LoginModal isOpen={isOpenLogin} onClose={onCloseLogin} />
