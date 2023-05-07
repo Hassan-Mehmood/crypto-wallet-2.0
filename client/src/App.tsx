@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './pages/layout/Layout';
 import HomePage from './pages/HomePage';
 import AddCoinPage from './pages/AddCoinPage';
+import ProtectedRoutes from './pages/ProtectedRoutes';
 
 function App() {
   return (
@@ -11,7 +12,9 @@ function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<HomePage />} />
-            <Route path="/addcoin" element={<AddCoinPage />} />
+            <Route element={<ProtectedRoutes />}>
+              <Route path="/addcoin" element={<AddCoinPage />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

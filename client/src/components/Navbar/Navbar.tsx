@@ -53,6 +53,13 @@ const Navbar = () => {
                   {user.email}
                 </Text>
               </MenuItem>
+              <MenuItem _hover={{ backgroundColor: 'rgba(0, 0, 0,0.1)' }}>
+                <Link to={'/addcoin'}>
+                  <Text minW="100%" py="0.5rem">
+                    Add Coins
+                  </Text>
+                </Link>
+              </MenuItem>
               <MenuItem
                 _hover={{ backgroundColor: 'rgba(0, 0, 0,0.1)' }}
                 onClick={() => dispatch(logout())}
