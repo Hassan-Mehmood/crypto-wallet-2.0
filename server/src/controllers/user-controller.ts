@@ -73,7 +73,7 @@ export async function loginUser(req: Request, res: Response) {
     }
 
     const { password: _password, ...userWithoutPassword } = user;
-    const token = generateToken(user.id);
+    const token = generateToken(user.id.toString());
 
     const ONE_DAY = 24 * 60 * 60 * 1000; // 1 day in milliseconds
     return res

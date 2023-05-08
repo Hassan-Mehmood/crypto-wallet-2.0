@@ -10,6 +10,10 @@ type reqBodyType = {
   user: number;
 };
 
+interface AuthenticatedRequest extends Request {
+  userId: number;
+}
+
 export async function addTransaction(req: Request, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -60,21 +64,21 @@ export async function addTransaction(req: Request, res: Response) {
   }
 }
 
-export async function getTransactions(req: Request, res: Response) {
-  const userID = parseInt(req.params.userID);
+export async function getTransactions(req: AuthenticatedRequest, res: Response) {
+  const userId = req.userId;
+  console.log(userId);
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: userID },
-      include: {
-        coins: {
-          include: {
-            transactions: true,
-          },
-        },
-      },
-    });
-
-    res.status(200).json(user);
+    //   const user = await prisma.user.findUnique({
+    //     where: { id: userID },
+    //     include: {
+    //       coins: {
+    //         include: {
+    //           transactions: true,
+    //         },
+    //       },
+    //     },
+    //   });
+    //   res.status(200).json(user);
   } catch (error) {
     console.log(error.message);
     res.status(500).json(error);

@@ -1,6 +1,7 @@
 import express from 'express';
 import { body } from 'express-validator';
 import { addTransaction, getTransactions } from '../controllers/transaction-controller';
+import { verifyToken } from '../utils/jwt';
 
 export type bought_coin = {
   id: string;
@@ -35,6 +36,6 @@ router.post(
   addTransaction
 );
 
-router.get('/all/:userID', getTransactions);
+router.get('/all', verifyToken, getTransactions);
 
 export default router;
