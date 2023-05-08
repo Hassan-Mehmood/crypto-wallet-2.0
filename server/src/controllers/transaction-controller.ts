@@ -61,17 +61,20 @@ export async function addTransaction(req: Request, res: Response) {
 }
 
 export async function getTransactions(req: Request, res: Response) {
-  console.log('cookies', req.cookies);
-  console.log('User Id', req.params.userID);
   const userID = parseInt(req.params.userID);
   try {
-    const transactions = await prisma.transaction.findMany({
-      // where: { id: userID },
+    const user = await prisma.user.findUnique({
+      where: { id: userID },
+      include: {
+        coins: {
+          include: {
+            transactions: true,
+          },
+        },
+      },
     });
 
-    console.log('Transactions', transactions);
-
-    // res.status(200).json(transactions);
+    res.status(200).json(user);
   } catch (error) {
     console.log(error.message);
     res.status(500).json(error);

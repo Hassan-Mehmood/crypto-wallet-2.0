@@ -183,3 +183,35 @@ export type getCoinMarketDataType = {
     };
   };
 };
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  createdAt: Date;
+  updatedAt: Date;
+  coins: Coin[];
+}
+
+interface Coin {
+  id: number;
+  name: string;
+  apiSymbol: string;
+  symbol: string;
+  thump: string;
+  large: string;
+  marketCapRank: number;
+  userId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  transactions: Transaction[];
+}
+
+interface Transaction {
+  id: number;
+  price: number;
+  quantity: number;
+  timeBought: Date;
+  coinId: number;
+}
