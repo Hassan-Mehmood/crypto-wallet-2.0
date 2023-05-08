@@ -3,11 +3,18 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import userRouter from './routes/user-route';
 import transactionRouter from './routes/transaction-router';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const port = 3001;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })
+);
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 

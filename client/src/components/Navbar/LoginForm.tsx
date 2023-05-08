@@ -40,7 +40,8 @@ export default function LoginForm({ onClose }: any) {
     async () => {
       const response = await axios.post(
         `${process.env.REACT_APP_SERVER_URL}/auth/login-user`,
-        formData
+        formData,
+        { withCredentials: true }
       );
       return response.data;
     },

@@ -20,17 +20,13 @@ export async function addTransaction(req: Request, res: Response) {
     const { coinPrice, coinQuantity, bought_coin, user: userID }: reqBodyType = req.body;
 
     const user = await prisma.user.findUnique({
-      where: {
-        id: userID,
-      },
+      where: { id: userID },
     });
 
     let coinRecord = await prisma.coin.findFirst({
       where: {
         apiSymbol: bought_coin.symbol,
-        user: {
-          id: user.id,
-        },
+        user: { id: user.id },
       },
     });
 
@@ -58,6 +54,24 @@ export async function addTransaction(req: Request, res: Response) {
     });
 
     res.status(201).json('Coin added to wallet');
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json(error);
+  }
+}
+
+export async function getTransactions(req: Request, res: Response) {
+  console.log('cookies', req.cookies);
+  console.log('User Id', req.params.userID);
+  const userID = parseInt(req.params.userID);
+  try {
+    const transactions = await prisma.transaction.findMany({
+      // where: { id: userID },
+    });
+
+    console.log('Transactions', transactions);
+
+    // res.status(200).json(transactions);
   } catch (error) {
     console.log(error.message);
     res.status(500).json(error);

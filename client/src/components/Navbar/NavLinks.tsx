@@ -1,5 +1,4 @@
 import { Button, Box } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
 
 interface props {
   onOpenLogin: () => void;
