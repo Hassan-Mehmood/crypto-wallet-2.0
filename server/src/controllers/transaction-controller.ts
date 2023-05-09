@@ -2,6 +2,8 @@ import type { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { prisma } from '../utils/client';
 import { bought_coin } from '../routes/transaction-router';
+import { calculateCoinStats } from '../utils/calculateCoinStats';
+import axios, { AxiosResponse } from 'axios';
 
 type reqBodyType = {
   coinPrice: number;
@@ -12,6 +14,17 @@ type reqBodyType = {
 
 interface AuthenticatedRequest extends Request {
   userId: number;
+}
+
+interface CoincapApiResponse {
+  data: {
+    id: string;
+    symbol: string;
+    currencySymbol: string;
+    type: string;
+    rateUsd: string;
+  };
+  timestamp: number;
 }
 
 export async function addTransaction(req: Request, res: Response) {
@@ -57,6 +70,8 @@ export async function addTransaction(req: Request, res: Response) {
       },
     });
 
+    calculateCoinStats(coinRecord);
+
     res.status(201).json('Coin added to wallet');
   } catch (error) {
     console.log(error.message);
@@ -65,22 +80,29 @@ export async function addTransaction(req: Request, res: Response) {
 }
 
 export async function getTransactions(req: AuthenticatedRequest, res: Response) {
-  const userId = req.userId;
-  console.log(userId);
   try {
-    //   const user = await prisma.user.findUnique({
-    //     where: { id: userID },
-    //     include: {
-    //       coins: {
-    //         include: {
-    //           transactions: true,
-    //         },
-    //       },
-    //     },
-    //   });
-    //   res.status(200).json(user);
+    const userCoins = await prisma.coin.findMany({
+      where: { userId: parseInt(req.userId.toString()) },
+      include: { transactions: true },
+    });
+
+    const promises = userCoins.map(async (coin) => {
+      const response: AxiosResponse<CoincapApiResponse> = await axios.get(
+        `https://api.coincap.io/v2/rates/${coin.name.toLocaleLowerCase()}`
+      );
+
+      coin.latestPrice = parseFloat(response.data.data.rateUsd);
+      // console.log(coin.latestPrice);
+      return coin;
+    });
+
+    const updatedCoins = await Promise.all(promises);
+
+    console.log('updated Coins', updatedCoins);
+
+    // return res.status(200).json({ coins: updatedCoins });
+    return res.status(200).json({ msg: 'response' });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json(error);
+    return res.status(500).json(error.message);
   }
 }

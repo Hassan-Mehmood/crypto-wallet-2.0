@@ -1,5 +1,12 @@
 import axios from 'axios';
-import { GlobalData, SearchCoin, TrendingCoin, getCoinMarketDataType } from '../types';
+import {
+  Coin,
+  GlobalData,
+  SearchCoin,
+  TrendingCoin,
+  UserTransactionsData,
+  getCoinMarketDataType,
+} from '../types';
 
 const instance = axios.create({
   baseURL: 'https://api.coingecko.com/api/v3/',
@@ -38,4 +45,12 @@ export async function getCoinMarketData(name: string): Promise<getCoinMarketData
   );
 
   return data;
+}
+
+export async function getUserTransactions(): Promise<UserTransactionsData> {
+  const { data } = await axios.get(`${process.env.REACT_APP_SERVER_URL}/transaction/all`, {
+    withCredentials: true,
+  });
+  return data;
+  // console.log(data);
 }

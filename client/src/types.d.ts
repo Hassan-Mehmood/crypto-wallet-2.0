@@ -215,3 +215,28 @@ interface Transaction {
   timeBought: Date;
   coinId: number;
 }
+
+interface UserTransactionsData {
+  coins: {
+    id: number;
+    name: string;
+    apiSymbol: string;
+    symbol: string;
+    thump: string;
+    large: string;
+    marketCapRank: number;
+    averageBuyPrice: number;
+    totalQuantity: number;
+    userId: number;
+    createdAt: Date;
+    updatedAt: Date;
+    transactions: {
+      id: number;
+      price: number;
+      quantity: number;
+      timeBought: Date;
+      createdAt: Date;
+      updatedAt: Date;
+    }[];
+  }[];
+}

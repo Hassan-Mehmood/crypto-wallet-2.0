@@ -21,18 +21,21 @@ model User {
 }
 
 model Coin {
-  id            Int           @id @default(autoincrement())
-  name          String
-  apiSymbol     String        @unique
-  symbol        String        @unique
-  thump         String
-  large         String
-  marketCapRank Int
-  user          User          @relation(fields: [userId], references: [id])
-  transactions  Transaction[]
-  userId        Int
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id              Int           @id @default(autoincrement())
+  name            String
+  apiSymbol       String        @unique
+  symbol          String        @unique
+  thump           String
+  large           String
+  marketCapRank   Int
+  averageBuyPrice Float         @default(0)
+  totalQuantity   Float         @default(0)
+  latestPrice     Float         @default(0)
+  user            User          @relation(fields: [userId], references: [id])
+  transactions    Transaction[]
+  userId          Int
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 model Transaction {
