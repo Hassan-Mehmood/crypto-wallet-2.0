@@ -23,8 +23,8 @@ model User {
 model Coin {
   id              Int           @id @default(autoincrement())
   name            String
-  apiSymbol       String        @unique
-  symbol          String        @unique
+  apiSymbol       String
+  symbol          String
   thump           String
   large           String
   marketCapRank   Int

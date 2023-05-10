@@ -16,15 +16,33 @@ interface AuthenticatedRequest extends Request {
   userId: number;
 }
 
-interface CoincapApiResponse {
-  data: {
-    id: string;
-    symbol: string;
-    currencySymbol: string;
-    type: string;
-    rateUsd: string;
-  };
-  timestamp: number;
+interface ApiCoinData {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  market_cap: number;
+  market_cap_rank: number;
+  fully_diluted_valuation: number;
+  total_volume: number;
+  high_24h: number;
+  low_24h: number;
+  price_change_24h: number;
+  price_change_percentage_24h: number;
+  market_cap_change_24h: number;
+  market_cap_change_percentage_24h: number;
+  circulating_supply: number;
+  total_supply: number;
+  max_supply: number;
+  ath: number;
+  ath_change_percentage: number;
+  ath_date: string;
+  atl: number;
+  atl_change_percentage: number;
+  atl_date: string;
+  roi: null | any;
+  last_updated: string;
 }
 
 export async function addTransaction(req: Request, res: Response) {
@@ -87,22 +105,22 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
     });
 
     const promises = userCoins.map(async (coin) => {
-      const response: AxiosResponse<CoincapApiResponse> = await axios.get(
-        `https://api.coincap.io/v2/rates/${coin.name.toLocaleLowerCase()}`
+      const { data } = await axios.get<ApiCoinData>(
+        `${
+          process.env.COIN_API_URL
+        }/coins/markets?vs_currency=usd&ids=${coin.name.toLocaleLowerCase()}&order=market_cap_desc&per_page=1&page=1&sparkline=false&locale=en`
       );
 
-      coin.latestPrice = parseFloat(response.data.data.rateUsd);
-      // console.log(coin.latestPrice);
+      console.log(data.current_price);
+      coin.latestPrice = data.current_price;
+
       return coin;
     });
 
     const updatedCoins = await Promise.all(promises);
 
-    console.log('updated Coins', updatedCoins);
-
-    // return res.status(200).json({ coins: updatedCoins });
-    return res.status(200).json({ msg: 'response' });
+    return res.status(200).json({ coins: updatedCoins });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return res.status(error).json(error.message);
   }
 }
