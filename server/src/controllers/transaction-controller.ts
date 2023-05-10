@@ -45,6 +45,14 @@ interface ApiCoinData {
   last_updated: string;
 }
 
+interface ApiCoinResponse {
+  data: {
+    symbol: string;
+    price: string;
+    timestamp: number;
+  };
+}
+
 export async function addTransaction(req: Request, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -104,22 +112,38 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
       include: { transactions: true },
     });
 
-    const promises = userCoins.map(async (coin) => {
-      const { data } = await axios.get<ApiCoinData>(
-        `${
-          process.env.COIN_API_URL
-        }/coins/markets?vs_currency=usd&ids=${coin.name.toLocaleLowerCase()}&order=market_cap_desc&per_page=1&page=1&sparkline=false&locale=en`
-      );
-
-      console.log(data.current_price);
-      coin.latestPrice = data.current_price;
-
-      return coin;
+    userCoins.map(async (coin) => {
+      const symbol = `${coin.symbol}USDT`;
+      const response = await axios.get('https://api.api-ninjas.com/v1/cryptoprice', {
+        params: { symbol },
+        headers: {
+          'X-Api-Key': process.env.API_KEY,
+        },
+      });
+      console.log(response.data);
     });
 
-    const updatedCoins = await Promise.all(promises);
+    // const promises = userCoins.map(async (coin) => {
+    //   console.log(
+    //     `${
+    //       process.env.COIN_API_URL
+    //     }/coins/markets?vs_currency=usd&ids=${coin.name.toLocaleLowerCase()}&order=market_cap_desc&per_page=1&page=1&sparkline=false&locale=en`
+    //   );
+    //   const { data } = await axios.get<ApiCoinData>(
+    //     `${
+    //       process.env.COIN_API_URL
+    //     }/coins/markets?vs_currency=usd&ids=${coin.name.toLocaleLowerCase()}&order=market_cap_desc&per_page=1&page=1&sparkline=false&locale=en`
+    //   );
 
-    return res.status(200).json({ coins: updatedCoins });
+    //   console.log(data.current_price);
+    //   coin.latestPrice = data.current_price;
+
+    //   return coin;
+    // });
+
+    // const updatedCoins = await Promise.all(promises);
+
+    // return res.status(200).json({ coins: updatedCoins });
   } catch (error) {
     return res.status(error).json(error.message);
   }
