@@ -226,6 +226,7 @@ interface UserTransactionsData {
     large: string;
     marketCapRank: number;
     averageBuyPrice: number;
+    latestPrice: number;
     totalQuantity: number;
     userId: number;
     createdAt: Date;

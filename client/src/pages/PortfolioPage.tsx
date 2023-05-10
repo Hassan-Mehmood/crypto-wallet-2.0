@@ -7,13 +7,6 @@ export default function PortfolioPage() {
 
   console.log(data);
 
-  // return (
-  //   <Box as="section">
-  //     {data?.coins.map((coin) => (
-  //       <Box key={coin.id}>{coin.name}</Box>
-  //     ))}
-  //   </Box>
-  // );
   return (
     <TableContainer mt="3rem">
       <Table variant="simple">
@@ -33,7 +26,7 @@ export default function PortfolioPage() {
           {data?.coins.map((coin) => (
             <Tr key={coin.id}>
               <Td>{coin.name}</Td>
-              <Td>{coin.name}</Td>
+              <Td>{coin.latestPrice}</Td>
               <Td>{coin.totalQuantity}</Td>
               <Td>{coin.averageBuyPrice}</Td>
               <Td>Profit</Td>

@@ -46,11 +46,9 @@ interface ApiCoinData {
 }
 
 interface ApiCoinResponse {
-  data: {
-    symbol: string;
-    price: string;
-    timestamp: number;
-  };
+  symbol: string;
+  price: string;
+  timestamp: number;
 }
 
 export async function addTransaction(req: Request, res: Response) {
@@ -100,8 +98,7 @@ export async function addTransaction(req: Request, res: Response) {
 
     res.status(201).json('Coin added to wallet');
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json(error);
+    res.status(500).json(error.message);
   }
 }
 
@@ -112,38 +109,24 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
       include: { transactions: true },
     });
 
-    userCoins.map(async (coin) => {
+    const promises = userCoins.map(async (coin) => {
       const symbol = `${coin.symbol}USDT`;
-      const response = await axios.get('https://api.api-ninjas.com/v1/cryptoprice', {
-        params: { symbol },
-        headers: {
-          'X-Api-Key': process.env.API_KEY,
-        },
-      });
-      console.log(response.data);
+      const response = await axios.get<ApiCoinResponse>(
+        'https://api.api-ninjas.com/v1/cryptoprice',
+        {
+          params: { symbol },
+          headers: {
+            'X-Api-Key': process.env.API_KEY,
+          },
+        }
+      );
+      coin.latestPrice = parseFloat(response.data.price);
+      return coin;
     });
 
-    // const promises = userCoins.map(async (coin) => {
-    //   console.log(
-    //     `${
-    //       process.env.COIN_API_URL
-    //     }/coins/markets?vs_currency=usd&ids=${coin.name.toLocaleLowerCase()}&order=market_cap_desc&per_page=1&page=1&sparkline=false&locale=en`
-    //   );
-    //   const { data } = await axios.get<ApiCoinData>(
-    //     `${
-    //       process.env.COIN_API_URL
-    //     }/coins/markets?vs_currency=usd&ids=${coin.name.toLocaleLowerCase()}&order=market_cap_desc&per_page=1&page=1&sparkline=false&locale=en`
-    //   );
+    const updatedCoins = await Promise.all(promises);
 
-    //   console.log(data.current_price);
-    //   coin.latestPrice = data.current_price;
-
-    //   return coin;
-    // });
-
-    // const updatedCoins = await Promise.all(promises);
-
-    // return res.status(200).json({ coins: updatedCoins });
+    return res.status(200).json({ coins: updatedCoins });
   } catch (error) {
     return res.status(error).json(error.message);
   }

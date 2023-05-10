@@ -52,5 +52,4 @@ export async function getUserTransactions(): Promise<UserTransactionsData> {
     withCredentials: true,
   });
   return data;
-  // console.log(data);
 }
