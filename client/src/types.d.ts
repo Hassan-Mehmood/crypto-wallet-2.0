@@ -217,6 +217,15 @@ interface Transaction {
 }
 
 interface UserTransactionsData {
+  allTimeProfit: number;
+  bestPerformer: {
+    value: number;
+    thump: string;
+  };
+  worstPerformer: {
+    value: number;
+    thump: string;
+  };
   coins: {
     id: number;
     name: string;

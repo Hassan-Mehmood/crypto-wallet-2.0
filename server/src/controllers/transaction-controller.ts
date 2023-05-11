@@ -80,6 +80,10 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
       include: { transactions: true },
     });
 
+    let allTimeProfit = 0;
+    let bestPerformer = { value: 0, thump: '', change: 0 };
+    let worstPerformer = { value: 0, thump: '', change: 0 };
+
     const promises = userCoins.map(async (coin) => {
       const symbol = `${coin.symbol}USDT`;
       const response = await axios.get<ApiCoinResponse>(
@@ -91,25 +95,31 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
           },
         }
       );
+
       coin.latestPrice = parseFloat(response.data.price);
-
-      // Calculate holdings in dollars
       coin.holdingsInDollers = coin.totalQuantity * coin.latestPrice;
-
-      // Calculate profit/loss in dollars
       coin.profitLoss = coin.holdingsInDollers - coin.totalInvestment;
-
-      // Assign the latest price
       coin.latestPrice = coin.latestPrice;
 
-      // console.log(coin);
+      allTimeProfit += coin.profitLoss;
+
+      if (coin.profitLoss > bestPerformer.value) {
+        bestPerformer.value = coin.profitLoss;
+        bestPerformer.thump = coin.thump;
+      }
+      if (coin.profitLoss < worstPerformer.value) {
+        worstPerformer.value = coin.profitLoss;
+        worstPerformer.thump = coin.thump;
+      }
 
       return coin;
     });
 
     const updatedCoins = await Promise.all(promises);
 
-    return res.status(200).json({ coins: updatedCoins });
+    return res
+      .status(200)
+      .json({ coins: updatedCoins, allTimeProfit, bestPerformer, worstPerformer });
   } catch (error) {
     return res.status(error).json(error.message);
   }
