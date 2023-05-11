@@ -1,4 +1,15 @@
-import { Box, Flex, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import {
+  Box,
+  Image,
+  Flex,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { getUserTransactions } from '../api/axios';
 import { useEffect, useState } from 'react';
@@ -9,17 +20,19 @@ export default function PortfolioPage() {
 
   function getProfitLossColor(profitLoss: number) {
     if (profitLoss > 0) {
-      return 'green'; // Apply a CSS class for green color
+      return 'green';
     } else if (profitLoss < 0) {
-      return 'red'; // Apply a CSS class for red color
+      return 'red';
     } else {
-      return ''; // No specific color class needed
+      return '';
     }
   }
 
-  // function calculatePercentage(total: number, value: number) {
-  //   return (value / total) * 100;
-  // }
+  function calculatePercentage(newPrice: number, oldPrice: number) {
+    const percentage = ((newPrice - oldPrice) / oldPrice) * 100;
+    const sign = `${percentage > 0 ? '+' : ''}`;
+    return `${sign}${percentage.toFixed(2)}`;
+  }
 
   return (
     <TableContainer mt="3rem">
@@ -37,7 +50,12 @@ export default function PortfolioPage() {
         <Tbody>
           {data?.coins.map((coin) => (
             <Tr key={coin.id}>
-              <Td>{coin.name}</Td>
+              <Td>
+                <Flex alignItems="center">
+                  <Image src={coin.thump} width="25px" height="auto" mr="5px" />
+                  {coin.name}
+                </Flex>
+              </Td>
               <Td>${coin.latestPrice}</Td>
               <Td>
                 <Flex flexDirection="column">
@@ -56,7 +74,9 @@ export default function PortfolioPage() {
                   <Box>
                     {coin.profitLoss > 0 ? '+' : ''}${coin.profitLoss.toFixed(2)}
                   </Box>
-                  {/* <Box fontSize="14px">{coin.profitLossPercentage}%</Box> */}
+                  <Box fontSize="14px">
+                    {calculatePercentage(coin.holdingsInDollers, coin.totalInvestment)}%
+                  </Box>
                 </Flex>
               </Td>
               <Td>Actions</Td>

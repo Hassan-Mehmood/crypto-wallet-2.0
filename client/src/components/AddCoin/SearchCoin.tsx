@@ -8,6 +8,7 @@ import {
   Button,
   Box,
   Image,
+  useToast,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -18,8 +19,8 @@ import { useMutation } from 'react-query';
 import axios from 'axios';
 
 export default function SearchCoin() {
-  const [coinQuantity, setCoinQuantity] = useState<number>(0);
-  const [coinPrice, setCoinPrice] = useState<number>(0);
+  const [coinQuantity, setCoinQuantity] = useState<string>('0');
+  const [coinPrice, setCoinPrice] = useState<string>('0');
 
   const coinData = useSelector((state: RootState) => state.searchCoinReducer);
   const userData = useSelector((state: RootState) => state.userReducer);
@@ -36,45 +37,68 @@ export default function SearchCoin() {
       return response.data;
     },
     {
-      onSuccess: (data) => {
-        console.log(data);
+      onSuccess: () => {
+        showToast('Success', 'Coin added successfully', 'success');
       },
       onError: (error) => {
-        console.log(error);
+        showToast('Error', 'Something went wrong', 'error');
       },
     }
   );
 
-  const handleQuantityInput = (value: number) => {
-    if (isNaN(value)) {
-      setCoinQuantity(0);
+  const toast = useToast();
+  function showToast(title: string, description: string, status: 'error' | 'success') {
+    return toast({
+      title,
+      description,
+      position: 'top',
+      status,
+      duration: 3000,
+      isClosable: true,
+    });
+  }
+
+  const handleQuantityInput = (value: string) => {
+    const valueNumber = parseFloat(value);
+    if (isNaN(valueNumber)) {
+      setCoinQuantity('0');
       return;
     }
     setCoinQuantity(value);
   };
 
-  const handlePriceInput = (value: number) => {
-    if (isNaN(value)) {
-      setCoinPrice(0);
+  const handlePriceInput = (value: string) => {
+    const valueNumber = parseFloat(value);
+    if (isNaN(valueNumber)) {
+      setCoinPrice('0');
       return;
     }
     setCoinPrice(value);
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     if (!coinData.id) {
-      setCoinPrice(0);
+      setCoinPrice('0');
       return;
     }
 
     getCoinMarketData(coinData.id).then((res) => {
+      if (!isMounted) return;
+
       const marketData = res.market_data;
 
       if (!marketData) return;
 
-      setCoinPrice(marketData.current_price?.usd || 0);
+      setCoinPrice(marketData.current_price?.usd.toString() || '0');
     });
-  }, [coinData]);
+
+    return () => {
+      isMounted = false;
+      dispatch(removeCoin());
+    };
+  }, [coinData.id, dispatch]);
 
   function addTransaction(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -102,9 +126,11 @@ export default function SearchCoin() {
           <FormControl>
             <FormLabel>Quantity</FormLabel>
             <NumberInput
+              step={0.01}
+              precision={2}
               min={0}
               value={coinQuantity}
-              onChange={(valueString, valueNumber) => handleQuantityInput(valueNumber)}
+              onChange={(valueString, valueNumber) => handleQuantityInput(valueString)}
             >
               <NumberInputField h="35px" border="1px solid black" p=".5rem" />
             </NumberInput>
@@ -112,8 +138,10 @@ export default function SearchCoin() {
           <FormControl>
             <FormLabel>Price</FormLabel>
             <NumberInput
+              step={0.01}
+              precision={2}
               value={coinPrice}
-              onChange={(valueString, valueNumber) => handlePriceInput(valueNumber)}
+              onChange={(valueString, valueNumber) => handlePriceInput(valueString)}
             >
               <NumberInputField h="35px" border="1px solid black" p=".5rem" />
             </NumberInput>
@@ -121,7 +149,7 @@ export default function SearchCoin() {
         </Flex>
         <Box>
           <Heading as="h6" size="sm" mt="1rem">
-            {coinData.name} ${coinPrice * coinQuantity}
+            {coinData.name} ${parseFloat(coinPrice) * parseFloat(coinQuantity)}
           </Heading>
           <Box mt="1rem">
             <Button

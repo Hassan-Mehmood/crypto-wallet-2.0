@@ -6,8 +6,8 @@ import { calculateCoinStats } from '../utils/calculateCoinStats';
 import axios, { AxiosResponse } from 'axios';
 
 type reqBodyType = {
-  coinPrice: number;
-  coinQuantity: number;
+  coinPrice: string;
+  coinQuantity: string;
   bought_coin: bought_coin;
   user: number;
 };
@@ -58,8 +58,8 @@ export async function addTransaction(req: Request, res: Response) {
 
     await prisma.transaction.create({
       data: {
-        price: coinPrice,
-        quantity: coinQuantity,
+        price: parseFloat(coinPrice),
+        quantity: parseFloat(coinQuantity),
         timeBought: new Date(),
         Coin: { connect: { id: coinRecord.id } },
       },
@@ -67,9 +67,9 @@ export async function addTransaction(req: Request, res: Response) {
 
     calculateCoinStats(coinRecord);
 
-    res.status(201).json('Coin added to wallet');
+    return res.status(201).json('Coin added to wallet');
   } catch (error) {
-    res.status(500).json(error.message);
+    return res.status(500).json(error.message);
   }
 }
 
@@ -102,7 +102,7 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
       // Assign the latest price
       coin.latestPrice = coin.latestPrice;
 
-      console.log(coin);
+      // console.log(coin);
 
       return coin;
     });
