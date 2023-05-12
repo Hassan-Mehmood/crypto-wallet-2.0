@@ -253,3 +253,7 @@ interface UserTransactionsData {
     }[];
   }[];
 }
+
+export interface userAccountBalance {
+  accountBalance: number;
+}

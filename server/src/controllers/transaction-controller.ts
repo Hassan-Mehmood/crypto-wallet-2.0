@@ -124,3 +124,32 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
     return res.status(error).json(error.message);
   }
 }
+
+export async function getUserBalance(req: AuthenticatedRequest, res: Response) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(req.userId.toString()) },
+      select: { accountBalance: true },
+    });
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).send('An error occurred.');
+  }
+}
+
+export async function setUserBalance(req: AuthenticatedRequest, res: Response) {
+  try {
+    const user = await prisma.user.update({
+      where: { id: parseInt(req.userId.toString()) },
+      data: {
+        accountBalance: req.body.accountBalance,
+      },
+      select: { accountBalance: true },
+    });
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
+}

@@ -14,8 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { removeCoin } from '../../slices/coinSlice';
 import { useEffect, useState } from 'react';
-import { getCoinMarketData } from '../../api/axios';
-import { useMutation } from 'react-query';
+import { getCoinMarketData, getUserBalance } from '../../api/axios';
+import { useMutation, useQuery } from 'react-query';
 import axios from 'axios';
 
 export default function SearchCoin() {
@@ -25,6 +25,9 @@ export default function SearchCoin() {
   const coinData = useSelector((state: RootState) => state.searchCoinReducer);
   const userData = useSelector((state: RootState) => state.userReducer);
   const dispatch = useDispatch();
+  const toast = useToast();
+
+  const { data: accountBalance } = useQuery('accountBalance', getUserBalance);
 
   const addCoin = useMutation(
     async () => {
@@ -40,13 +43,12 @@ export default function SearchCoin() {
       onSuccess: () => {
         showToast('Success', 'Coin added successfully', 'success');
       },
-      onError: (error) => {
+      onError: () => {
         showToast('Error', 'Something went wrong', 'error');
       },
     }
   );
 
-  const toast = useToast();
   function showToast(title: string, description: string, status: 'error' | 'success') {
     return toast({
       title,
@@ -112,7 +114,7 @@ export default function SearchCoin() {
           Add Coin
         </Heading>
         <Heading as="h6" size="md" mb="2rem">
-          Balance:
+          <>Balance: ${accountBalance || 0}</>
         </Heading>
       </Flex>
       <Flex align="center" mb="1rem">
@@ -130,7 +132,7 @@ export default function SearchCoin() {
               precision={2}
               min={0}
               value={coinQuantity}
-              onChange={(valueString, valueNumber) => handleQuantityInput(valueString)}
+              onChange={(valueString) => handleQuantityInput(valueString)}
             >
               <NumberInputField h="35px" border="1px solid black" p=".5rem" />
             </NumberInput>
@@ -141,7 +143,7 @@ export default function SearchCoin() {
               step={0.01}
               precision={2}
               value={coinPrice}
-              onChange={(valueString, valueNumber) => handlePriceInput(valueString)}
+              onChange={(valueString) => handlePriceInput(valueString)}
             >
               <NumberInputField h="35px" border="1px solid black" p=".5rem" />
             </NumberInput>

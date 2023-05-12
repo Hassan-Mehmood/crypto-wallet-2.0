@@ -6,6 +6,7 @@ import {
   TrendingCoin,
   UserTransactionsData,
   getCoinMarketDataType,
+  userAccountBalance,
 } from '../types';
 
 const instance = axios.create({
@@ -52,4 +53,10 @@ export async function getUserTransactions(): Promise<UserTransactionsData> {
     withCredentials: true,
   });
   return data;
+}
+export async function getUserBalance(): Promise<userAccountBalance> {
+  const { data } = await axios.get(`${process.env.REACT_APP_SERVER_URL}/transaction/balance`, {
+    withCredentials: true,
+  });
+  return data.accountBalance;
 }
