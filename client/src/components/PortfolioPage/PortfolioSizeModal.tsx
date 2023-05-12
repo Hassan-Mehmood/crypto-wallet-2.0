@@ -11,14 +11,60 @@ import {
   NumberInput,
   NumberInputField,
   Button,
+  useToast,
 } from '@chakra-ui/react';
+import axios from 'axios';
 import React, { useState } from 'react';
+import { useMutation } from 'react-query';
 
-export default function PortfolioSizeModal({ isOpen, onOpen, onClose }: any) {
-  const [accountBalance, setAccountBalance] = useState(0);
+export default function PortfolioSizeModal({ isOpen, onClose }: any) {
+  const [accountBalance, setAccountBalance] = useState('0');
+  const toast = useToast();
 
-  function handleFormValue(value: number) {
+  const setPortfolioSize = useMutation(
+    async () => {
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/transaction/balance`,
+        {
+          accountBalance,
+        },
+        { withCredentials: true }
+      );
+      return response.data;
+    },
+    {
+      onSuccess: () => {
+        showToast('Success', 'Portfolio size set successfully', 'success');
+      },
+      onError: () => {
+        showToast('Error', 'Something went wrong', 'error');
+      },
+    }
+  );
+
+  function showToast(title: string, description: string, status: 'error' | 'success') {
+    return toast({
+      title,
+      description,
+      position: 'top',
+      status,
+      duration: 3000,
+      isClosable: true,
+    });
+  }
+
+  const handleFormValue = (value: string) => {
+    const valueNumber = parseFloat(value);
+    if (isNaN(valueNumber)) {
+      setAccountBalance('0');
+      return;
+    }
     setAccountBalance(value);
+  };
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setPortfolioSize.mutate();
   }
 
   return (
@@ -26,17 +72,17 @@ export default function PortfolioSizeModal({ isOpen, onOpen, onClose }: any) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Portfolio Size</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <form onSubmit={(e) => console.log(e)}>
+            <form onSubmit={(e) => handleSubmit(e)}>
               <FormControl>
-                <FormLabel>Price</FormLabel>
+                <FormLabel>Enter your portfolio size</FormLabel>
                 <NumberInput
                   min={0}
                   value={accountBalance}
                   precision={2}
-                  onChange={(valueAsString, valueAsNumber) => handleFormValue(valueAsNumber)}
+                  onChange={(valueAsString) => handleFormValue(valueAsString)}
                 >
                   <NumberInputField h="35px" border="1px solid black" p=".5rem" />
                 </NumberInput>

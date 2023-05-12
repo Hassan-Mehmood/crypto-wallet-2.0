@@ -143,7 +143,7 @@ export async function setUserBalance(req: AuthenticatedRequest, res: Response) {
     const user = await prisma.user.update({
       where: { id: parseInt(req.userId.toString()) },
       data: {
-        accountBalance: req.body.accountBalance,
+        accountBalance: parseFloat(req.body.accountBalance),
       },
       select: { accountBalance: true },
     });
