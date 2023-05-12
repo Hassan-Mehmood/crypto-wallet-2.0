@@ -237,9 +237,9 @@ interface UserTransactionsData {
     averageBuyPrice: number;
     latestPrice: number;
     totalQuantity: number;
-    holdingsInDollers;
-    profitLoss;
-    totalInvestment;
+    holdingsInDollers: number;
+    profitLoss: number;
+    totalInvestment: number;
     userId: number;
     createdAt: Date;
     updatedAt: Date;

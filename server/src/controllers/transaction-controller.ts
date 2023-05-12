@@ -3,7 +3,7 @@ import { validationResult } from 'express-validator';
 import { prisma } from '../utils/client';
 import { bought_coin } from '../routes/transaction-router';
 import { calculateCoinStats } from '../utils/calculateCoinStats';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 
 type reqBodyType = {
   coinPrice: string;
