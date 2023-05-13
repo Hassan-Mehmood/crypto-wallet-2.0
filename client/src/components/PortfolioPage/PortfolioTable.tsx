@@ -11,6 +11,10 @@ import {
   Image,
 } from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
+import { Trash2 } from 'react-feather';
+import { QueryClient, useMutation } from 'react-query';
+import axios from 'axios';
+import { useState } from 'react';
 
 interface props {
   coins:
@@ -44,6 +48,30 @@ interface props {
 }
 
 export default function PortfolioTable({ coins }: props) {
+  const [updateDeletedCoin, setUpdateDeletedCoin] = useState(false);
+  const queryClient = new QueryClient();
+
+  const deleteCoinMutation = useMutation(
+    (coinId: number) =>
+      axios.delete(`${process.env.REACT_APP_SERVER_URL}/transaction/delete/${coinId}`, {
+        withCredentials: true,
+      }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('transactions');
+        setUpdateDeletedCoin(!updateDeletedCoin);
+        console.log('Deleted');
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    }
+  );
+
+  function deleteCoin(id: number) {
+    deleteCoinMutation.mutate(id);
+  }
+
   return (
     <TableContainer mt="3rem">
       <Table variant="simple">
@@ -89,7 +117,11 @@ export default function PortfolioTable({ coins }: props) {
                   </Box>
                 </Flex>
               </Td>
-              <Td>Actions</Td>
+              <Td>
+                <Box as="span" display="inline-block" cursor="pointer">
+                  <Trash2 color="maroon" onClick={() => deleteCoin(coin.id)} />
+                </Box>
+              </Td>
             </Tr>
           ))}
         </Tbody>

@@ -75,14 +75,20 @@ export async function addTransaction(req: Request, res: Response) {
 
 export async function getTransactions(req: AuthenticatedRequest, res: Response) {
   try {
+    let allTimeProfit = 0;
+    let bestPerformer = { value: -Infinity, thump: '', change: 0 };
+    let worstPerformer = { value: Infinity, thump: '', change: 0 };
+
     const userCoins = await prisma.coin.findMany({
       where: { userId: parseInt(req.userId.toString()) },
       include: { transactions: true },
     });
 
-    let allTimeProfit = 0;
-    let bestPerformer = { value: 0, thump: '', change: 0 };
-    let worstPerformer = { value: 0, thump: '', change: 0 };
+    if (userCoins.length === 0) {
+      bestPerformer = { value: 0, thump: '', change: 0 };
+      worstPerformer = { value: 0, thump: '', change: 0 };
+      return res.status(200).json({ coins: [], allTimeProfit, bestPerformer, worstPerformer });
+    }
 
     const promises = userCoins.map(async (coin) => {
       const symbol = `${coin.symbol}USDT`;
@@ -151,5 +157,28 @@ export async function setUserBalance(req: AuthenticatedRequest, res: Response) {
     return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json(error.message);
+  }
+}
+
+export async function deleteCoin(req: AuthenticatedRequest, res: Response) {
+  try {
+    const coinId = parseInt(req.params.id.toString());
+
+    await prisma.transaction.deleteMany({
+      where: {
+        coinId: coinId,
+      },
+    });
+
+    const deletedCoin = await prisma.coin.delete({
+      where: {
+        id: coinId,
+      },
+    });
+
+    return res.status(200).json(deletedCoin);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Failed to delete coin.' });
   }
 }

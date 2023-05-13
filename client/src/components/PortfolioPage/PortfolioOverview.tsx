@@ -1,22 +1,4 @@
-import {
-  Text,
-  Image,
-  Box,
-  Flex,
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-  FormControl,
-  FormLabel,
-  NumberInput,
-  NumberInputField,
-} from '@chakra-ui/react';
+import { Text, Image, Box, Flex, Button, useDisclosure } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { getProfitLossColor } from '../../utils/functions';
 import PortfolioSizeModal from './PortfolioSizeModal';
@@ -87,7 +69,8 @@ export default function PortfolioOverview({ allTimeProfit, bestPerformer, worstP
             All time profit
           </Text>
           <Text fontSize={14} color={getProfitLossColor(allTimeProfit)}>
-            ${allTimeProfit?.toFixed(2)}
+            {allTimeProfit !== undefined && allTimeProfit > 0 ? '+' : ''}$
+            {allTimeProfit?.toFixed(2)}
           </Text>
         </Box>
         <Flex ml="3rem" alignItems="center">
@@ -99,7 +82,8 @@ export default function PortfolioOverview({ allTimeProfit, bestPerformer, worstP
               Best Performer
             </Text>
             <Text fontSize={14} color={getProfitLossColor(bestPerformer?.value)}>
-              ${bestPerformer?.value.toFixed(2)}
+              {bestPerformer?.value !== undefined && bestPerformer?.value > 0 ? '+' : ''}$
+              {bestPerformer?.value.toFixed(2)}
             </Text>
           </Box>
         </Flex>
@@ -112,7 +96,8 @@ export default function PortfolioOverview({ allTimeProfit, bestPerformer, worstP
               Worst Performer
             </Text>
             <Text fontSize={14} color={getProfitLossColor(worstPerformer?.value)}>
-              ${worstPerformer?.value.toFixed(2)}
+              {worstPerformer?.value !== undefined && worstPerformer?.value > 0 ? '+' : ''}$
+              {worstPerformer?.value.toFixed(2)}
             </Text>
           </Box>
         </Flex>

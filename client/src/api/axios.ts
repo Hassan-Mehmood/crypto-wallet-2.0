@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {
-  Coin,
   GlobalData,
   SearchCoin,
   TrendingCoin,
