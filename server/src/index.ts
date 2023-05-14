@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import userRouter from './routes/user-route';
-import transactionRouter from './routes/transaction-router';
+import portfolioRouter from './routes/transaction-router';
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/api/auth', userRouter);
-app.use('/api/transaction', transactionRouter);
+app.use('/api/portfolio', portfolioRouter);
 
 app.listen(port, () => {
   console.log(`App listening on port http://localhost:${port}`);

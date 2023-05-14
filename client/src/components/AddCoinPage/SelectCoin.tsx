@@ -2,9 +2,9 @@ import { Box, FormControl, Heading, Input } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { SearchCoin } from '../../types';
 import { getCoinByName } from '../../api/axios';
-import SearchedCoin from './SearcbedCoin';
+import SearchedCoin from './SearchedCoin';
 
-export default function AddCoinForm() {
+export default function SelectCoin() {
   const [searchedCoinName, setSearchedCoinName] = useState('');
   const [coinData, setCoinData] = useState<SearchCoin[]>([]);
 

@@ -22,7 +22,7 @@ interface ApiCoinResponse {
   timestamp: number;
 }
 
-export async function addTransaction(req: Request, res: Response) {
+export async function addCoinTransaction(req: Request, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -73,7 +73,7 @@ export async function addTransaction(req: Request, res: Response) {
   }
 }
 
-export async function getTransactions(req: AuthenticatedRequest, res: Response) {
+export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
   try {
     let allTimeProfit = 0;
     let bestPerformer = { value: -Infinity, thump: '', change: 0 };

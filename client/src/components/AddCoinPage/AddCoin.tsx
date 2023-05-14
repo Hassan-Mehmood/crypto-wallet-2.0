@@ -18,7 +18,7 @@ import { getCoinMarketData, getUserBalance } from '../../api/axios';
 import { useMutation, useQuery } from 'react-query';
 import axios from 'axios';
 
-export default function SearchCoin() {
+export default function AddCoin() {
   const [coinQuantity, setCoinQuantity] = useState<string>('0');
   const [coinPrice, setCoinPrice] = useState<string>('0');
 
@@ -31,7 +31,7 @@ export default function SearchCoin() {
 
   const addCoin = useMutation(
     async () => {
-      const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/transaction/add`, {
+      const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/portfolio/add`, {
         user: userData.id,
         bought_coin: coinData,
         coinQuantity,

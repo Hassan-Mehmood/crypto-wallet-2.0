@@ -1,9 +1,9 @@
 import express from 'express';
 import { body } from 'express-validator';
 import {
-  addTransaction,
+  addCoinTransaction,
   deleteCoin,
-  getTransactions,
+  getPortfolio,
   getUserBalance,
   setUserBalance,
 } from '../controllers/transaction-controller';
@@ -39,10 +39,10 @@ router.post(
     .custom((num: number) => num > 0)
     .withMessage('Coin Price must be greater than 0'),
 
-  addTransaction
+  addCoinTransaction
 );
 
-router.get('/all', verifyToken, getTransactions);
+router.get('/', verifyToken, getPortfolio);
 router.get('/balance', verifyToken, getUserBalance);
 router.post('/balance', verifyToken, setUserBalance);
 router.delete('/delete/:id', verifyToken, deleteCoin);

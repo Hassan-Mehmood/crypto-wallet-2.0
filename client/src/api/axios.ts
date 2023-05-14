@@ -47,8 +47,8 @@ export async function getCoinMarketData(name: string): Promise<getCoinMarketData
   return data;
 }
 
-export async function getUserTransactions(): Promise<UserTransactionsData> {
-  const { data } = await axios.get(`${process.env.REACT_APP_SERVER_URL}/transaction/all`, {
+export async function getUserPortfolio(): Promise<UserTransactionsData> {
+  const { data } = await axios.get(`${process.env.REACT_APP_SERVER_URL}/portfolio`, {
     withCredentials: true,
   });
   return data;
