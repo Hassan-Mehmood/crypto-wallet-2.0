@@ -54,7 +54,7 @@ export async function getUserPortfolio(): Promise<UserTransactionsData> {
   return data;
 }
 export async function getUserBalance(): Promise<userAccountBalance> {
-  const { data } = await axios.get(`${process.env.REACT_APP_SERVER_URL}/transaction/balance`, {
+  const { data } = await axios.get(`${process.env.REACT_APP_SERVER_URL}/portfolio/balance`, {
     withCredentials: true,
   });
   return data.accountBalance;
