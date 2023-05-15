@@ -5,8 +5,11 @@ import HomePage from './pages/HomePage';
 import AddCoinPage from './pages/AddCoinPage';
 import ProtectedRoutes from './pages/ProtectedRoutes';
 import PortfolioPage from './pages/PortfolioPage';
+import { useDispatch } from 'react-redux';
 
 function App() {
+  const dispatch = useDispatch();
+
   return (
     <Box as="main" px={5} mx="auto" maxW="1402px">
       <BrowserRouter>

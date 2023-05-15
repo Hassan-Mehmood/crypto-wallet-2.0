@@ -5,12 +5,10 @@ interface AuthenticatedRequest extends Request {
   userId: string;
 }
 
-export const generateToken = (id: string) => {
-  const token = jwt.sign(id, process.env.JWT_SECRET_KEY);
+export const generateToken = (payload: { id: number; name: string; _email: string }) => {
+  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
   return token;
 };
-
-// export const verifyToken = (req: Request, res: Response, next: NextFunction) => {};
 
 export const verifyToken = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const { access_token } = req.cookies;
