@@ -24,7 +24,7 @@ export default function PortfolioSizeModal({ isOpen, onClose }: any) {
   const setPortfolioSize = useMutation(
     async () => {
       const response = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/transaction/balance`,
+        `${process.env.REACT_APP_SERVER_URL}/portfolio/balance`,
         {
           accountBalance,
         },

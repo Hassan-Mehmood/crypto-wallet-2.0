@@ -104,6 +104,17 @@ export default function AddCoin() {
 
   function addTransaction(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
+
+    if (!accountBalance) {
+      showToast('Error', 'Something went wrong', 'error');
+      return;
+    }
+
+    if (parseFloat(coinPrice) * parseFloat(coinQuantity) > accountBalance.dollerBalance) {
+      showToast('Error', 'Insufficient funds', 'error');
+      return;
+    }
+
     addCoin.mutate();
   }
 
@@ -114,7 +125,7 @@ export default function AddCoin() {
           Add Coin
         </Heading>
         <Heading as="h6" size="md" mb="2rem">
-          <>Balance: ${accountBalance || 0}</>
+          <>Balance: ${accountBalance?.dollerBalance || 0}</>
         </Heading>
       </Flex>
       <Flex align="center" mb="1rem">

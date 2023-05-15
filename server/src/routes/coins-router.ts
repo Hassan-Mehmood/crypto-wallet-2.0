@@ -6,7 +6,7 @@ import {
   getPortfolio,
   getUserBalance,
   setUserBalance,
-} from '../controllers/transaction-controller';
+} from '../controllers/coins-controller';
 import { verifyToken } from '../utils/jwt';
 
 export type bought_coin = {

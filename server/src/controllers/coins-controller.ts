@@ -1,9 +1,10 @@
 import type { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { prisma } from '../utils/client';
-import { bought_coin } from '../routes/transaction-router';
+import { bought_coin } from '../routes/coins-router';
 import { calculateCoinStats } from '../utils/calculateCoinStats';
 import axios from 'axios';
+import getCoinLatestPrice from '../utils/getCoinLatestPrice';
 
 type reqBodyType = {
   coinPrice: string;
@@ -14,12 +15,6 @@ type reqBodyType = {
 
 interface AuthenticatedRequest extends Request {
   userId: number;
-}
-
-interface ApiCoinResponse {
-  symbol: string;
-  price: string;
-  timestamp: number;
 }
 
 export async function addCoinTransaction(req: Request, res: Response) {
@@ -65,6 +60,19 @@ export async function addCoinTransaction(req: Request, res: Response) {
       },
     });
 
+    const transactionCost = parseFloat(coinPrice) * parseFloat(coinQuantity);
+    const latestPrice = await getCoinLatestPrice(coinRecord.symbol + 'USDT');
+
+    await prisma.user.update({
+      where: {
+        id: userID,
+      },
+      data: {
+        dollerBalance: user.dollerBalance - transactionCost,
+        cryptoBalance: parseFloat(coinQuantity) * parseFloat(latestPrice.data.price),
+      },
+    });
+
     calculateCoinStats(coinRecord);
 
     return res.status(201).json('Coin added to wallet');
@@ -92,15 +100,7 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
 
     const promises = userCoins.map(async (coin) => {
       const symbol = `${coin.symbol}USDT`;
-      const response = await axios.get<ApiCoinResponse>(
-        'https://api.api-ninjas.com/v1/cryptoprice',
-        {
-          params: { symbol },
-          headers: {
-            'X-Api-Key': process.env.API_KEY,
-          },
-        }
-      );
+      const response = await getCoinLatestPrice(symbol);
 
       coin.latestPrice = parseFloat(response.data.price);
       coin.holdingsInDollers = coin.totalQuantity * coin.latestPrice;
@@ -135,7 +135,7 @@ export async function getUserBalance(req: AuthenticatedRequest, res: Response) {
   try {
     const user = await prisma.user.findUnique({
       where: { id: parseInt(req.userId.toString()) },
-      select: { accountBalance: true },
+      select: { dollerBalance: true, cryptoBalance: true },
     });
 
     return res.status(200).json(user);
@@ -144,14 +144,15 @@ export async function getUserBalance(req: AuthenticatedRequest, res: Response) {
   }
 }
 
+// This function set the user balance in dollers
 export async function setUserBalance(req: AuthenticatedRequest, res: Response) {
   try {
     const user = await prisma.user.update({
       where: { id: parseInt(req.userId.toString()) },
       data: {
-        accountBalance: parseFloat(req.body.accountBalance),
+        dollerBalance: parseFloat(req.body.accountBalance),
       },
-      select: { accountBalance: true },
+      select: { dollerBalance: true },
     });
 
     return res.status(200).json(user);

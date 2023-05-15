@@ -255,5 +255,6 @@ interface UserTransactionsData {
 }
 
 export interface userAccountBalance {
-  accountBalance: number;
+  dollerBalance: number;
+  cryptoBalance: number;
 }

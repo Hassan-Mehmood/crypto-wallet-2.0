@@ -53,7 +53,7 @@ export default function PortfolioTable({ coins }: props) {
 
   const deleteCoinMutation = useMutation(
     (coinId: number) =>
-      axios.delete(`${process.env.REACT_APP_SERVER_URL}/transaction/delete/${coinId}`, {
+      axios.delete(`${process.env.REACT_APP_SERVER_URL}/portfolio/delete/${coinId}`, {
         withCredentials: true,
       }),
     {

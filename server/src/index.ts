@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import userRouter from './routes/user-route';
-import portfolioRouter from './routes/transaction-router';
+import portfolioRouter from './routes/coins-router';
 import cookieParser from 'cookie-parser';
 
 const app = express();

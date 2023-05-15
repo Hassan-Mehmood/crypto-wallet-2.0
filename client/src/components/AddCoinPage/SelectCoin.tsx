@@ -15,7 +15,7 @@ export default function SelectCoin() {
       } else {
         setCoinData([]);
       }
-    }, 300);
+    }, 250);
 
     return () => clearTimeout(delay);
   }, [searchedCoinName]);
