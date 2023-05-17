@@ -5,6 +5,7 @@ import { bought_coin } from '../routes/coins-router';
 import { calculateCoinStats } from '../utils/calculateCoinStats';
 import axios from 'axios';
 import getCoinLatestPrice from '../utils/getCoinLatestPrice';
+import { tokenPayload } from '../utils/jwt';
 
 type reqBodyType = {
   coinPrice: string;
@@ -14,7 +15,7 @@ type reqBodyType = {
 };
 
 interface AuthenticatedRequest extends Request {
-  userId: number;
+  user: tokenPayload;
 }
 
 export async function addCoinTransaction(req: Request, res: Response) {
@@ -88,7 +89,7 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
     let worstPerformer = { value: Infinity, thump: '', change: 0 };
 
     const userCoins = await prisma.coin.findMany({
-      where: { userId: parseInt(req.userId.toString()) },
+      where: { userId: parseInt(req.user.id.toString()) },
       include: { transactions: true },
     });
 
@@ -134,7 +135,7 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
 export async function getUserBalance(req: AuthenticatedRequest, res: Response) {
   try {
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(req.userId.toString()) },
+      where: { id: parseInt(req.user.id.toString()) },
       select: { dollerBalance: true, cryptoBalance: true },
     });
 
@@ -148,7 +149,7 @@ export async function getUserBalance(req: AuthenticatedRequest, res: Response) {
 export async function setUserBalance(req: AuthenticatedRequest, res: Response) {
   try {
     const user = await prisma.user.update({
-      where: { id: parseInt(req.userId.toString()) },
+      where: { id: parseInt(req.user.id.toString()) },
       data: {
         dollerBalance: parseFloat(req.body.accountBalance),
       },

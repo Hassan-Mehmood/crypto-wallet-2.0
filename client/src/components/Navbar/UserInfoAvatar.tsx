@@ -3,6 +3,7 @@ import { User } from 'react-feather';
 import { Link } from 'react-router-dom';
 import { UserState, logout } from '../../slices/userSlice';
 import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
 interface props {
   user: UserState;
@@ -10,6 +11,15 @@ interface props {
 
 export default function UserInfoAvatar({ user }: props) {
   const dispatch = useDispatch();
+
+  async function handleLogout() {
+    await axios.get(`${process.env.REACT_APP_SERVER_URL}/auth/logout`, {
+      withCredentials: true,
+    });
+
+    dispatch(logout());
+  }
+
   return (
     <>
       <Menu>
@@ -45,7 +55,7 @@ export default function UserInfoAvatar({ user }: props) {
             _hover={{ backgroundColor: 'rgba(0, 0, 0,0.1)' }}
             onClick={() => dispatch(logout())}
           >
-            <Text minW="100%" py="0.5rem">
+            <Text minW="100%" py="0.5rem" onClick={handleLogout}>
               Logout
             </Text>
           </MenuItem>

@@ -2,10 +2,16 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 interface AuthenticatedRequest extends Request {
-  userId: string;
+  user: tokenPayload;
 }
 
-export const generateToken = (payload: { id: number; name: string; _email: string }) => {
+export interface tokenPayload {
+  id: number;
+  name: string;
+  _email: string;
+}
+
+export const generateToken = (payload: tokenPayload) => {
   const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
   return token;
 };
@@ -16,7 +22,7 @@ export const verifyToken = (req: AuthenticatedRequest, res: Response, next: Next
 
   jwt.verify(access_token, process.env.JWT_SECRET_KEY as string, (err: any, user: any) => {
     if (err) return res.status(403).json({ message: 'Token expired' });
-    req.userId = user;
+    req.user = user;
     next();
   });
 };

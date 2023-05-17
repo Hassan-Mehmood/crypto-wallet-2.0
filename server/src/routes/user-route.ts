@@ -1,6 +1,12 @@
 import express from 'express';
 import { body } from 'express-validator';
-import { getUserbyID, loginUser, registerUser } from '../controllers/user-controller';
+import {
+  checkUserStatus,
+  logoutUser,
+  loginUser,
+  registerUser,
+} from '../controllers/user-controller';
+import { verifyToken } from '../utils/jwt';
 
 const router = express.Router();
 
@@ -26,6 +32,7 @@ router.post(
   loginUser
 );
 
-router.get('/:id', getUserbyID);
-
+// router.get('/:id', getUserbyID);
+router.get('/user-status', verifyToken, checkUserStatus);
+router.get('/logout', verifyToken, logoutUser);
 export default router;

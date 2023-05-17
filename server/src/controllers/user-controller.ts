@@ -3,13 +3,16 @@ import bcrypt from 'bcrypt';
 import { validationResult } from 'express-validator';
 
 import { prisma } from '../utils/client';
-import { generateToken } from '../utils/jwt';
+import { generateToken, tokenPayload } from '../utils/jwt';
 
 interface ValidationError {
   value?: any;
   msg: string;
   path?: string;
   location: string;
+}
+interface AuthenticatedRequest extends Request {
+  user: tokenPayload;
 }
 
 export async function registerUser(req: Request, res: Response) {
@@ -86,18 +89,19 @@ export async function loginUser(req: Request, res: Response) {
   }
 }
 
-export async function getUserbyID(req: Request, res: Response) {
+export async function checkUserStatus(req: AuthenticatedRequest, res: Response) {
   try {
-    const id: number = parseInt(req.params.id);
+    if (req.user) {
+      return res.status(200).json(req.user);
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
 
-    const user = await prisma.user.findUnique({
-      where: { id },
-      select: { id: true, name: true, email: true, createdAt: true, updatedAt: true },
-    });
-
-    if (!user) return res.status(404).json({ error: 'User not found' });
-
-    return res.status(200).json(user);
+export async function logoutUser(req: AuthenticatedRequest, res: Response) {
+  try {
+    return res.clearCookie('access_token').status(200).json({ message: 'Logged out' });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

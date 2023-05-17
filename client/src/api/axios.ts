@@ -59,3 +59,11 @@ export async function getUserBalance(): Promise<userAccountBalance> {
   });
   return data;
 }
+
+export async function getUserStatus() {
+  const { data } = await axios.get(`${process.env.REACT_APP_SERVER_URL}/auth/user-status`, {
+    withCredentials: true,
+  });
+
+  return data;
+}
