@@ -61,18 +61,18 @@ export async function addCoinTransaction(req: Request, res: Response) {
       },
     });
 
-    const transactionCost = parseFloat(coinPrice) * parseFloat(coinQuantity);
-    const latestPrice = await getCoinLatestPrice(coinRecord.symbol + 'USDT');
+    // const transactionCost = parseFloat(coinPrice) * parseFloat(coinQuantity);
+    // const latestPrice = await getCoinLatestPrice(coinRecord.symbol + 'USDT');
 
-    await prisma.user.update({
-      where: {
-        id: userID,
-      },
-      data: {
-        dollerBalance: user.dollerBalance - transactionCost,
-        cryptoBalance: parseFloat(coinQuantity) * parseFloat(latestPrice.data.price),
-      },
-    });
+    // await prisma.user.update({
+    //   where: {
+    //     id: userID,
+    //   },
+    //   data: {
+    //     dollerBalance: user.dollerBalance - transactionCost,
+    //     cryptoBalance: parseFloat(coinQuantity) * parseFloat(latestPrice.data.price),
+    //   },
+    // });
 
     calculateCoinStats(coinRecord);
 

@@ -32,9 +32,9 @@ export default function PortfolioOverview({ allTimeProfit, bestPerformer, worstP
       <PortfolioSizeModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
       <Flex align="center" justify="space-between">
         <Box>
-          <Text fontSize={25} mt=".5rem" fontWeight="semibold">
-            Balance:{' '}
-            <Box as="span" fontWeight="semibold">
+          <Text fontSize={20} mt=".5rem" fontWeight="semibold">
+            Portfolio Worth:{' '}
+            <Box as="span">
               <>
                 $
                 {accountBalance !== undefined
