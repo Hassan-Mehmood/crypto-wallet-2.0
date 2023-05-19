@@ -3,9 +3,9 @@ import { validationResult } from 'express-validator';
 import { prisma } from '../utils/client';
 import { bought_coin } from '../routes/coins-router';
 import { calculateCoinStats } from '../utils/calculateCoinStats';
-import axios from 'axios';
 import getCoinLatestPrice from '../utils/getCoinLatestPrice';
 import { tokenPayload } from '../utils/jwt';
+import { calculateLatestCryptoBalance } from '../utils/calculateLatestCryptoBalance';
 
 type reqBodyType = {
   coinPrice: string;
@@ -61,20 +61,20 @@ export async function addCoinTransaction(req: Request, res: Response) {
       },
     });
 
-    // const transactionCost = parseFloat(coinPrice) * parseFloat(coinQuantity);
-    // const latestPrice = await getCoinLatestPrice(coinRecord.symbol + 'USDT');
+    const transactionCost = parseFloat(coinPrice) * parseFloat(coinQuantity);
+    const latestPrice = await getCoinLatestPrice(coinRecord.symbol + 'USDT');
 
-    // await prisma.user.update({
-    //   where: {
-    //     id: userID,
-    //   },
-    //   data: {
-    //     dollerBalance: user.dollerBalance - transactionCost,
-    //     cryptoBalance: parseFloat(coinQuantity) * parseFloat(latestPrice.data.price),
-    //   },
-    // });
+    await prisma.user.update({
+      where: {
+        id: userID,
+      },
+      data: {
+        dollerBalance: user.dollerBalance - transactionCost,
+        cryptoBalance: parseFloat(coinQuantity) * parseFloat(latestPrice.data.price),
+      },
+    });
 
-    calculateCoinStats(coinRecord);
+    calculateCoinStats(coinRecord); // Calculating averageBuyPrice, totalQuantity, totalInvestment
 
     return res.status(201).json('Coin added to wallet');
   } catch (error) {
@@ -84,9 +84,14 @@ export async function addCoinTransaction(req: Request, res: Response) {
 
 export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
   try {
+    let portfolioWorth = 0;
     let allTimeProfit = 0;
     let bestPerformer = { value: -Infinity, thump: '', change: 0 };
     let worstPerformer = { value: Infinity, thump: '', change: 0 };
+
+    const user = await prisma.user.findFirst({
+      where: { id: req.user.id },
+    });
 
     const userCoins = await prisma.coin.findMany({
       where: { userId: parseInt(req.user.id.toString()) },
@@ -96,7 +101,9 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
     if (userCoins.length === 0) {
       bestPerformer = { value: 0, thump: '', change: 0 };
       worstPerformer = { value: 0, thump: '', change: 0 };
-      return res.status(200).json({ coins: [], allTimeProfit, bestPerformer, worstPerformer });
+      return res
+        .status(200)
+        .json({ coins: [], allTimeProfit, bestPerformer, worstPerformer, portfolioWorth });
     }
 
     const promises = userCoins.map(async (coin) => {
@@ -124,9 +131,13 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
 
     const updatedCoins = await Promise.all(promises);
 
+    const cryptoBalance = calculateLatestCryptoBalance(updatedCoins);
+    const dollarBalance = user.dollerBalance;
+    portfolioWorth = cryptoBalance + dollarBalance;
+
     return res
       .status(200)
-      .json({ coins: updatedCoins, allTimeProfit, bestPerformer, worstPerformer });
+      .json({ coins: updatedCoins, allTimeProfit, bestPerformer, worstPerformer, portfolioWorth });
   } catch (error) {
     return res.status(error).json(error.message);
   }

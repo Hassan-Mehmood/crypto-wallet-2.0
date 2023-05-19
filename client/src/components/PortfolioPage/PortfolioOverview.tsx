@@ -2,11 +2,10 @@ import { Text, Image, Box, Flex, Button, useDisclosure } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom';
 import { getProfitLossColor } from '../../utils/functions';
 import PortfolioSizeModal from './PortfolioSizeModal';
-import { useQuery } from 'react-query';
-import { getUserBalance } from '../../api/axios';
 
 interface props {
   allTimeProfit: number | undefined;
+  portfolioWorth: number | undefined;
   bestPerformer:
     | {
         value: number;
@@ -21,11 +20,16 @@ interface props {
     | undefined;
 }
 
-export default function PortfolioOverview({ allTimeProfit, bestPerformer, worstPerformer }: props) {
+export default function PortfolioOverview({
+  allTimeProfit,
+  bestPerformer,
+  worstPerformer,
+  portfolioWorth,
+}: props) {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { data: accountBalance } = useQuery('accountBalance', getUserBalance);
+  // const { data: accountBalance } = useQuery('accountBalance', getUserBalance);
 
   return (
     <>
@@ -35,12 +39,7 @@ export default function PortfolioOverview({ allTimeProfit, bestPerformer, worstP
           <Text fontSize={20} mt=".5rem" fontWeight="semibold">
             Portfolio Worth:{' '}
             <Box as="span">
-              <>
-                $
-                {accountBalance !== undefined
-                  ? accountBalance.dollerBalance + accountBalance.cryptoBalance
-                  : 0}
-              </>{' '}
+              <>${portfolioWorth}</>
             </Box>
           </Text>
         </Box>

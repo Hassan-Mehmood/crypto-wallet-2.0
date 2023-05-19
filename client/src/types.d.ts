@@ -218,6 +218,7 @@ interface Transaction {
 
 interface UserTransactionsData {
   allTimeProfit: number;
+  portfolioWorth: number;
   bestPerformer: {
     value: number;
     thump: string;

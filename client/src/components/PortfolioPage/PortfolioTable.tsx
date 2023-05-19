@@ -9,6 +9,7 @@ import {
   Td,
   Flex,
   Image,
+  Button,
 } from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
 import { Trash2 } from 'react-feather';
@@ -72,6 +73,29 @@ export default function PortfolioTable({ coins }: props) {
     deleteCoinMutation.mutate(id);
   }
 
+  function addCoinButton() {
+    return coins?.length === 0 ? (
+      <Button
+        // onClick={}
+        position="absolute"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        fontSize="sm"
+        borderRadius="8px"
+        color="#fff"
+        background="rgb(105, 162, 53)"
+        padding={'0 16px'}
+        border="1px solid rgb(105, 162, 53)"
+        _hover={{
+          background: 'rgb(81, 126, 39)',
+        }}
+      >
+        Sign up
+      </Button>
+    ) : null;
+  }
+
   return (
     <TableContainer mt="3rem">
       <Table variant="simple">
@@ -86,6 +110,7 @@ export default function PortfolioTable({ coins }: props) {
           </Tr>
         </Thead>
         <Tbody>
+          {addCoinButton()}
           {coins?.map((coin: any) => (
             <Tr key={coin.id}>
               <Td>
