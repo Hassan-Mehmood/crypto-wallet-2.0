@@ -39,7 +39,7 @@ export default function PortfolioOverview({
           <Text fontSize={20} mt=".5rem" fontWeight="semibold">
             Portfolio Worth:{' '}
             <Box as="span">
-              <>${portfolioWorth}</>
+              <>${portfolioWorth?.toLocaleString('en', { maximumFractionDigits: 2 })}</>
             </Box>
           </Text>
         </Box>

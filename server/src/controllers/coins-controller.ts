@@ -25,7 +25,7 @@ export async function addCoinTransaction(req: Request, res: Response) {
   }
 
   try {
-    const { coinPrice, coinQuantity, bought_coin, user: userID }: reqBodyType = req.body;
+    const { coinPrice, coinQuantity, bought_coin, user: userID } = req.body as reqBodyType;
 
     const user = await prisma.user.findUnique({
       where: { id: userID },
@@ -69,8 +69,12 @@ export async function addCoinTransaction(req: Request, res: Response) {
         id: userID,
       },
       data: {
-        dollerBalance: user.dollerBalance - transactionCost,
-        cryptoBalance: parseFloat(coinQuantity) * parseFloat(latestPrice.data.price),
+        dollerBalance: {
+          decrement: transactionCost,
+        },
+        cryptoBalance: {
+          increment: parseFloat(coinQuantity) * parseFloat(latestPrice.data.price),
+        },
       },
     });
 

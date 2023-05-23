@@ -16,6 +16,7 @@ import { Trash2 } from 'react-feather';
 import { QueryClient, useMutation } from 'react-query';
 import axios from 'axios';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface props {
   coins:
@@ -51,6 +52,7 @@ interface props {
 export default function PortfolioTable({ coins }: props) {
   const [updateDeletedCoin, setUpdateDeletedCoin] = useState(false);
   const queryClient = new QueryClient();
+  const navigate = useNavigate();
 
   const deleteCoinMutation = useMutation(
     (coinId: number) =>
@@ -73,84 +75,85 @@ export default function PortfolioTable({ coins }: props) {
     deleteCoinMutation.mutate(id);
   }
 
-  function addCoinButton() {
-    return coins?.length === 0 ? (
-      <Button
-        // onClick={}
-        position="absolute"
-        top="50%"
-        left="50%"
-        transform="translate(-50%, -50%)"
-        fontSize="sm"
-        borderRadius="8px"
-        color="#fff"
-        background="rgb(105, 162, 53)"
-        padding={'0 16px'}
-        border="1px solid rgb(105, 162, 53)"
-        _hover={{
-          background: 'rgb(81, 126, 39)',
-        }}
-      >
-        Sign up
-      </Button>
-    ) : null;
-  }
-
   return (
-    <TableContainer mt="3rem">
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            <Th>Name</Th>
-            <Th>Price</Th>
-            <Th>Holding</Th>
-            <Th>Avg Buy Price</Th>
-            <Th>Profit/Loss</Th>
-            <Th pr="0">Actions</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {addCoinButton()}
-          {coins?.map((coin: any) => (
-            <Tr key={coin.id}>
-              <Td>
-                <Flex alignItems="center">
-                  <Image src={coin.thump} width="25px" height="auto" mr="5px" />
-                  {coin.name}
-                </Flex>
-              </Td>
-              <Td>${coin.latestPrice}</Td>
-              <Td>
-                <Flex flexDirection="column">
-                  <Box fontWeight="bold">
-                    {coin.totalQuantity}{' '}
-                    <Box as="span" fontSize="12px">
-                      {coin.symbol}
-                    </Box>
-                  </Box>
-                  <Box fontSize="14px">(${coin.holdingsInDollers.toFixed(2)})</Box>
-                </Flex>
-              </Td>
-              <Td>${coin.averageBuyPrice.toFixed(2)}</Td>
-              <Td color={getProfitLossColor(coin.profitLoss)}>
-                <Flex flexDirection="column">
-                  <Box>
-                    {coin.profitLoss > 0 ? '+' : ''}${coin.profitLoss.toFixed(2)}
-                  </Box>
-                  <Box fontSize="14px">
-                    {calculatePercentage(coin.holdingsInDollers, coin.totalInvestment)}%
-                  </Box>
-                </Flex>
-              </Td>
-              <Td>
-                <Box as="span" display="inline-block" cursor="pointer">
-                  <Trash2 color="maroon" onClick={() => deleteCoin(coin.id)} />
-                </Box>
-              </Td>
+    <>
+      {coins?.length === 0 ? (
+        <Button
+          onClick={() => navigate('/addCoin')}
+          position="absolute"
+          top="125%"
+          left="50%"
+          transform="translate(-50%, -125%)"
+          fontSize="sm"
+          borderRadius="8px"
+          color="#fff"
+          background="rgb(105, 162, 53)"
+          padding={'0 16px'}
+          border="1px solid rgb(105, 162, 53)"
+          _hover={{
+            background: 'rgb(81, 126, 39)',
+          }}
+        >
+          Add Coins
+        </Button>
+      ) : null}
+      <TableContainer mt="3rem">
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>Name</Th>
+              <Th>Price</Th>
+              <Th>Holding</Th>
+              <Th>Avg Buy Price</Th>
+              <Th>Profit/Loss</Th>
+              <Th pr="0">Actions</Th>
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
-    </TableContainer>
+          </Thead>
+          <Tbody>
+            {coins?.map((coin: any) => (
+              <Tr key={coin.id}>
+                <Td>
+                  <Flex alignItems="center">
+                    <Image src={coin.thump} width="25px" height="auto" mr="5px" />
+                    {coin.name}
+                  </Flex>
+                </Td>
+                <Td>${coin.latestPrice.toLocaleString('en')}</Td>
+                <Td>
+                  <Flex flexDirection="column">
+                    <Box fontWeight="bold">
+                      {coin.totalQuantity}{' '}
+                      <Box as="span" fontSize="12px">
+                        {coin.symbol}
+                      </Box>
+                    </Box>
+                    <Box fontSize="14px">
+                      (${coin.holdingsInDollers.toLocaleString('en', { maximumFractionDigits: 2 })})
+                    </Box>
+                  </Flex>
+                </Td>
+                <Td>${coin.averageBuyPrice.toLocaleString('en')}</Td>
+                <Td color={getProfitLossColor(coin.profitLoss)}>
+                  <Flex flexDirection="column">
+                    <Box>
+                      {coin.profitLoss > 0 ? '+' : ''}$
+                      {coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })}
+                    </Box>
+                    <Box fontSize="14px">
+                      {calculatePercentage(coin.holdingsInDollers, coin.totalInvestment)}%
+                    </Box>
+                  </Flex>
+                </Td>
+                <Td>
+                  <Box as="span" display="inline-block" cursor="pointer">
+                    <Trash2 color="maroon" onClick={() => deleteCoin(coin.id)} />
+                  </Box>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }
