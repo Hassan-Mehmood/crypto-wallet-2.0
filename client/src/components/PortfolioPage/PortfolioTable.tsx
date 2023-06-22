@@ -10,12 +10,12 @@ import {
   Flex,
   Image,
   Button,
+  Spinner,
 } from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
 import { Trash2 } from 'react-feather';
-import { QueryClient, useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface props {
@@ -50,8 +50,7 @@ interface props {
 }
 
 export default function PortfolioTable({ coins }: props) {
-  const [updateDeletedCoin, setUpdateDeletedCoin] = useState(false);
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const deleteCoinMutation = useMutation(
@@ -61,12 +60,7 @@ export default function PortfolioTable({ coins }: props) {
       }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('transactions');
-        setUpdateDeletedCoin(!updateDeletedCoin);
-        console.log('Deleted');
-      },
-      onError: (err) => {
-        console.log(err);
+        queryClient.refetchQueries('userCoins');
       },
     }
   );
