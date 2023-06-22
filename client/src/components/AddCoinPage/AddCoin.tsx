@@ -27,7 +27,10 @@ export default function AddCoin() {
   const dispatch = useDispatch();
   const toast = useToast();
 
-  const { data: accountBalance } = useQuery('accountBalance', getUserBalance);
+  const { data: accountBalance, refetch: refetchBalance } = useQuery(
+    'accountBalance',
+    getUserBalance
+  );
 
   const addCoin = useMutation(
     async () => {
@@ -42,6 +45,7 @@ export default function AddCoin() {
     {
       onSuccess: () => {
         showToast('Success', 'Coin added successfully', 'success');
+        refetchBalance();
       },
       onError: () => {
         showToast('Error', 'Something went wrong', 'error');
