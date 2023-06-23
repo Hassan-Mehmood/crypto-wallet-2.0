@@ -29,8 +29,6 @@ export default function PortfolioOverview({
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // const { data: accountBalance } = useQuery('accountBalance', getUserBalance);
-
   return (
     <>
       <PortfolioSizeModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />

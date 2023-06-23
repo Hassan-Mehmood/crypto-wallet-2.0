@@ -146,7 +146,7 @@ export async function addCoinTransaction(req: Request, res: Response) {
 export async function getUserBalance(req: AuthenticatedRequest, res: Response) {
   try {
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(req.user.id.toString()) },
+      where: { id: Number(req.user.id) },
       select: { dollerBalance: true, cryptoBalance: true },
     });
 
@@ -160,7 +160,7 @@ export async function getUserBalance(req: AuthenticatedRequest, res: Response) {
 export async function setUserBalance(req: AuthenticatedRequest, res: Response) {
   try {
     const user = await prisma.user.update({
-      where: { id: parseInt(req.user.id.toString()) },
+      where: { id: Number(req.user.id) },
       data: {
         dollerBalance: parseFloat(req.body.accountBalance),
       },
@@ -173,11 +173,11 @@ export async function setUserBalance(req: AuthenticatedRequest, res: Response) {
   }
 }
 
-export async function deleteCoin(req: AuthenticatedRequest, res: Response) {
+export async function deleteCoinAndData(req: AuthenticatedRequest, res: Response) {
   try {
-    const coinId = parseInt(req.params.id.toString());
+    const coinId = Number(req.params.id);
 
-    await prisma.transaction.deleteMany({
+    const transactions = await prisma.transaction.deleteMany({
       where: {
         coinId: coinId,
       },
@@ -189,7 +189,9 @@ export async function deleteCoin(req: AuthenticatedRequest, res: Response) {
       },
     });
 
-    return res.status(200).json(deletedCoin);
+    console.log(deletedCoin);
+
+    return res.status(200).json({ message: 'Coin deleted successfully.', deletedCoin });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Failed to delete coin.' });

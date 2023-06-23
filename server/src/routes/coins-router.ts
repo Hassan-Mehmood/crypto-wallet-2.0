@@ -2,7 +2,7 @@ import express from 'express';
 import { body } from 'express-validator';
 import {
   addCoinTransaction,
-  deleteCoin,
+  deleteCoinAndData,
   getPortfolio,
   getUserBalance,
   setUserBalance,
@@ -46,6 +46,6 @@ router.post(
 router.get('/', verifyToken, getPortfolio);
 router.get('/balance', verifyToken, getUserBalance);
 router.post('/balance', verifyToken, setUserBalance);
-router.delete('/delete/:id', verifyToken, deleteCoin);
+router.delete('/deleteCoinAndData/:id', verifyToken, deleteCoinAndData);
 
 export default router;
