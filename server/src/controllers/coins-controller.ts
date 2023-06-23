@@ -67,6 +67,7 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
 
 export async function addCoinTransaction(req: Request, res: Response) {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -74,16 +75,18 @@ export async function addCoinTransaction(req: Request, res: Response) {
   try {
     const { coinPrice, coinQuantity, bought_coin, user: userID } = req.body as reqBodyType;
 
-    const user = await prisma.user.findUnique({
+    const userData = await prisma.user.findUnique({
       where: { id: userID },
-    });
-
-    let coinRecord = await prisma.coin.findFirst({
-      where: {
-        apiSymbol: bought_coin.symbol,
-        user: { id: user.id },
+      include: {
+        coins: {
+          where: {
+            apiSymbol: bought_coin.symbol,
+          },
+        },
       },
     });
+
+    let coinRecord = userData.coins[0];
 
     if (!coinRecord) {
       coinRecord = await prisma.coin.create({
@@ -94,19 +97,26 @@ export async function addCoinTransaction(req: Request, res: Response) {
           thump: bought_coin.thumb,
           large: bought_coin.large,
           marketCapRank: bought_coin.market_cap_rank,
-          user: { connect: { id: user.id } },
+          user: { connect: { id: userData.id } },
+          transactions: {
+            create: {
+              price: parseFloat(coinPrice),
+              quantity: parseFloat(coinQuantity),
+              timeBought: new Date(),
+            },
+          },
+        },
+      });
+    } else {
+      await prisma.transaction.create({
+        data: {
+          price: parseFloat(coinPrice),
+          quantity: parseFloat(coinQuantity),
+          timeBought: new Date(),
+          Coin: { connect: { id: coinRecord.id } },
         },
       });
     }
-
-    await prisma.transaction.create({
-      data: {
-        price: parseFloat(coinPrice),
-        quantity: parseFloat(coinQuantity),
-        timeBought: new Date(),
-        Coin: { connect: { id: coinRecord.id } },
-      },
-    });
 
     const transactionCost = parseFloat(coinPrice) * parseFloat(coinQuantity);
     const latestPrice = await getCoinLatestPrice(coinRecord.symbol + 'USDT');
