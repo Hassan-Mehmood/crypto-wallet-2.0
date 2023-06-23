@@ -42,6 +42,7 @@ router.post(
   addCoinTransaction
 );
 
+// /api/portfolio/
 router.get('/', verifyToken, getPortfolio);
 router.get('/balance', verifyToken, getUserBalance);
 router.post('/balance', verifyToken, setUserBalance);

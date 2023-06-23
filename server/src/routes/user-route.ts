@@ -32,7 +32,6 @@ router.post(
   loginUser
 );
 
-// router.get('/:id', getUserbyID);
 router.get('/user-status', verifyToken, checkUserStatus);
 router.get('/logout', verifyToken, logoutUser);
 export default router;

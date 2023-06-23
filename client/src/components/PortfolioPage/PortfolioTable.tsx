@@ -10,7 +10,6 @@ import {
   Flex,
   Image,
   Button,
-  Spinner,
 } from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
 import { Trash2 } from 'react-feather';
@@ -75,9 +74,9 @@ export default function PortfolioTable({ coins }: props) {
         <Button
           onClick={() => navigate('/addCoin')}
           position="absolute"
-          top="125%"
+          top="150%"
           left="50%"
-          transform="translate(-50%, -125%)"
+          transform="translate(-50%, -150%)"
           fontSize="sm"
           borderRadius="8px"
           color="#fff"

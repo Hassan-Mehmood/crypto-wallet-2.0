@@ -217,7 +217,7 @@ interface Transaction {
 }
 
 interface UserTransactionsData {
-  allTimeProfit: number;
+  _allTimeProfit: number;
   portfolioWorth: number;
   bestPerformer: {
     value: number;

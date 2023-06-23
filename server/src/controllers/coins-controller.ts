@@ -6,6 +6,7 @@ import { calculateCoinStats } from '../utils/calculateCoinStats';
 import getCoinLatestPrice from '../utils/getCoinLatestPrice';
 import { tokenPayload } from '../utils/jwt';
 import { calculateLatestCryptoBalance } from '../utils/calculateLatestCryptoBalance';
+import updateCoinData from '../utils/updateCoinData';
 
 type reqBodyType = {
   coinPrice: string;
@@ -16,6 +17,52 @@ type reqBodyType = {
 
 interface AuthenticatedRequest extends Request {
   user: tokenPayload;
+}
+
+export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
+  try {
+    let portfolioWorth = 0;
+    let allTimeProfit = 0;
+    let bestPerformer = { value: -Infinity, thump: '', change: 0 };
+    let worstPerformer = { value: Infinity, thump: '', change: 0 };
+
+    const { coins: userCoins, dollerBalance } = await prisma.user.findFirst({
+      where: { id: req.user.id },
+      include: {
+        coins: {
+          include: { transactions: true },
+        },
+      },
+    });
+
+    if (userCoins.length === 0) {
+      bestPerformer = { value: 0, thump: '', change: 0 };
+      worstPerformer = { value: 0, thump: '', change: 0 };
+      return res
+        .status(200)
+        .json({ coins: [], allTimeProfit, bestPerformer, worstPerformer, portfolioWorth });
+    }
+
+    const {
+      updatedCoins,
+      allTimeProfit: _allTimeProfit, // This is just a number
+      bestPerformer: _bestPerformer, // This is an object
+      worstPerformer: _worstPerformer, // This is an object
+    } = await updateCoinData(userCoins, allTimeProfit, bestPerformer, worstPerformer);
+
+    const cryptoBalance = calculateLatestCryptoBalance(updatedCoins);
+    portfolioWorth = cryptoBalance + dollerBalance;
+
+    return res.status(200).json({
+      coins: updatedCoins,
+      _allTimeProfit,
+      bestPerformer,
+      worstPerformer,
+      portfolioWorth,
+    });
+  } catch (error) {
+    return res.status(error).json(error.message);
+  }
 }
 
 export async function addCoinTransaction(req: Request, res: Response) {
@@ -83,67 +130,6 @@ export async function addCoinTransaction(req: Request, res: Response) {
     return res.status(201).json('Coin added to wallet');
   } catch (error) {
     return res.status(500).json(error.message);
-  }
-}
-
-export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
-  try {
-    let portfolioWorth = 0;
-    let allTimeProfit = 0;
-    let bestPerformer = { value: -Infinity, thump: '', change: 0 };
-    let worstPerformer = { value: Infinity, thump: '', change: 0 };
-
-    const user = await prisma.user.findFirst({
-      where: { id: req.user.id },
-    });
-
-    const userCoins = await prisma.coin.findMany({
-      where: { userId: parseInt(req.user.id.toString()) },
-      include: { transactions: true },
-    });
-
-    if (userCoins.length === 0) {
-      bestPerformer = { value: 0, thump: '', change: 0 };
-      worstPerformer = { value: 0, thump: '', change: 0 };
-      return res
-        .status(200)
-        .json({ coins: [], allTimeProfit, bestPerformer, worstPerformer, portfolioWorth });
-    }
-
-    const promises = userCoins.map(async (coin) => {
-      const symbol = `${coin.symbol}USDT`;
-      const response = await getCoinLatestPrice(symbol);
-
-      coin.latestPrice = parseFloat(response.data.price);
-      coin.holdingsInDollers = coin.totalQuantity * coin.latestPrice;
-      coin.profitLoss = coin.holdingsInDollers - coin.totalInvestment;
-      coin.latestPrice = coin.latestPrice;
-
-      allTimeProfit += coin.profitLoss;
-
-      if (coin.profitLoss > bestPerformer.value) {
-        bestPerformer.value = coin.profitLoss;
-        bestPerformer.thump = coin.thump;
-      }
-      if (coin.profitLoss < worstPerformer.value) {
-        worstPerformer.value = coin.profitLoss;
-        worstPerformer.thump = coin.thump;
-      }
-
-      return coin;
-    });
-
-    const updatedCoins = await Promise.all(promises);
-
-    const cryptoBalance = calculateLatestCryptoBalance(updatedCoins);
-    const dollarBalance = user.dollerBalance;
-    portfolioWorth = cryptoBalance + dollarBalance;
-
-    return res
-      .status(200)
-      .json({ coins: updatedCoins, allTimeProfit, bestPerformer, worstPerformer, portfolioWorth });
-  } catch (error) {
-    return res.status(error).json(error.message);
   }
 }
 

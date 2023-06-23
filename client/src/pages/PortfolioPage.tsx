@@ -28,7 +28,7 @@ export default function PortfolioPage() {
     <Box as="section" position="relative">
       {isFetching ? <Spinner position="absolute" top="50%" left="50%" /> : null}
       <PortfolioOverview
-        allTimeProfit={data?.allTimeProfit}
+        allTimeProfit={data?._allTimeProfit}
         bestPerformer={data?.bestPerformer}
         worstPerformer={data?.worstPerformer}
         portfolioWorth={data?.portfolioWorth}
