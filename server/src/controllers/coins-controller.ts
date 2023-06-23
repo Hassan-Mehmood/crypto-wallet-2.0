@@ -7,6 +7,7 @@ import getCoinLatestPrice from '../utils/getCoinLatestPrice';
 import { tokenPayload } from '../utils/jwt';
 import { calculateLatestCryptoBalance } from '../utils/calculateLatestCryptoBalance';
 import updateCoinData from '../utils/updateCoinData';
+import { transcode } from 'buffer';
 
 type reqBodyType = {
   coinPrice: string;
@@ -189,11 +190,27 @@ export async function deleteCoinAndData(req: AuthenticatedRequest, res: Response
       },
     });
 
-    console.log(deletedCoin);
+    const latestPrice = await getCoinLatestPrice(deletedCoin.symbol + 'USDT');
+
+    // console.log('DollerBalance', deletedCoin.totalInvestment);
+    // console.log('CryptoBalance', deletedCoin.totalQuantity * parseFloat(latestPrice.data.price));
+
+    const user = await prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        dollerBalance: { increment: deletedCoin.totalInvestment },
+        cryptoBalance: {
+          decrement: deletedCoin.totalQuantity * parseFloat(latestPrice.data.price),
+        },
+      },
+    });
+
+    // console.log('deletedCoin', deletedCoin);
+    // console.log('Transactions', transactions);
+    // console.log('user', user);
 
     return res.status(200).json({ message: 'Coin deleted successfully.', deletedCoin });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: 'Failed to delete coin.' });
   }
 }

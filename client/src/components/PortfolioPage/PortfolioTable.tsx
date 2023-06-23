@@ -13,12 +13,9 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
-import { Delete, Trash2 } from 'react-feather';
-import { useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
+import { Trash2 } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import DeleteCoinModal from './DeleteCoinModal';
-import { on } from 'events';
 import { useState } from 'react';
 
 interface props {
@@ -55,25 +52,11 @@ interface props {
 export default function PortfolioTable({ coins }: props) {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [deleteMode, setDeleteMode] = useState('');
-
-  const queryClient = useQueryClient();
-
-  const deleteCoinMutation = useMutation(
-    (coinId: number) =>
-      axios.delete(`${process.env.REACT_APP_SERVER_URL}/portfolio/deleteCoinAndData/${coinId}`, {
-        withCredentials: true,
-      }),
-    {
-      onSuccess: () => {
-        queryClient.refetchQueries('userCoins');
-      },
-    }
-  );
+  const [coinId, setCoinId] = useState<number | null>(null);
 
   return (
     <>
-      <DeleteCoinModal isOpen={isOpen} onClose={onClose} setCoinDelete={setDeleteMode} />
+      <DeleteCoinModal isOpen={isOpen} onClose={onClose} id={coinId} setCoinId={setCoinId} />
       {coins?.length === 0 ? (
         <Button
           onClick={() => navigate('/addCoin')}
@@ -144,7 +127,13 @@ export default function PortfolioTable({ coins }: props) {
                 </Td>
                 <Td>
                   <Box as="span" display="inline-block" cursor="pointer">
-                    <Trash2 color="maroon" onClick={onOpen} />
+                    <Trash2
+                      color="maroon"
+                      onClick={() => {
+                        setCoinId(coin.id);
+                        onOpen();
+                      }}
+                    />
                   </Box>
                 </Td>
               </Tr>

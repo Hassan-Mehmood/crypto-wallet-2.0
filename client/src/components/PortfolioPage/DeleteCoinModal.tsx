@@ -8,30 +8,42 @@ import {
   ModalBody,
   FormControl,
   FormLabel,
-  NumberInput,
-  NumberInputField,
   Button,
   useToast,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 interface props {
   isOpen: boolean;
   onClose: () => void;
-  setCoinDelete: React.Dispatch<React.SetStateAction<string>>;
+  id: number | null;
+  setCoinId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-export default function DeleteCoinModal({ isOpen, onClose, setCoinDelete }: props) {
+export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: props) {
+  const queryClient = useQueryClient();
   const toast = useToast();
+
+  const deleteCoinMutation = useMutation(
+    (coinId: number) =>
+      axios.delete(`${process.env.REACT_APP_SERVER_URL}/portfolio/deleteCoinAndData/${coinId}`, {
+        withCredentials: true,
+      }),
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries('userCoins');
+      },
+    }
+  );
 
   function deleteCoinAndData(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    setCoinDelete('deleteCoinAndData');
-    // onClose();
-
-    // deleteCoinMutation.mutate(id);
+    if (id === null) return;
+    deleteCoinMutation.mutate(id);
+    onClose();
+    setCoinId(null);
+    showToast('Success', 'Coin and data successfully deleted.', 'success');
   }
 
   function showToast(title: string, description: string, status: 'error' | 'success') {
