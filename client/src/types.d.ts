@@ -219,6 +219,9 @@ interface Transaction {
 interface UserTransactionsData {
   _allTimeProfit: number;
   portfolioWorth: number;
+  cryptoBalance: number;
+  dollerBalance: number;
+
   bestPerformer: {
     value: number;
     thump: string;

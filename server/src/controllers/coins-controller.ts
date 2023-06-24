@@ -7,7 +7,6 @@ import getCoinLatestPrice from '../utils/getCoinLatestPrice';
 import { tokenPayload } from '../utils/jwt';
 import { calculateLatestCryptoBalance } from '../utils/calculateLatestCryptoBalance';
 import updateCoinData from '../utils/updateCoinData';
-import { transcode } from 'buffer';
 
 type reqBodyType = {
   coinPrice: string;
@@ -39,9 +38,16 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
     if (userCoins.length === 0) {
       bestPerformer = { value: 0, thump: '', change: 0 };
       worstPerformer = { value: 0, thump: '', change: 0 };
-      return res
-        .status(200)
-        .json({ coins: [], allTimeProfit, bestPerformer, worstPerformer, portfolioWorth });
+
+      return res.status(200).json({
+        coins: [],
+        allTimeProfit,
+        bestPerformer,
+        worstPerformer,
+        portfolioWorth: dollerBalance,
+        cryptoBalance: 0,
+        dollerBalance,
+      });
     }
 
     const {
@@ -51,8 +57,8 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
       worstPerformer: _worstPerformer, // This is an object
     } = await updateCoinData(userCoins, allTimeProfit, bestPerformer, worstPerformer);
 
-    const cryptoBalance = calculateLatestCryptoBalance(updatedCoins);
-    portfolioWorth = cryptoBalance + dollerBalance;
+    const updatedCryptoBalance = calculateLatestCryptoBalance(updatedCoins);
+    portfolioWorth = updatedCryptoBalance + dollerBalance;
 
     return res.status(200).json({
       coins: updatedCoins,
@@ -60,6 +66,8 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
       bestPerformer,
       worstPerformer,
       portfolioWorth,
+      dollerBalance,
+      cryptoBalance: updatedCryptoBalance,
     });
   } catch (error) {
     return res.status(error).json(error.message);
