@@ -13,7 +13,7 @@ export default function Highlights() {
 
   return (
     <SimpleGrid spacing={4} templateColumns="repeat(3, 1fr)">
-      <Card>
+      <Card >
         <CardHeader>
           <Heading size="md">Trending Coins</Heading>
         </CardHeader>
