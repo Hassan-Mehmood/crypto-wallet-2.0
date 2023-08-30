@@ -25,25 +25,64 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
   const queryClient = useQueryClient();
   const toast = useToast();
 
-  const deleteCoinMutation = useMutation(
+  const deleteCoinAndDataMutation = useMutation(
     (coinId: number) =>
-      axios.delete(`${process.env.REACT_APP_SERVER_URL}/portfolio/deleteCoinAndData/${coinId}`, {
-        withCredentials: true,
-      }),
+      axios.delete(
+        `${process.env.REACT_APP_SERVER_URL}/portfolio/deleteCoinAndTransactions/${coinId}`,
+        {
+          withCredentials: true,
+        }
+      ),
     {
       onSuccess: () => {
         queryClient.refetchQueries('userCoins');
+        showToast('Success', 'Coin and data successfully deleted.', 'success');
+        onClose();
+        setCoinId(null);
+      },
+      onError: () => {
+        showToast('Error', 'Failed to delete coin and data.', 'error');
+        setCoinId(null);
+      },
+    }
+  );
+
+  const deleteCoinAndKeepDataMutation = useMutation(
+    (coinId: number) =>
+      axios.delete(
+        `${process.env.REACT_APP_SERVER_URL}/portfolio/deleteCoinAndKeepTransactions/${coinId}`,
+        {
+          withCredentials: true,
+        }
+      ),
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries('userCoins');
+        showToast('Success', 'Coin successfully deleted.', 'success');
+        onClose();
+        setCoinId(null);
+      },
+      onError: () => {
+        showToast('Error', 'Failed to delete coin.', 'error');
+        setCoinId(null);
       },
     }
   );
 
   function deleteCoinAndData(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
+
     if (id === null) return;
-    deleteCoinMutation.mutate(id);
-    onClose();
-    setCoinId(null);
-    showToast('Success', 'Coin and data successfully deleted.', 'success');
+
+    deleteCoinAndDataMutation.mutate(id);
+  }
+
+  function deleteCoinAndKeepTransaction(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+
+    if (id === null) return;
+
+    deleteCoinAndKeepDataMutation.mutate(id);
   }
 
   function showToast(title: string, description: string, status: 'error' | 'success') {
@@ -85,7 +124,7 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
                   _hover={{ backgroundColor: '#dd0000' }}
                   onClick={deleteCoinAndData}
                 >
-                  Delete Coin & Historical Data
+                  Delete Coin & all transactions
                 </Button>
                 <Button
                   type="submit"
@@ -95,19 +134,9 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
                   maxW="100%"
                   width="100%"
                   _hover={{ backgroundColor: '#dd0000' }}
+                  onClick={deleteCoinAndKeepTransaction}
                 >
-                  Delete Coin But Keep Data
-                </Button>
-                <Button
-                  type="submit"
-                  mb="0.5rem"
-                  backgroundColor="#fff"
-                  maxW="100%"
-                  width="100%"
-                  border="1px solid"
-                  _hover={{ backgroundColor: 'rgba(216, 216, 216, 0.541)' }}
-                >
-                  Cancel
+                  Delete Coin But transactions remain
                 </Button>
               </Box>
             </form>

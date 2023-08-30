@@ -52,7 +52,7 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
 
     const {
       updatedCoins,
-      allTimeProfit: _allTimeProfit, // This is just a number
+      allTimeProfit: _allTimeProfit, // This is a number
       bestPerformer: _bestPerformer, // This is an object
       worstPerformer: _worstPerformer, // This is an object
     } = await updateCoinData(userCoins, allTimeProfit, bestPerformer, worstPerformer);
@@ -182,11 +182,11 @@ export async function setUserBalance(req: AuthenticatedRequest, res: Response) {
   }
 }
 
-export async function deleteCoinAndData(req: AuthenticatedRequest, res: Response) {
+export async function deleteCoinAndTransactions(req: AuthenticatedRequest, res: Response) {
   try {
     const coinId = Number(req.params.id);
 
-    const transactions = await prisma.transaction.deleteMany({
+    await prisma.transaction.deleteMany({
       where: {
         coinId: coinId,
       },
@@ -200,10 +200,7 @@ export async function deleteCoinAndData(req: AuthenticatedRequest, res: Response
 
     const latestPrice = await getCoinLatestPrice(deletedCoin.symbol + 'USDT');
 
-    // console.log('DollerBalance', deletedCoin.totalInvestment);
-    // console.log('CryptoBalance', deletedCoin.totalQuantity * parseFloat(latestPrice.data.price));
-
-    const user = await prisma.user.update({
+    await prisma.user.update({
       where: { id: req.user.id },
       data: {
         dollerBalance: { increment: deletedCoin.totalInvestment },
@@ -213,11 +210,22 @@ export async function deleteCoinAndData(req: AuthenticatedRequest, res: Response
       },
     });
 
-    // console.log('deletedCoin', deletedCoin);
-    // console.log('Transactions', transactions);
-    // console.log('user', user);
+    return res.status(200).json({ message: 'Coin and all transactions deleted successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete coin.' });
+  }
+}
 
-    return res.status(200).json({ message: 'Coin deleted successfully.', deletedCoin });
+export async function deleteCoinAndKeepTransactions(req: AuthenticatedRequest, res: Response) {
+  try {
+    const coinId = Number(req.params.id);
+
+    await prisma.coin.update({
+      where: { id: coinId },
+      data: { active: false },
+    });
+
+    return res.status(200).json({ message: 'Coin deleted while keeping transactions.', coinId });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete coin.' });
   }

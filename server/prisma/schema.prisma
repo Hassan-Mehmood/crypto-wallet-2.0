@@ -36,6 +36,7 @@ model Coin {
   holdingsInDollers Float         @default(0)
   profitLoss        Float         @default(0)
   totalInvestment   Float         @default(0)
+  active            Boolean       @default(true)
   user              User          @relation(fields: [userId], references: [id])
   transactions      Transaction[]
   userId            Int
