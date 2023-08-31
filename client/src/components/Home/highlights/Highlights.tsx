@@ -40,7 +40,7 @@ export default function Highlights() {
         </CardBody>
       </Card>
       <GridItem colSpan={[2, 2, 1]} display={["flex", "flex", "block"]} justifyContent={"center"}>
-        <Card width={["43.2vw", "43.2vw", "full"]}>
+        <Card width={["48.8vw", "45.1vw", "full"]}>
           <CardHeader>
             <Heading size="md">Market Dominance</Heading>
           </CardHeader>

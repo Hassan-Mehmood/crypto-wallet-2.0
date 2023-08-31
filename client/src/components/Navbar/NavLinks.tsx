@@ -10,6 +10,19 @@ export default function NavLinks({ onOpenLogin, onOpenSignup }: props) {
   return (
     <Box display="flex" alignItems="center">
       <Button
+        onClick={onOpenLogin}
+        borderRadius="8px"
+        background="none"
+        px={'0.7rem'}
+        py={"1.3rem"}
+        _hover={{
+          color: "#8bc53f"
+        }}
+      >
+        <Icon as={AiOutlineUserAdd} marginRight={"0.5rem"} />
+        <Text>Log in</Text>
+      </Button>
+      <Button
         onClick={onOpenSignup}
         borderRadius="8px"
         color="#fff"
@@ -24,19 +37,6 @@ export default function NavLinks({ onOpenLogin, onOpenSignup }: props) {
       >
         <Icon as={AiOutlineUser} marginRight={"0.5rem"} />
         <Text>Sign up</Text>
-      </Button>
-      <Button
-        onClick={onOpenLogin}
-        borderRadius="8px"
-        background="none"
-        px={'0.7rem'}
-        py={"1.3rem"}
-        _hover={{
-          color: "#8bc53f"
-        }}
-      >
-        <Icon as={AiOutlineUserAdd} marginRight={"0.5rem"} />
-        <Text>Log in</Text>
       </Button>
     </Box>
   );
