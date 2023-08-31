@@ -1,11 +1,11 @@
 import { Menu, MenuButton, MenuList, MenuItem, Text, Icon, Box, Flex } from '@chakra-ui/react';
-import { BiBitcoin } from "react-icons/bi";
-import { AiOutlineProfile } from "react-icons/ai"
-import { FiLogOut } from "react-icons/fi"
-import { FaRegCircleUser } from "react-icons/fa6";
-import { Link } from 'react-router-dom';
 import { UserState, logout } from '../../slices/userSlice';
+import { AiOutlineProfile } from "react-icons/ai"
+import { FaRegCircleUser } from "react-icons/fa6";
+import { BiBitcoin } from "react-icons/bi";
 import { useDispatch } from 'react-redux';
+import { FiLogOut } from "react-icons/fi"
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 interface props {
@@ -73,7 +73,6 @@ export default function UserInfoAvatar({ user }: props) {
                   Logout
                 </Text>
               </Flex>
-
             </MenuItem>
           </MenuList>
       </Menu>

@@ -123,7 +123,7 @@ export default function AddCoin() {
   }
 
   return (
-    <Box border="1px solid black" p="1rem" maxW="600px" w="100%">
+    <Box border="1px solid black" borderRadius={"0.7rem"} p="1rem" maxW="600px" w="100%">
       <Flex justifyContent="space-between">
         <Heading as="h6" size="md" mb="2rem">
           Add Coin

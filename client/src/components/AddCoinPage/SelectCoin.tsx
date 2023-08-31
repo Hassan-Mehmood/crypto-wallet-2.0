@@ -1,7 +1,8 @@
-import { Box, FormControl, Heading, Input } from '@chakra-ui/react';
+import { Box, FormControl, Heading, Icon, Input } from '@chakra-ui/react';
+import { getCoinByName } from '../../api/axios';
 import { useState, useEffect } from 'react';
 import { SearchCoin } from '../../types';
-import { getCoinByName } from '../../api/axios';
+import { GrSearch } from "react-icons/gr"
 import SearchedCoin from './SearchedCoin';
 
 export default function SelectCoin() {
@@ -21,19 +22,21 @@ export default function SelectCoin() {
   }, [searchedCoinName]);
 
   return (
-    <Box border="1px solid black" p="1rem" maxW="600px" w="100%" minH="100%">
+    <Box border="1px solid black" borderRadius={"0.7rem"} p="1rem" height="8.3rem">
       <Box>
-        <Heading as="h6" size="md" mb="2rem">
-          Select a coin
+        <Heading as="h6" size="md" mb="1.5rem" fontWeight={"semibold"}>
+          Select The Coin
         </Heading>
-        <FormControl>
+        <FormControl position={"relative"}>
           <form>
+            <Icon as={GrSearch} position={"absolute"} fontSize={"1.4rem"} top={"50%"} left={"6%"} transform={"translate(-50%, -50%)"}/>
             <Input
               type="email"
               border="1px solid black"
               w="100%"
               p=".5rem"
-              h="35px"
+              pl={"2.2rem"}
+              h="40px"
               value={searchedCoinName}
               onChange={(e) => setSearchedCoinName(e.target.value)}
             />
