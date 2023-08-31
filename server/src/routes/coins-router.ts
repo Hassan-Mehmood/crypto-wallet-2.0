@@ -7,6 +7,7 @@ import {
   getPortfolio,
   getUserBalance,
   setUserBalance,
+  getTransactions,
 } from '../controllers/coins-controller';
 import { verifyToken } from '../utils/jwt';
 
@@ -48,5 +49,7 @@ router.get('/balance', verifyToken, getUserBalance);
 router.post('/balance', verifyToken, setUserBalance);
 router.delete('/deleteCoinAndKeepTransactions/:id', verifyToken, deleteCoinAndKeepTransactions);
 router.delete('/deleteCoinAndTransactions/:id', verifyToken, deleteCoinAndTransactions);
+
+router.get('/transactions/:id', verifyToken, getTransactions);
 
 export default router;

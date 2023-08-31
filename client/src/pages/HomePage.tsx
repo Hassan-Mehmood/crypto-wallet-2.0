@@ -5,7 +5,7 @@ export default function HomePage() {
   return (
     <section>
       <Highlights />
-      <CoinsTable />
+      {/* <CoinsTable /> */}
     </section>
   );
 }

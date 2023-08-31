@@ -262,3 +262,27 @@ export interface userAccountBalance {
   dollerBalance: number;
   cryptoBalance: number;
 }
+
+export interface coinTransaction {
+  coin: {
+    name: string;
+    symbol: string;
+    thump: string;
+    averageBuyPrice: number;
+    totalQuantity: number;
+    totalInvestment: number;
+    holdingsInDollers: number;
+    profitLoss: number;
+  };
+  transactions: Transaction[];
+}
+
+interface Transaction {
+  coinId: number;
+  createdAt: string;
+  id: number;
+  price: number;
+  quantity: number;
+  timeBought: string;
+  updatedAt: string;
+}

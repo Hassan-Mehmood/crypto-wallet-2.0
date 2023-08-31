@@ -12,7 +12,11 @@ export function getProfitLossColor(profitLoss: number | undefined) {
   }
 }
 
-export function calculatePercentage(newPrice: number, oldPrice: number) {
+export function calculatePercentage(newPrice: number | undefined, oldPrice: number | undefined) {
+  if (!newPrice || !oldPrice) {
+    console.log('CalculatePercentage parameters undefined');
+    return;
+  }
   const percentage = ((newPrice - oldPrice) / oldPrice) * 100;
   const sign = `${percentage > 0 ? '+' : ''}`;
   return `${sign}${percentage.toFixed(2)}`;

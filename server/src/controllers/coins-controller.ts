@@ -230,3 +230,37 @@ export async function deleteCoinAndKeepTransactions(req: AuthenticatedRequest, r
     res.status(500).json({ message: 'Failed to delete coin.' });
   }
 }
+
+export async function getTransactions(req: AuthenticatedRequest, res: Response) {
+  try {
+    const coinId = Number(req.params.id);
+
+    const transactions = await prisma.transaction.findMany({
+      where: { coinId },
+      include: {
+        Coin: {
+          select: {
+            name: true,
+            symbol: true,
+            thump: true,
+            averageBuyPrice: true,
+            totalQuantity: true,
+            totalInvestment: true,
+            holdingsInDollers: true,
+            profitLoss: true,
+          },
+        },
+      },
+    });
+
+    const coin = transactions[0].Coin;
+
+    const coinLatestPrice = await getCoinLatestPrice(coin.symbol + 'USDT');
+    coin.holdingsInDollers = coin.totalQuantity * parseFloat(coinLatestPrice.data.price);
+    coin.profitLoss = coin.holdingsInDollers - coin.totalInvestment;
+
+    const transactionsWithoutCoin = transactions.map(({ Coin, ...rest }) => rest);
+
+    return res.status(200).json({ transactions: transactionsWithoutCoin, coin });
+  } catch (error) {}
+}
