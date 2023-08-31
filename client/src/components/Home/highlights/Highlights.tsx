@@ -1,5 +1,4 @@
-import { SimpleGrid, Card, CardHeader, Heading, CardBody, Spinner } from '@chakra-ui/react';
-import React from 'react';
+import { SimpleGrid, Card, CardHeader, Heading, CardBody, Spinner, GridItem } from '@chakra-ui/react';
 import GlobalData from './GlobalData';
 import MarketDominance from './MarketDominance';
 import TrendingCoins from './TrendingCoins';
@@ -12,7 +11,7 @@ export default function Highlights() {
   const globalData = data && data[1].data;
 
   return (
-    <SimpleGrid spacing={4} templateColumns="repeat(3, 1fr)">
+    <SimpleGrid spacing={4} templateColumns={["repeat(2, 1fr)", "repeat(2, 1fr)", "repeat(3, 1fr)"]}>
       <Card>
         <CardHeader>
           <Heading size="md">Trending Coins</Heading>
@@ -40,14 +39,16 @@ export default function Highlights() {
           />
         </CardBody>
       </Card>
-      <Card>
-        <CardHeader>
-          <Heading size="md">Market Dominance</Heading>
-        </CardHeader>
-        <CardBody>
-          <MarketDominance dominance={globalData?.market_cap_percentage} isLoading={isLoading} />
-        </CardBody>
-      </Card>
+      <GridItem colSpan={[2, 2, 1]} display={["flex", "flex", "block"]} justifyContent={"center"}>
+        <Card width={["48.8vw", "45.1vw", "full"]}>
+          <CardHeader>
+            <Heading size="md">Market Dominance</Heading>
+          </CardHeader>
+          <CardBody>
+            <MarketDominance dominance={globalData?.market_cap_percentage} isLoading={isLoading} />
+          </CardBody>
+        </Card>
+      </GridItem>
     </SimpleGrid>
   );
 }

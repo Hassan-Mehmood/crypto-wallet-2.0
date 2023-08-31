@@ -6,6 +6,8 @@ import PortfolioSizeModal from './PortfolioSizeModal';
 interface props {
   allTimeProfit: number | undefined;
   portfolioWorth: number | undefined;
+  dollerBalance: number | undefined;
+  cryptoBalance: number | undefined;
   bestPerformer:
     | {
         value: number;
@@ -25,11 +27,11 @@ export default function PortfolioOverview({
   bestPerformer,
   worstPerformer,
   portfolioWorth,
+  cryptoBalance,
+  dollerBalance,
 }: props) {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  // const { data: accountBalance } = useQuery('accountBalance', getUserBalance);
 
   return (
     <>
@@ -40,6 +42,18 @@ export default function PortfolioOverview({
             Portfolio Worth:{' '}
             <Box as="span">
               <>${portfolioWorth?.toLocaleString('en', { maximumFractionDigits: 2 })}</>
+            </Box>
+          </Text>
+          <Text fontSize={20} mt=".5rem" fontWeight="semibold">
+            Crypto Balance:{' '}
+            <Box as="span">
+              <>${cryptoBalance?.toLocaleString('en', { maximumFractionDigits: 2 })}</>
+            </Box>
+          </Text>
+          <Text fontSize={20} mt=".5rem" fontWeight="semibold">
+            Doller Balance:{' '}
+            <Box as="span">
+              <>${dollerBalance?.toLocaleString('en', { maximumFractionDigits: 2 })}</>
             </Box>
           </Text>
         </Box>

@@ -10,12 +10,13 @@ import {
   Flex,
   Image,
   Button,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
 import { Trash2 } from 'react-feather';
-import { useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import DeleteCoinModal from './DeleteCoinModal';
+import { useState } from 'react';
 
 interface props {
   coins:
@@ -49,27 +50,13 @@ interface props {
 }
 
 export default function PortfolioTable({ coins }: props) {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
-
-  const deleteCoinMutation = useMutation(
-    (coinId: number) =>
-      axios.delete(`${process.env.REACT_APP_SERVER_URL}/portfolio/delete/${coinId}`, {
-        withCredentials: true,
-      }),
-    {
-      onSuccess: () => {
-        queryClient.refetchQueries('userCoins');
-      },
-    }
-  );
-
-  function deleteCoin(id: number) {
-    deleteCoinMutation.mutate(id);
-  }
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [coinId, setCoinId] = useState<number | null>(null);
 
   return (
     <>
+      <DeleteCoinModal isOpen={isOpen} onClose={onClose} id={coinId} setCoinId={setCoinId} />
       {coins?.length === 0 ? (
         <Button
           onClick={() => navigate('/addCoin')}
@@ -90,6 +77,7 @@ export default function PortfolioTable({ coins }: props) {
           Add Coins
         </Button>
       ) : null}
+
       <TableContainer mt="3rem">
         <Table variant="simple">
           <Thead>
@@ -139,7 +127,13 @@ export default function PortfolioTable({ coins }: props) {
                 </Td>
                 <Td>
                   <Box as="span" display="inline-block" cursor="pointer">
-                    <Trash2 color="maroon" onClick={() => deleteCoin(coin.id)} />
+                    <Trash2
+                      color="maroon"
+                      onClick={() => {
+                        setCoinId(coin.id);
+                        onOpen();
+                      }}
+                    />
                   </Box>
                 </Td>
               </Tr>

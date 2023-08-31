@@ -1,4 +1,5 @@
-import { Button, Box } from '@chakra-ui/react';
+import { Button, Box, Icon, Text } from '@chakra-ui/react';
+import { AiOutlineUser, AiOutlineUserAdd } from "react-icons/ai";
 
 interface props {
   onOpenLogin: () => void;
@@ -10,33 +11,32 @@ export default function NavLinks({ onOpenLogin, onOpenSignup }: props) {
     <Box display="flex" alignItems="center">
       <Button
         onClick={onOpenLogin}
-        fontSize="sm"
-        border="1px solid rgb(105, 162, 53)"
         borderRadius="8px"
         background="none"
-        padding={'0 16px'}
-        mr="1rem"
+        px={'0.7rem'}
+        py={"1.3rem"}
         _hover={{
-          background: 'rgb(105, 162, 53)',
-          color: '#fff',
-          border: '1px solid rgb(105, 162, 53)',
+          color: "#8bc53f"
         }}
       >
-        Log in
+        <Icon as={AiOutlineUserAdd} marginRight={"0.5rem"} />
+        <Text>Log in</Text>
       </Button>
       <Button
         onClick={onOpenSignup}
-        fontSize="sm"
         borderRadius="8px"
         color="#fff"
-        background="rgb(105, 162, 53)"
-        padding={'0 16px'}
-        border="1px solid rgb(105, 162, 53)"
+        background="#8bc53f"
+        border="1px solid #8bc53f"
+        px={'0.7rem'}
+        py={"1.3rem"}
         _hover={{
-          background: 'rgb(81, 126, 39)',
+          background: 'none',
+          color: "#8bc53f",
         }}
       >
-        Sign up
+        <Icon as={AiOutlineUser} marginRight={"0.5rem"} />
+        <Text>Sign up</Text>
       </Button>
     </Box>
   );

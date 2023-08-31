@@ -38,20 +38,27 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
     if (userCoins.length === 0) {
       bestPerformer = { value: 0, thump: '', change: 0 };
       worstPerformer = { value: 0, thump: '', change: 0 };
-      return res
-        .status(200)
-        .json({ coins: [], allTimeProfit, bestPerformer, worstPerformer, portfolioWorth });
+
+      return res.status(200).json({
+        coins: [],
+        allTimeProfit,
+        bestPerformer,
+        worstPerformer,
+        portfolioWorth: dollerBalance,
+        cryptoBalance: 0,
+        dollerBalance,
+      });
     }
 
     const {
       updatedCoins,
-      allTimeProfit: _allTimeProfit, // This is just a number
+      allTimeProfit: _allTimeProfit, // This is a number
       bestPerformer: _bestPerformer, // This is an object
       worstPerformer: _worstPerformer, // This is an object
     } = await updateCoinData(userCoins, allTimeProfit, bestPerformer, worstPerformer);
 
-    const cryptoBalance = calculateLatestCryptoBalance(updatedCoins);
-    portfolioWorth = cryptoBalance + dollerBalance;
+    const updatedCryptoBalance = calculateLatestCryptoBalance(updatedCoins);
+    portfolioWorth = updatedCryptoBalance + dollerBalance;
 
     return res.status(200).json({
       coins: updatedCoins,
@@ -59,6 +66,8 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
       bestPerformer,
       worstPerformer,
       portfolioWorth,
+      dollerBalance,
+      cryptoBalance: updatedCryptoBalance,
     });
   } catch (error) {
     return res.status(error).json(error.message);
@@ -146,7 +155,7 @@ export async function addCoinTransaction(req: Request, res: Response) {
 export async function getUserBalance(req: AuthenticatedRequest, res: Response) {
   try {
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(req.user.id.toString()) },
+      where: { id: Number(req.user.id) },
       select: { dollerBalance: true, cryptoBalance: true },
     });
 
@@ -160,7 +169,7 @@ export async function getUserBalance(req: AuthenticatedRequest, res: Response) {
 export async function setUserBalance(req: AuthenticatedRequest, res: Response) {
   try {
     const user = await prisma.user.update({
-      where: { id: parseInt(req.user.id.toString()) },
+      where: { id: Number(req.user.id) },
       data: {
         dollerBalance: parseFloat(req.body.accountBalance),
       },
@@ -173,9 +182,9 @@ export async function setUserBalance(req: AuthenticatedRequest, res: Response) {
   }
 }
 
-export async function deleteCoin(req: AuthenticatedRequest, res: Response) {
+export async function deleteCoinAndTransactions(req: AuthenticatedRequest, res: Response) {
   try {
-    const coinId = parseInt(req.params.id.toString());
+    const coinId = Number(req.params.id);
 
     await prisma.transaction.deleteMany({
       where: {
@@ -189,9 +198,35 @@ export async function deleteCoin(req: AuthenticatedRequest, res: Response) {
       },
     });
 
-    return res.status(200).json(deletedCoin);
+    const latestPrice = await getCoinLatestPrice(deletedCoin.symbol + 'USDT');
+
+    await prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        dollerBalance: { increment: deletedCoin.totalInvestment },
+        cryptoBalance: {
+          decrement: deletedCoin.totalQuantity * parseFloat(latestPrice.data.price),
+        },
+      },
+    });
+
+    return res.status(200).json({ message: 'Coin and all transactions deleted successfully.' });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({ message: 'Failed to delete coin.' });
+  }
+}
+
+export async function deleteCoinAndKeepTransactions(req: AuthenticatedRequest, res: Response) {
+  try {
+    const coinId = Number(req.params.id);
+
+    await prisma.coin.update({
+      where: { id: coinId },
+      data: { active: false },
+    });
+
+    return res.status(200).json({ message: 'Coin deleted while keeping transactions.', coinId });
+  } catch (error) {
     res.status(500).json({ message: 'Failed to delete coin.' });
   }
 }

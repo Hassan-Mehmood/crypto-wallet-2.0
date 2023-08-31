@@ -19,9 +19,9 @@ export default async function updateCoinData(
 ) {
   const promises = coins.map(async (coin) => {
     const symbol = `${coin.symbol}USDT`;
-    const response = await getCoinLatestPrice(symbol);
+    const latestPriceData = await getCoinLatestPrice(symbol);
 
-    coin.latestPrice = parseFloat(response.data.price);
+    coin.latestPrice = parseFloat(latestPriceData.data.price);
     coin.holdingsInDollers = coin.totalQuantity * coin.latestPrice;
     coin.profitLoss = coin.holdingsInDollers - coin.totalInvestment;
 
@@ -48,28 +48,3 @@ export default async function updateCoinData(
     worstPerformer,
   };
 }
-
-// const promises = userCoins.map(async (coin) => {
-//   const symbol = `${coin.symbol}USDT`;
-//   const response = await getCoinLatestPrice(symbol);
-
-//   coin.latestPrice = parseFloat(response.data.price);
-//   coin.holdingsInDollers = coin.totalQuantity * coin.latestPrice;
-//   coin.profitLoss = coin.holdingsInDollers - coin.totalInvestment;
-//   coin.latestPrice = coin.latestPrice;
-
-//   allTimeProfit += coin.profitLoss;
-
-//   if (coin.profitLoss > bestPerformer.value) {
-//     bestPerformer.value = coin.profitLoss;
-//     bestPerformer.thump = coin.thump;
-//   }
-//   if (coin.profitLoss < worstPerformer.value) {
-//     worstPerformer.value = coin.profitLoss;
-//     worstPerformer.thump = coin.thump;
-//   }
-
-//   return coin;
-// });
-
-// const updatedCoins = await Promise.all(promises);

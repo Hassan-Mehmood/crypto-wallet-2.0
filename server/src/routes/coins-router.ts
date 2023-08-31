@@ -2,7 +2,8 @@ import express from 'express';
 import { body } from 'express-validator';
 import {
   addCoinTransaction,
-  deleteCoin,
+  deleteCoinAndTransactions,
+  deleteCoinAndKeepTransactions,
   getPortfolio,
   getUserBalance,
   setUserBalance,
@@ -23,7 +24,6 @@ const router = express.Router();
 
 router.post(
   '/add',
-
   body('bought_coin')
     .custom((coin: bought_coin) => coin.id !== null)
     .withMessage('Coin Data is required'),
@@ -46,6 +46,7 @@ router.post(
 router.get('/', verifyToken, getPortfolio);
 router.get('/balance', verifyToken, getUserBalance);
 router.post('/balance', verifyToken, setUserBalance);
-router.delete('/delete/:id', verifyToken, deleteCoin);
+router.delete('/deleteCoinAndKeepTransactions/:id', verifyToken, deleteCoinAndKeepTransactions);
+router.delete('/deleteCoinAndTransactions/:id', verifyToken, deleteCoinAndTransactions);
 
 export default router;

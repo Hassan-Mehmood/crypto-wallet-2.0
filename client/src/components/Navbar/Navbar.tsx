@@ -1,14 +1,16 @@
-import { Flex, Heading, useDisclosure } from '@chakra-ui/react';
-import LoginModal from './LoginModal';
-import SignupModal from './SignupModal';
+import { Flex, Heading, useDisclosure, Icon, Text } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { Link } from 'react-router-dom';
-import NavLinks from './NavLinks';
-import UserInfoAvatar from './UserInfoAvatar';
-import { getUserStatus } from '../../api/axios';
-import { useQuery } from 'react-query';
 import { login, logout } from '../../slices/userSlice';
+import { getUserStatus } from '../../api/axios';
+import { PiWalletLight } from "react-icons/pi";
+import { RootState } from '../../store';
+import { useQuery } from 'react-query';
+import { Link } from 'react-router-dom';
+import UserInfoAvatar from './UserInfoAvatar';
+import SignupModal from './SignupModal';
+import LoginModal from './LoginModal';
+import NavLinks from './NavLinks';
+
 const Navbar = () => {
   const { isOpen: isOpenLogin, onOpen: onOpenLogin, onClose: onCloseLogin } = useDisclosure();
   const { isOpen: isOpenSignup, onOpen: onOpenSignup, onClose: onCloseSignup } = useDisclosure();
@@ -31,12 +33,17 @@ const Navbar = () => {
       <Flex
         justify="space-between"
         align="center"
-        direction={['column', 'row']}
-        py={['1rem']}
+        direction='row'
+        py={['2rem', '1rem']}
         minH="75px"
       >
         <Heading fontSize="1.4rem" mb={['0.75rem']} cursor="pointer">
-          <Link to="/">Wallet Track</Link>
+          <Link to="/" >
+            <Flex align={"center"}>
+              <Icon as={PiWalletLight} marginRight={"0.5rem"} fontSize={"1.75rem"}/>
+              <Text>Wallet Track</Text>
+            </Flex>
+          </Link>
         </Heading>
         {user.id !== null ? (
           <UserInfoAvatar user={user} />
