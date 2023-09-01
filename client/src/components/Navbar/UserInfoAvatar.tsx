@@ -26,7 +26,7 @@ export default function UserInfoAvatar({ user }: props) {
   return (
     <Menu>
       <Box zIndex={200}>
-        <MenuButton bg="#8bc53f" border={"1.7px solid"} borderRadius="100%" color={"#fff"}
+        <MenuButton bg="#8bc53f" border={"2px solid"} borderRadius="100%" color={"#fff"}
           width={["2.5rem", "2.5rem", "2.8rem"]} height={["2.5rem", "2.5rem", "2.8rem"]}
           _hover={{
             background: '#fff',

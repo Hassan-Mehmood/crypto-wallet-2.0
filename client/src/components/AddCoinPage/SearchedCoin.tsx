@@ -5,13 +5,15 @@ import { addCoin } from '../../slices/coinSlice';
 
 interface Props {
   Coin: SearchCoin;
+  setListState: React.Dispatch<React.SetStateAction<boolean>>;
+  setSearchedCoinName: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const SearchedCoin = ({ Coin }: Props) => {
+const SearchedCoin = ({ Coin, setListState, setSearchedCoinName }: Props) => {
   const dispatch = useDispatch();
 
   return (
-    <Box py="0.5rem">
+    <Box py="0.5rem" >
       <Flex align="center" justify="space-between">
         <Flex align="center">
           <Image src={Coin.thumb} maxW="1.5rem" />
@@ -23,7 +25,11 @@ const SearchedCoin = ({ Coin }: Props) => {
           </Text>
         </Flex>
         <Button
-          onClick={(e) => dispatch(addCoin(Coin))}
+          onClick={() => {
+            dispatch(addCoin(Coin));
+            setListState(false);
+            setSearchedCoinName("");
+          }}
           fontSize="sm"
           borderRadius="0.3rem"
           color="#fff"

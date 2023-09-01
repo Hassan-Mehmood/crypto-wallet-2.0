@@ -1,4 +1,4 @@
-import { Box, Divider, FormControl, Heading, Icon, Input, border } from '@chakra-ui/react';
+import { Box, Divider, FormControl, Heading, Icon} from '@chakra-ui/react';
 import { getCoinByName } from '../../api/axios';
 import { useState, useEffect } from 'react';
 import { SearchCoin } from '../../types';
@@ -7,12 +7,16 @@ import SearchedCoin from './SearchedCoin';
 
 export default function SelectCoin() {
   const [searchedCoinName, setSearchedCoinName] = useState('');
+  const [listState, setListState] = useState(false)
   const [coinData, setCoinData] = useState<SearchCoin[]>([]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
       if (searchedCoinName.length > 0) {
-        getCoinByName(searchedCoinName).then((data) => setCoinData(data));
+        getCoinByName(searchedCoinName).then((data) => {
+          setCoinData(data);
+          setListState(true);
+        });
       } else {
         setCoinData([]);
       }
@@ -22,7 +26,7 @@ export default function SelectCoin() {
   }, [searchedCoinName]);
 
   return (
-    <Box zIndex={100} border="1px solid black" borderRadius={"0.7rem"} p="1rem" height="8.3rem" mb={"2rem"} width={["25.5rem", "28rem", "36rem", "40rem"]}>
+    <Box zIndex={100} border="1px solid black" borderRadius={"0.7rem"} px={["1rem", "1rem", "1.7rem"]} py={["1rem",  "1.2rem"]} height="8.3rem" mb={"2rem"} width={["25.5rem", "28rem", "36rem"]}>
       <Box>
         <Heading as="h6" size="md" mb="1.5rem" fontWeight={"semibold"}>
           Select The Coin
@@ -32,11 +36,11 @@ export default function SelectCoin() {
             <Icon as={GrSearch} position={"absolute"} fontSize={"1.4rem"} top={"50%"} left={"1.7rem"} transform={"translate(-50%, -50%)"} />
             <input style={{
               border: "1px solid black",
-              borderBottom: `${coinData.length > 0 ? "0px" : "1px solid"}`,
+              borderBottom: `${(coinData.length > 0 && listState === true) ? "0px" : "1px solid"}`,
               borderTopRightRadius: "0.5rem",
               borderTopLeftRadius: "0.5rem",
-              borderBottomLeftRadius: `${coinData.length > 0 ? "0px" : "0.5rem"}`,
-              borderBottomRightRadius: `${coinData.length > 0 ? "0px" : "0.5rem"}`,
+              borderBottomLeftRadius: `${(coinData.length > 0 && listState === true) ? "0px" : "0.5rem"}`,
+              borderBottomRightRadius: `${(coinData.length > 0 && listState === true) ? "0px" : "0.5rem"}`,
               width: "100%",
               padding: "0.5rem",
               paddingLeft: "2.8rem",
@@ -49,12 +53,16 @@ export default function SelectCoin() {
           </form>
         </FormControl>
       </Box>
-      {coinData.length > 0 && (
+      {(listState && coinData.length > 0) && (
         <Box backgroundColor={"white"} border={"1px"} borderTop={"0px"} borderBottomRadius={"0.5rem"} px={"1rem"}>
           <Divider />
           <Box py={"0.5rem"}>
             {coinData.slice(0, 5).map((coin) => (
-              <SearchedCoin key={coin.id} Coin={coin} />
+              <SearchedCoin key={coin.id} 
+              Coin={coin} 
+              setListState={setListState}
+              setSearchedCoinName={setSearchedCoinName}
+              />
             ))}
           </Box>
         </Box>

@@ -9,6 +9,7 @@ import {
   Box,
   Image,
   useToast,
+  Divider,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -123,40 +124,42 @@ export default function AddCoin() {
   }
 
   return (
-    <Box border="1px solid black" borderRadius={"0.7rem"} p="1rem" maxW="600px" w="100%">
-      <Flex justifyContent="space-between">
-        <Heading as="h6" size="md" mb="2rem">
+    <Box border="1px solid black" borderRadius={"0.7rem"} width={["25.5rem", "28rem", "36rem"]}>
+      <Flex justifyContent="space-between" alignItems={"center"} backgroundColor={"#8bc53f"} px={["1rem", "1rem", "1.7rem"]} py={"1.5rem"} borderTopRadius={"0.7rem"} color={"#fff"}>
+        <Heading as="h6" size="md" fontWeight={"semibold"}>
           Add Coin
         </Heading>
-        <Heading as="h6" size="md" mb="2rem">
+        <Heading as="h6" size="md" fontWeight={"semibold"}>
           <>Balance: ${accountBalance?.dollerBalance || 0}</>
         </Heading>
       </Flex>
-      <Flex align="center" mb="1rem">
+      <Flex align="center" mb="2rem" px={["1rem", "1rem", "1.7rem"]} pt={"1rem"}>
         <Image src={coinData.thumb ? coinData.thumb : ''} />
-        <Heading as="h6" size="sm" textTransform="capitalize" ml=".5rem">
+        <Heading as="h6" size="sm" textTransform="capitalize" ml={`${coinData.name && ".5rem"}`} fontWeight={"semibold"}>
           {coinData.name || 'No coin selected'}
         </Heading>
       </Flex>
-      <form>
-        <Flex gap="1rem">
-          <FormControl>
+      <form >
+        <Flex gap="1rem" px={["1rem", "1rem", "1.7rem"]} flexDir={"column"} width={"22rem"}>
+          <FormControl display={"flex"} justifyContent={"space-between"}>
             <FormLabel>Quantity</FormLabel>
             <NumberInput
               step={0.01}
               precision={2}
               min={0}
               value={coinQuantity}
+              width={"13rem"}
               onChange={(valueString) => handleQuantityInput(valueString)}
             >
               <NumberInputField h="35px" border="1px solid black" p=".5rem" />
             </NumberInput>
           </FormControl>
-          <FormControl>
+          <FormControl display={"flex"} justifyContent={"space-between"}>
             <FormLabel>Price</FormLabel>
             <NumberInput
               step={0.01}
               precision={2}
+              width={"13rem"}
               value={coinPrice}
               onChange={(valueString) => handlePriceInput(valueString)}
             >
@@ -164,42 +167,41 @@ export default function AddCoin() {
             </NumberInput>
           </FormControl>
         </Flex>
-        <Box>
-          <Heading as="h6" size="sm" mt="1rem">
+        <Box px={["1rem", "1rem", "1.7rem"]} pb={"1.5rem"}>
+          <Heading as="h6" size="sm" mt="1rem" fontWeight={"semibold"}>
             {coinData.name} ${parseFloat(coinPrice) * parseFloat(coinQuantity)}
           </Heading>
-          <Box mt="1rem">
+          <Flex flexDir={["column", "column", "row"]} mt="1rem" alignItems={"center"}>
             <Button
-              onClick={(e) => addTransaction(e)}
               type="submit"
-              fontSize="sm"
+              fontSize="md"
               borderRadius="8px"
               color="#fff"
-              background="rgb(105, 162, 53)"
+              background="#8bc53f"
               margin="0 0.5rem 0 0"
-              border="1px solid rgb(105, 162, 53)"
+              border="1.5px solid #8bc53f"
+              width={["18rem", "18rem", "10rem"]}
               _hover={{
-                background: 'rgb(81, 126, 39)',
+                background: '#fff',
+                color: "#8bc53f"
               }}
+              onClick={(e) => addTransaction(e)}
             >
               Add Transaction
             </Button>
             <Button
               onClick={() => dispatch(removeCoin())}
               fontSize="sm"
-              border="1px solid rgb(105, 162, 53)"
               borderRadius="8px"
               background="none"
               padding={'0 16px'}
               _hover={{
-                background: 'rgb(105, 162, 53)',
-                color: '#fff',
-                border: '1px solid rgb(105, 162, 53)',
+                color: '#8bc53f',
               }}
             >
               Cancel
             </Button>
-          </Box>
+          </Flex>
         </Box>
       </form>
     </Box>
