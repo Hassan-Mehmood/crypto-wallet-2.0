@@ -35,7 +35,7 @@ export default function NavLinks({ onOpenLogin, onOpenSignup }: props) {
           color: "#8bc53f",
         }}
       >
-        <Icon as={AiOutlineUser} marginRight={"0.5rem"} />
+        <Icon as={AiOutlineUser} marginRight={"0.5rem"}/>
         <Text>Sign up</Text>
       </Button>
     </Box>
