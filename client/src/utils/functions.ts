@@ -1,3 +1,5 @@
+import { Toast } from '@chakra-ui/react';
+
 export function getProfitLossColor(profitLoss: number | undefined) {
   if (profitLoss === undefined) {
     return '';
@@ -20,4 +22,15 @@ export function calculatePercentage(newPrice: number | undefined, oldPrice: numb
   const percentage = ((newPrice - oldPrice) / oldPrice) * 100;
   const sign = `${percentage > 0 ? '+' : ''}`;
   return `${sign}${percentage.toFixed(2)}`;
+}
+
+export function showToast(title: string, description: string, status: 'error' | 'success') {
+  return Toast({
+    title,
+    description,
+    position: 'top',
+    status,
+    duration: 3000,
+    isClosable: true,
+  });
 }

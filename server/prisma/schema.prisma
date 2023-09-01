@@ -49,6 +49,7 @@ model Transaction {
   price      Float
   quantity   Float
   timeBought DateTime
+  type       String
   Coin       Coin     @relation(fields: [coinId], references: [id])
   coinId     Int
   createdAt  DateTime @default(now())

@@ -32,19 +32,43 @@ export default function AddCoin() {
     getUserBalance
   );
 
-  const addCoin = useMutation(
+  const buyCoin = useMutation(
     async () => {
-      const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/portfolio/add`, {
+      const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/portfolio/buy`, {
         user: userData.id,
-        bought_coin: coinData,
+        coin: coinData,
         coinQuantity,
         coinPrice,
+        type: 'BUY',
       });
       return response.data;
     },
     {
       onSuccess: () => {
-        showToast('Success', 'Coin added successfully', 'success');
+        showToast('Success', 'Coin bought successfully', 'success');
+        refetchBalance();
+      },
+      onError: () => {
+        showToast('Error', 'Something went wrong', 'error');
+      },
+    }
+  );
+
+  const sellCoin = useMutation(
+    async () => {
+      const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/portfolio/sell`, {
+        user: userData.id,
+        coin: coinData,
+        coinQuantity,
+        coinPrice,
+        // moneyRecieved: parseFloat(coinPrice) * parseFloat(coinQuantity),
+        type: 'SELL',
+      });
+      return response.data;
+    },
+    {
+      onSuccess: () => {
+        showToast('Success', 'Coin sold successfully', 'success');
         refetchBalance();
       },
       onError: () => {
@@ -106,7 +130,7 @@ export default function AddCoin() {
     };
   }, [coinData.id, dispatch]);
 
-  function addTransaction(e: React.MouseEvent<HTMLButtonElement>) {
+  function buyTransaction(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
     if (!accountBalance) {
@@ -119,7 +143,23 @@ export default function AddCoin() {
       return;
     }
 
-    addCoin.mutate();
+    buyCoin.mutate();
+  }
+
+  function sellTransaction(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+
+    if (!accountBalance) {
+      showToast('Error', 'Something went wrong', 'error');
+      return;
+    }
+
+    if (parseFloat(coinPrice) * parseFloat(coinQuantity) > accountBalance.dollerBalance) {
+      showToast('Error', 'Insufficient funds', 'error');
+      return;
+    }
+
+    sellCoin.mutate();
   }
 
   return (
@@ -170,19 +210,36 @@ export default function AddCoin() {
           </Heading>
           <Box mt="1rem">
             <Button
-              onClick={(e) => addTransaction(e)}
+              onClick={(e) => buyTransaction(e)}
               type="submit"
               fontSize="sm"
               borderRadius="8px"
               color="#fff"
               background="rgb(105, 162, 53)"
               margin="0 0.5rem 0 0"
+              padding="0.5rem 1.5rem"
               border="1px solid rgb(105, 162, 53)"
               _hover={{
                 background: 'rgb(81, 126, 39)',
               }}
             >
-              Add Transaction
+              Buy
+            </Button>
+            <Button
+              onClick={(e) => sellTransaction(e)}
+              type="submit"
+              fontSize="sm"
+              borderRadius="8px"
+              color="#fff"
+              background="rgb(255, 0, 0)"
+              margin="0 0.5rem 0 0"
+              padding="0.5rem 1.5rem"
+              border="1px solid rgb(255, 0, 0)"
+              _hover={{
+                background: 'rgb(200, 0, 0)',
+              }}
+            >
+              Sell
             </Button>
             <Button
               onClick={() => dispatch(removeCoin())}

@@ -1,17 +1,18 @@
 import express from 'express';
 import { body } from 'express-validator';
 import {
-  addCoinTransaction,
+  buyTransaction,
   deleteCoinAndTransactions,
   deleteCoinAndKeepTransactions,
   getPortfolio,
   getUserBalance,
   setUserBalance,
   getTransactions,
+  sellTransaction,
 } from '../controllers/coins-controller';
 import { verifyToken } from '../utils/jwt';
 
-export type bought_coin = {
+export type transactionCoin = {
   id: string;
   name: string;
   api_symbol: string;
@@ -24,9 +25,9 @@ export type bought_coin = {
 const router = express.Router();
 
 router.post(
-  '/add',
-  body('bought_coin')
-    .custom((coin: bought_coin) => coin.id !== null)
+  '/buy',
+  body('coin')
+    .custom((coin: transactionCoin) => coin.id !== null)
     .withMessage('Coin Data is required'),
   body('user')
     .custom((userID: number) => userID !== null)
@@ -40,7 +41,27 @@ router.post(
     .custom((num: number) => num > 0)
     .withMessage('Coin Price must be greater than 0'),
 
-  addCoinTransaction
+  buyTransaction
+);
+
+router.post(
+  '/sell',
+  body('coin')
+    .custom((coin: transactionCoin) => coin.id !== null)
+    .withMessage('Coin Data is required'),
+  body('user')
+    .custom((userID: number) => userID !== null)
+    .withMessage('User not logged in'),
+  body('coinQuantity')
+    .notEmpty()
+    .custom((num: number) => num > 0)
+    .withMessage('Coin Quantity must be greater than 0'),
+  body('coinPrice')
+    .notEmpty()
+    .custom((num: number) => num > 0)
+    .withMessage('Coin Price must be greater than 0'),
+
+  sellTransaction
 );
 
 // /api/portfolio/
