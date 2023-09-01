@@ -5,6 +5,9 @@ import { useQuery } from 'react-query';
 import { getCoinTransactions } from '../../api/axios';
 import { Image } from '@chakra-ui/image';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { Trash2 } from 'react-feather';
+import { Transaction } from '../../types';
 
 interface props {
   setShowTable: React.Dispatch<React.SetStateAction<string>>;
@@ -13,8 +16,6 @@ interface props {
 
 export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: props) {
   const { data } = useQuery('coinTransaction', () => getCoinTransactions(activeCoinId));
-
-  console.log(data);
 
   return (
     <Box>
@@ -66,6 +67,69 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
           </Box>
         </Flex>
       </Flex>
+
+      <TableContainer mt="3rem">
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>Type</Th>
+              <Th>Price</Th>
+              <Th>Amount</Th>
+              <Th pr="0">Actions</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {data?.transactions.map((transaction: Transaction) => (
+              <Tr
+                key={transaction.id}
+                _hover={{ backgroundColor: '#f4f4f4', cursor: 'pointer' }}
+                onClick={() => {
+                  setShowTable('transactionsTable');
+                  // setActiveCoinId(coin.id);
+                }}
+              >
+                <Td>
+                  <Box fontWeight={'bold'}>
+                    <Text>{transaction.type}</Text>
+                  </Box>
+                </Td>
+
+                <Td>
+                  <Box fontWeight={'bold'}>
+                    <Text>${transaction.price}</Text>
+                  </Box>
+                </Td>
+
+                <Td>
+                  <Box fontWeight="bold">
+                    <Text>
+                      {transaction.type === 'BUY' ? '-' : '+'}$
+                      {parseFloat(transaction.quantity.toString()) *
+                        parseFloat(transaction.price.toString())}
+                    </Text>
+                    <Text color={transaction.type === 'BUY' ? 'green' : 'red'}>
+                      {transaction.type === 'BUY' ? '+' : '-'}
+                      {transaction.quantity} {data?.coin.name}
+                    </Text>
+                  </Box>
+                </Td>
+                <Td>
+                  <Box as="span" display="inline-block" cursor="pointer">
+                    <Trash2
+                      color="maroon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // setCoinId(coin.id);
+                        // onOpen();
+                      }}
+                    />
+                  </Box>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 }

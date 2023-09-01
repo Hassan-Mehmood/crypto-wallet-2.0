@@ -281,6 +281,7 @@ interface Transaction {
   coinId: number;
   createdAt: string;
   id: number;
+  type: string;
   price: number;
   quantity: number;
   timeBought: string;
