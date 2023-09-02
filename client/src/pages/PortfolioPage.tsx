@@ -12,33 +12,35 @@ export default function PortfolioPage() {
   const [showTable, setShowTable] = useState('coinsTable');
   const [activeCoinId, setActiveCoinId] = useState<number>(0);
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
-    <Box as="section" position="relative">
-      {isFetching ? <Spinner position="absolute" top="50%" left="50%" /> : null}
-
-      {showTable === 'coinsTable' ? (
-        <Box>
-          <PortfolioOverview
-            allTimeProfit={data?._allTimeProfit}
-            bestPerformer={data?.bestPerformer}
-            worstPerformer={data?.worstPerformer}
-            portfolioWorth={data?.portfolioWorth}
-            cryptoBalance={data?.cryptoBalance}
-            dollerBalance={data?.dollerBalance}
-          />
-          <PortfolioTable
-            coins={data?.coins}
-            setShowTable={setShowTable}
-            setActiveCoinId={setActiveCoinId}
-          />
-        </Box>
+    <>
+      {isLoading ? (
+        <Loading />
       ) : (
-        <CoinsTransactionsTable setShowTable={setShowTable} activeCoinId={activeCoinId} />
+        <Box as="section" position="relative">
+          {isFetching ? <Spinner position="absolute" top="50%" left="50%" /> : null}
+
+          {showTable === 'coinsTable' ? (
+            <Box>
+              <PortfolioOverview
+                allTimeProfit={data?._allTimeProfit}
+                bestPerformer={data?.bestPerformer}
+                worstPerformer={data?.worstPerformer}
+                portfolioWorth={data?.portfolioWorth}
+                cryptoBalance={data?.cryptoBalance}
+                dollerBalance={data?.dollerBalance}
+              />
+              <PortfolioTable
+                coins={data?.coins}
+                setShowTable={setShowTable}
+                setActiveCoinId={setActiveCoinId}
+              />
+            </Box>
+          ) : (
+            <CoinsTransactionsTable setShowTable={setShowTable} activeCoinId={activeCoinId} />
+          )}
+        </Box>
       )}
-    </Box>
+    </>
   );
 }

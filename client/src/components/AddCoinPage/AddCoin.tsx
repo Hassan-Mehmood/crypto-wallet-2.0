@@ -21,6 +21,7 @@ import axios from 'axios';
 export default function AddCoin() {
   const [coinQuantity, setCoinQuantity] = useState<string>('0');
   const [coinPrice, setCoinPrice] = useState<string>('0');
+  const [disableBtn, setDisableBtn] = useState(false);
 
   const coinData = useSelector((state: RootState) => state.searchCoinReducer);
   const userData = useSelector((state: RootState) => state.userReducer);
@@ -44,6 +45,9 @@ export default function AddCoin() {
       return response.data;
     },
     {
+      onMutate: () => setDisableBtn(true),
+      onSettled: () => setDisableBtn(false),
+
       onSuccess: () => {
         showToast('Success', 'Coin bought successfully', 'success');
         refetchBalance();
@@ -65,7 +69,11 @@ export default function AddCoin() {
       });
       return response.data;
     },
+
     {
+      onMutate: () => setDisableBtn(true),
+      onSettled: () => setDisableBtn(false),
+
       onSuccess: () => {
         showToast('Success', 'Coin sold successfully', 'success');
         refetchBalance();
@@ -161,6 +169,8 @@ export default function AddCoin() {
     sellCoin.mutate();
   }
 
+  console.log(disableBtn);
+
   return (
     <Box border="1px solid black" p="1rem" maxW="600px" w="100%">
       <Flex justifyContent="space-between">
@@ -210,6 +220,7 @@ export default function AddCoin() {
           <Box mt="1rem">
             <Button
               onClick={(e) => buyTransaction(e)}
+              disabled={disableBtn}
               type="submit"
               fontSize="sm"
               borderRadius="8px"
@@ -226,6 +237,7 @@ export default function AddCoin() {
             </Button>
             <Button
               onClick={(e) => sellTransaction(e)}
+              disabled={disableBtn}
               type="submit"
               fontSize="sm"
               borderRadius="8px"
