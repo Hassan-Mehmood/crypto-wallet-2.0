@@ -9,17 +9,17 @@ interface props {
   dollerBalance: number | undefined;
   cryptoBalance: number | undefined;
   bestPerformer:
-    | {
-        value: number;
-        thump: string;
-      }
-    | undefined;
+  | {
+    value: number;
+    thump: string;
+  }
+  | undefined;
   worstPerformer:
-    | {
-        value: number;
-        thump: string;
-      }
-    | undefined;
+  | {
+    value: number;
+    thump: string;
+  }
+  | undefined;
 }
 
 export default function PortfolioOverview({
@@ -36,7 +36,12 @@ export default function PortfolioOverview({
   return (
     <>
       <PortfolioSizeModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
-      <Flex align="center" justify="space-between">
+      <Box
+        background="rgba(255, 255, 255, 0.2)"
+        borderRadius="16px"
+        boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+        backdropFilter="blur(10px)"
+        border="1px solid rgba(255, 255, 255, 0.3)">
         <Box>
           <Text fontSize={20} mt=".5rem" fontWeight="semibold">
             Portfolio Worth:{' '}
@@ -87,7 +92,7 @@ export default function PortfolioOverview({
             Add Coins
           </Button>
         </Box>
-      </Flex>
+      </Box>
       <Flex align="center" mt="1rem">
         <Box>
           <Text mt="1rem" fontSize={14} fontWeight="bold">

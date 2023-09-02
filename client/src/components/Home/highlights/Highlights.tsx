@@ -12,7 +12,13 @@ export default function Highlights() {
 
   return (
     <SimpleGrid spacing={4} templateColumns={["repeat(2, 1fr)", "repeat(2, 1fr)", "repeat(3, 1fr)"]}>
-      <Card>
+      <Card
+        background="rgba(255, 255, 255, 0.2)"
+        borderRadius="16px"
+        boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+        backdropFilter="blur(10px)"
+        border="1px solid rgba(255, 255, 255, 0.3)"
+      >
         <CardHeader>
           <Heading size="md">Trending Coins</Heading>
         </CardHeader>
@@ -26,7 +32,13 @@ export default function Highlights() {
           )}
         </CardBody>
       </Card>
-      <Card>
+      <Card
+        background="rgba(255, 255, 255, 0.2)"
+        borderRadius="16px"
+        boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+        backdropFilter="blur(10px)"
+        border="1px solid rgba(255, 255, 255, 0.3)"
+      >
         <CardHeader>
           <Heading size="md">Global News</Heading>
         </CardHeader>
@@ -40,7 +52,13 @@ export default function Highlights() {
         </CardBody>
       </Card>
       <GridItem colSpan={[2, 2, 1]} display={["flex", "flex", "block"]} justifyContent={"center"}>
-        <Card width={["48.8vw", "45.1vw", "full"]}>
+        <Card width={["48.8vw", "45.1vw", "full"]}
+          background="rgba(255, 255, 255, 0.2)"
+          borderRadius="16px"
+          boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+          backdropFilter="blur(10px)"
+          border="1px solid rgba(255, 255, 255, 0.3)"
+        >
           <CardHeader>
             <Heading size="md">Market Dominance</Heading>
           </CardHeader>
