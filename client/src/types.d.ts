@@ -273,6 +273,7 @@ export interface coinTransaction {
     totalInvestment: number;
     holdingsInDollers: number;
     profitLoss: number;
+    cost:number
   };
   transactions: Transaction[];
 }

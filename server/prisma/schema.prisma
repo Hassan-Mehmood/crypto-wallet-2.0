@@ -35,7 +35,8 @@ model Coin {
   latestPrice       Float         @default(0)
   holdingsInDollers Float         @default(0)
   profitLoss        Float         @default(0)
-  totalInvestment   Float         @default(0)
+  totalInvestment   Float         @default(0) // How much invested user is in a coin
+  cost              Float         @default(0) // Cost means how much $ costed in buying coins
   active            Boolean       @default(true)
   user              User          @relation(fields: [userId], references: [id])
   transactions      Transaction[]

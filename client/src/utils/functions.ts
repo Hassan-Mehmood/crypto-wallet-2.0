@@ -14,12 +14,25 @@ export function getProfitLossColor(profitLoss: number | undefined) {
   }
 }
 
-export function calculatePercentage(newPrice: number | undefined, oldPrice: number | undefined) {
-  if (!newPrice || !oldPrice) {
+export function calculatePercentage(
+  latestPrice: number | undefined,
+  investment: number | undefined,
+  cost: number | undefined
+) {
+  if (!latestPrice || !investment || !cost) {
     console.log('CalculatePercentage parameters undefined');
     return;
   }
-  const percentage = ((newPrice - oldPrice) / oldPrice) * 100;
+
+  // Write a snap with caption hustle and consistancy pe career ye mushtamil
+
+  const profitOrLoss = latestPrice - investment;
+
+  console.log('profit or loss', profitOrLoss);
+  console.log('old price', investment);
+  console.log('new price', latestPrice);
+  // const percentage = ((newPrice - investment) / investment) * 100;
+  const percentage = (profitOrLoss / cost) * 100;
   const sign = `${percentage > 0 ? '+' : ''}`;
   return `${sign}${percentage.toFixed(2)}`;
 }

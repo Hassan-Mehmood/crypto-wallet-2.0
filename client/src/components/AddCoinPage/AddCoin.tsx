@@ -60,8 +60,7 @@ export default function AddCoin() {
         user: userData.id,
         coin: coinData,
         coinQuantity,
-        coinPrice,
-        // moneyRecieved: parseFloat(coinPrice) * parseFloat(coinQuantity),
+        coinPrice, // This is the price @ which the coin was sold
         type: 'SELL',
       });
       return response.data;

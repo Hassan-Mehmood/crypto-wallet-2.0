@@ -17,6 +17,8 @@ interface props {
 export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: props) {
   const { data } = useQuery('coinTransaction', () => getCoinTransactions(activeCoinId));
 
+  console.log(data?.coin);
+
   return (
     <Box>
       <Button onClick={() => setShowTable('coinsTable')}>Back</Button>
@@ -43,7 +45,12 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
               fontSize="12px"
               fontWeight="bold"
             >
-              {calculatePercentage(data?.coin.holdingsInDollers, data?.coin.totalInvestment)}%
+              {calculatePercentage(
+                data?.coin.holdingsInDollers,
+                data?.coin.totalInvestment,
+                data?.coin.cost
+              )}
+              %
             </Box>
           </Flex>
         </Box>
@@ -61,7 +68,12 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
           <Box>
             <Text color="#58667e">Total Profit / Loss</Text>
             <Text fontWeight="bold" color={getProfitLossColor(data?.coin.profitLoss)}>
-              {calculatePercentage(data?.coin.holdingsInDollers, data?.coin.totalInvestment)}% ($
+              {calculatePercentage(
+                data?.coin.holdingsInDollers,
+                data?.coin.totalInvestment,
+                data?.coin.cost
+              )}
+              % ($
               {data?.coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })})
             </Text>
           </Box>

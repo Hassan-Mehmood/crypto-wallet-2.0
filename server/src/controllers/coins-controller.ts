@@ -206,18 +206,24 @@ export async function sellTransaction(req: Request, res: Response) {
       },
     });
 
+    const coinRemainingQuantity =
+      parseFloat(coinRecord.totalQuantity.toString()) - parseFloat(coinQuantity);
+    const remainingInvestment = parseFloat(coinRecord.totalInvestment.toString()) - transactionCost;
+
+    // const coinRemainingQuantity = coinRecord.totalQuantity - parseFloat(coinQuantity);
+    // const remainingInvestment = coinRecord.totalInvestment - transactionCost;
+
     await prisma.coin.update({
       where: {
         id: coinRecord.id,
       },
       data: {
-        totalQuantity: {
-          decrement: parseFloat(coinQuantity),
-        },
+        totalQuantity: coinRemainingQuantity,
+        totalInvestment: remainingInvestment,
       },
     });
 
-    return res.status(200).json('Coin sold');
+    return res.status(200);
   } catch (error) {
     return res.status(500).json(error.message);
   }
@@ -319,6 +325,7 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
             totalInvestment: true,
             holdingsInDollers: true,
             profitLoss: true,
+            cost: true,
           },
         },
       },
