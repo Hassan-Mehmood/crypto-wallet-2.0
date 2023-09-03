@@ -33,6 +33,7 @@ model Coin {
   holdingsInDollers Float         @default(0)
   profitLoss        Float         @default(0)
   totalInvestment   Float         @default(0)
+  cost              Float         @default(0)
   active            Boolean       @default(true)
   userId            Int
   createdAt         DateTime      @default(now())
@@ -46,6 +47,7 @@ model Transaction {
   price      Float
   quantity   Float
   timeBought DateTime
+  type       String
   coinId     Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
