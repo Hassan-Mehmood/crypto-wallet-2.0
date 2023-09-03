@@ -24,68 +24,33 @@ export default function Highlights() {
       spacing={4}
       templateColumns={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
     >
-      <Card
-        background="rgba(255, 255, 255, 0.2)"
-        borderRadius="16px"
-        boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
-        backdropFilter="blur(10px)"
-        border="1px solid rgba(255, 255, 255, 0.3)"
-      >
-        <CardHeader>
-          <Heading size="md">Trending Coins</Heading>
-        </CardHeader>
-        <CardBody>
-          {isLoading === true ? (
-            <Spinner position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)" />
-          ) : (
-            trendingCoins
-              ?.slice(0, 3)
-              .map((coin) => <TrendingCoins coin={coin} key={coin.item.id} />)
-          )}
-        </CardBody>
-      </Card>
-      <Card
-        background="rgba(255, 255, 255, 0.2)"
-        borderRadius="16px"
-        boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
-        backdropFilter="blur(10px)"
-        border="1px solid rgba(255, 255, 255, 0.3)"
-      >
-        <CardHeader>
-          <Heading size="md">Global News</Heading>
-        </CardHeader>
-        <CardBody>
-          <GlobalData
-            activeCurrencies={globalData?.active_cryptocurrencies}
-            markets={globalData?.markets}
-            icos={globalData?.ongoing_icos}
-            isLoading={isLoading}
-          />
-        </CardBody>
-      </Card>
       <Skeleton isLoaded={!isLoading}>
-        <GridItem colSpan={[2, 2, 1]} display={['flex', 'flex', 'block']} justifyContent={'center'}>
-          <Card
-            width={['48.8vw', '45.1vw', 'full']}
-            background="rgba(255, 255, 255, 0.2)"
-            borderRadius="16px"
-            boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
-            backdropFilter="blur(10px)"
-            border="1px solid rgba(255, 255, 255, 0.3)"
-          >
-            <CardHeader>
-              <Heading size="md">Trending Coins</Heading>
-            </CardHeader>
-            <CardBody>
-              {trendingCoins?.slice(0, 3).map((coin) => (
-                <TrendingCoins coin={coin} key={coin.item.id} />
-              ))}
-            </CardBody>
-          </Card>
-        </GridItem>
+        <Card
+          background="rgba(255, 255, 255, 0.2)"
+          borderRadius="16px"
+          boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+          backdropFilter="blur(10px)"
+          border="1px solid rgba(255, 255, 255, 0.3)"
+        >
+          <CardHeader>
+            <Heading size="md">Trending Coins</Heading>
+          </CardHeader>
+          <CardBody>
+            {trendingCoins?.slice(0, 3).map((coin) => (
+              <TrendingCoins coin={coin} key={coin.item.id} />
+            ))}
+          </CardBody>
+        </Card>
       </Skeleton>
+
       <Skeleton isLoaded={!isLoading}>
-        <Card>
+        <Card
+          background="rgba(255, 255, 255, 0.2)"
+          borderRadius="16px"
+          boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+          backdropFilter="blur(10px)"
+          border="1px solid rgba(255, 255, 255, 0.3)"
+        >
           <CardHeader>
             <Heading size="md">Global News</Heading>
           </CardHeader>
@@ -99,6 +64,7 @@ export default function Highlights() {
           </CardBody>
         </Card>
       </Skeleton>
+
       <Skeleton isLoaded={!isLoading}>
         <GridItem colSpan={[2, 2, 1]} display={['flex', 'flex', 'block']} justifyContent={'center'}>
           <Card width={['48.8vw', '45.1vw', 'full']}>
