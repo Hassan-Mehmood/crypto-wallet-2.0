@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -35,14 +32,14 @@ model Coin {
   latestPrice       Float         @default(0)
   holdingsInDollers Float         @default(0)
   profitLoss        Float         @default(0)
-  totalInvestment   Float         @default(0) // How much invested user is in a coin
-  cost              Float         @default(0) // Cost means how much $ costed in buying coins
+  totalInvestment   Float         @default(0)
+  cost              Float         @default(0)
   active            Boolean       @default(true)
-  user              User          @relation(fields: [userId], references: [id])
-  transactions      Transaction[]
   userId            Int
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
+  user              User          @relation(fields: [userId], references: [id])
+  transactions      Transaction[]
 }
 
 model Transaction {

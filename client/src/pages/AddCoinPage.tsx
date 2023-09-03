@@ -1,16 +1,12 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import AddCoin from '../components/AddCoinPage/AddCoin';
 import SelectCoin from '../components/AddCoinPage/SelectCoin';
 
 export default function AddCoinPage() {
   return (
-    <Box as="section">
-      <Box px={5} py="2rem" mx="auto" maxW="1402px" minH="calc(100vh-75px)">
-        <Flex align="self-start" justify="space-evenly" minH="100%">
-          <SelectCoin />
-          <AddCoin />
-        </Flex>
-      </Box>
-    </Box>
+    <Flex flexDir={"column"} alignItems={"center"} justifyContent={"center"} width={"full"} pt={["1rem", "2rem"]}>
+      <SelectCoin />
+      <AddCoin />
+    </Flex>
   );
 }
