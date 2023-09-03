@@ -32,7 +32,8 @@ model Coin {
   latestPrice       Float         @default(0)
   holdingsInDollers Float         @default(0)
   profitLoss        Float         @default(0)
-  totalInvestment   Float         @default(0)
+  totalInvestment   Float         @default(0) // How much invested user is in a coin
+  cost              Float         @default(0) // Cost means how much $ costed in buying coins
   active            Boolean       @default(true)
   userId            Int
   createdAt         DateTime      @default(now())
@@ -46,8 +47,9 @@ model Transaction {
   price      Float
   quantity   Float
   timeBought DateTime
+  type       String
+  Coin       Coin     @relation(fields: [coinId], references: [id])
   coinId     Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  Coin       Coin     @relation(fields: [coinId], references: [id])
 }

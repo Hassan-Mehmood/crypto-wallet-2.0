@@ -4,6 +4,7 @@ import {
   SearchCoin,
   TrendingCoin,
   UserTransactionsData,
+  coinTransaction,
   getCoinMarketDataType,
   userAccountBalance,
 } from '../types';
@@ -64,6 +65,17 @@ export async function getUserStatus() {
   const { data } = await axios.get(`${process.env.REACT_APP_SERVER_URL}/auth/user-status`, {
     withCredentials: true,
   });
+
+  return data;
+}
+
+export async function getCoinTransactions(coinId: number): Promise<coinTransaction> {
+  const { data } = await axios.get(
+    `${process.env.REACT_APP_SERVER_URL}/portfolio/transactions/${coinId}`,
+    {
+      withCredentials: true,
+    }
+  );
 
   return data;
 }

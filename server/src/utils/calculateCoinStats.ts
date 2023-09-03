@@ -18,6 +18,6 @@ export async function calculateCoinStats(coin: Coin): Promise<void> {
 
   await prisma.coin.update({
     where: { id: coin.id },
-    data: { averageBuyPrice, totalQuantity, totalInvestment: totalCost },
+    data: { averageBuyPrice, totalQuantity, totalInvestment: totalCost, cost: totalCost },
   });
 }

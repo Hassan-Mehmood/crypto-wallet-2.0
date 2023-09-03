@@ -1,18 +1,12 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
-
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 export default function Loading() {
   return (
-    <Box
-      position="absolute"
-      top="0"
-      left="0"
-      width="100%"
-      height="100vh"
-      backgroundColor="rgba(0,0,0,0.5)"
-    >
-      <Flex justify="center" align="center" height="100%">
-        <Text>Loading... </Text>
-      </Flex>
-    </Box>
+    <Skeleton
+      count={10}
+      style={{ margin: '15px 0px' }}
+      baseColor="#e0e0e0"
+      highlightColor="#f5f5f5"
+    />
   );
 }
