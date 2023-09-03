@@ -32,8 +32,8 @@ model Coin {
   latestPrice       Float         @default(0)
   holdingsInDollers Float         @default(0)
   profitLoss        Float         @default(0)
-  totalInvestment   Float         @default(0) // How much invested user is in a coin
-  cost              Float         @default(0) // Cost means how much $ costed in buying coins
+  totalInvestment   Float         @default(0)
+  cost              Float         @default(0)
   active            Boolean       @default(true)
   userId            Int
   createdAt         DateTime      @default(now())

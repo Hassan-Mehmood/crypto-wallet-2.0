@@ -244,7 +244,8 @@ export default function AddCoin() {
               background="#8bc53f"
               margin="0 0.5rem 0 0"
               padding="0.5rem 1.5rem"
-              border="1px solid rgb(105, 162, 53)"
+              border="1.5px solid #8bc53f"
+              width={['18rem', '18rem', '10rem']}
               _hover={{
                 background: '#fff',
                 color: '#8bc53f',
