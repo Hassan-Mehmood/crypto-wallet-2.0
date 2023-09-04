@@ -21,7 +21,7 @@ import axios from 'axios';
 export default function AddCoin() {
   const [coinQuantity, setCoinQuantity] = useState<string>('0');
   const [coinPrice, setCoinPrice] = useState<string>('0');
-  const [disableBtn, setDisableBtn] = useState(false);
+  const [loadingBtn, setLoadingBtn] = useState(false);
 
   const coinData = useSelector((state: RootState) => state.searchCoinReducer);
   const userData = useSelector((state: RootState) => state.userReducer);
@@ -45,8 +45,8 @@ export default function AddCoin() {
       return response.data;
     },
     {
-      onMutate: () => setDisableBtn(true),
-      onSettled: () => setDisableBtn(false),
+      onMutate: () => setLoadingBtn(true),
+      onSettled: () => setLoadingBtn(false),
 
       onSuccess: () => {
         showToast('Success', 'Coin bought successfully', 'success');
@@ -71,8 +71,8 @@ export default function AddCoin() {
     },
 
     {
-      onMutate: () => setDisableBtn(true),
-      onSettled: () => setDisableBtn(false),
+      onMutate: () => setLoadingBtn(true),
+      onSettled: () => setLoadingBtn(false),
 
       onSuccess: () => {
         showToast('Success', 'Coin sold successfully', 'success');
@@ -169,8 +169,6 @@ export default function AddCoin() {
     sellCoin.mutate();
   }
 
-  console.log(disableBtn);
-
   return (
     <Box border="1px solid black" borderRadius={'0.7rem'} width={['25.5rem', '28rem', '36rem']}>
       <Flex
@@ -236,7 +234,7 @@ export default function AddCoin() {
           <Flex flexDir={['column', 'column', 'row']} mt="1rem" alignItems={'center'}>
             <Button
               onClick={(e) => buyTransaction(e)}
-              disabled={disableBtn}
+              isLoading={loadingBtn}
               type="submit"
               fontSize="md"
               borderRadius="8px"
@@ -255,7 +253,7 @@ export default function AddCoin() {
             </Button>
             <Button
               onClick={(e) => sellTransaction(e)}
-              disabled={disableBtn}
+              isLoading={loadingBtn}
               type="submit"
               fontSize="sm"
               borderRadius="8px"

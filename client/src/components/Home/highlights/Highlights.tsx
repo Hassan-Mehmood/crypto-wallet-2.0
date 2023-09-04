@@ -4,7 +4,6 @@ import {
   CardHeader,
   Heading,
   CardBody,
-  Spinner,
   GridItem,
   Skeleton,
 } from '@chakra-ui/react';
