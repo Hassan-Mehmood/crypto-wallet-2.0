@@ -46,12 +46,7 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
                 fontSize="12px"
                 fontWeight="bold"
               >
-                {calculatePercentage(
-                  data?.coin.holdingsInDollers,
-                  data?.coin.totalInvestment,
-                  data?.coin.cost
-                )}
-                %
+                {calculatePercentage(data?.coin.profitLoss, data?.coin.cost)}%
               </Box>
             </Flex>
           </Box>
@@ -73,12 +68,7 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
             <Box>
               <Text color="#58667e">Total Profit / Loss</Text>
               <Text fontWeight="bold" color={getProfitLossColor(data?.coin.profitLoss)}>
-                {calculatePercentage(
-                  data?.coin.holdingsInDollers,
-                  data?.coin.totalInvestment,
-                  data?.coin.cost
-                )}
-                % ($
+                {calculatePercentage(data?.coin.profitLoss, data?.coin.cost)}% ($
                 {data?.coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })})
               </Text>
             </Box>
