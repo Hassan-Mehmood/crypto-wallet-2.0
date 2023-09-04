@@ -23,8 +23,14 @@ export default function Highlights() {
       spacing={4}
       templateColumns={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
     >
-      <Card>
-        <Skeleton isLoaded={!isLoading}>
+      <Skeleton isLoaded={!isLoading}>
+        <Card
+          background="rgba(255, 255, 255, 0.2)"
+          borderRadius="16px"
+          boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+          backdropFilter="blur(10px)"
+          border="1px solid rgba(255, 255, 255, 0.3)"
+        >
           <CardHeader>
             <Heading size="md">Trending Coins</Heading>
           </CardHeader>
@@ -33,10 +39,17 @@ export default function Highlights() {
               <TrendingCoins coin={coin} key={coin.item.id} />
             ))}
           </CardBody>
-        </Skeleton>
-      </Card>
-      <Card>
-        <Skeleton isLoaded={!isLoading}>
+        </Card>
+      </Skeleton>
+
+      <Skeleton isLoaded={!isLoading}>
+        <Card
+          background="rgba(255, 255, 255, 0.2)"
+          borderRadius="16px"
+          boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+          backdropFilter="blur(10px)"
+          border="1px solid rgba(255, 255, 255, 0.3)"
+        >
           <CardHeader>
             <Heading size="md">Global News</Heading>
           </CardHeader>
@@ -48,10 +61,11 @@ export default function Highlights() {
               isLoading={isLoading}
             />
           </CardBody>
-        </Skeleton>
-      </Card>
-      <GridItem colSpan={[2, 2, 1]} display={['flex', 'flex', 'block']} justifyContent={'center'}>
-        <Skeleton isLoaded={!isLoading}>
+        </Card>
+      </Skeleton>
+
+      <Skeleton isLoaded={!isLoading}>
+        <GridItem colSpan={[2, 2, 1]} display={['flex', 'flex', 'block']} justifyContent={'center'}>
           <Card width={['48.8vw', '45.1vw', 'full']}>
             <CardHeader>
               <Heading size="md">Market Dominance</Heading>
@@ -63,8 +77,8 @@ export default function Highlights() {
               />
             </CardBody>
           </Card>
-        </Skeleton>
       </GridItem>
+        </Skeleton>
     </SimpleGrid>
   );
 }

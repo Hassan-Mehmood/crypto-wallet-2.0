@@ -9,7 +9,6 @@ import {
   Box,
   Image,
   useToast,
-  Divider,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -178,7 +177,7 @@ export default function AddCoin() {
         <Heading as="h6" size="md" fontWeight={"semibold"}>
           Add Coin
         </Heading>
-        <Heading as="h6" size="md" fontWeight={"semibold"}>
+        <Heading as="h6" size="md" fontWeight={'semibold'}>
           <>Balance: ${accountBalance?.dollerBalance || 0}</>
         </Heading>
       </Flex>
@@ -202,18 +201,18 @@ export default function AddCoin() {
               precision={2}
               min={0}
               value={coinQuantity}
-              width={"13rem"}
+              width={'13rem'}
               onChange={(valueString) => handleQuantityInput(valueString)}
             >
               <NumberInputField h="35px" border="1px solid black" p=".5rem" />
             </NumberInput>
           </FormControl>
-          <FormControl display={"flex"} justifyContent={"space-between"}>
+          <FormControl display={'flex'} justifyContent={'space-between'}>
             <FormLabel>Price</FormLabel>
             <NumberInput
               step={0.01}
               precision={2}
-              width={"13rem"}
+              width={'13rem'}
               value={coinPrice}
               onChange={(valueString) => handlePriceInput(valueString)}
             >
@@ -221,8 +220,11 @@ export default function AddCoin() {
             </NumberInput>
           </FormControl>
         </Flex>
-        <Box px={["1rem", "1rem", "1.7rem"]} pb={"1.5rem"}>
-          <Flex flexDir={["column", "column", "row"]} mt="1rem" alignItems={"center"}>
+        <Box px={['1rem', '1rem', '1.7rem']} pb={'1.5rem'}>
+          <Heading as="h6" size="sm" mt="1rem" fontWeight={'semibold'}>
+            {coinData.name} ${parseFloat(coinPrice) * parseFloat(coinQuantity)}
+          </Heading>
+          <Flex flexDir={['column', 'column', 'row']} mt="1rem" alignItems={'center'}>
             <Button
               onClick={(e) => buyTransaction(e)}
               disabled={disableBtn}
@@ -234,10 +236,10 @@ export default function AddCoin() {
               margin="0 0.5rem 0 0"
               padding="0.5rem 1.5rem"
               border="1.5px solid #8bc53f"
-              width={["18rem", "18rem", "10rem"]}
+              width={['18rem', '18rem', '10rem']}
               _hover={{
                 background: '#fff',
-                color: "#8bc53f"
+                color: '#8bc53f',
               }}
             >
               Buy
