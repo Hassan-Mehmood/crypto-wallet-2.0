@@ -17,7 +17,13 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 
-export default function PortfolioSizeModal({ isOpen, onClose }: any) {
+interface props {
+  isOpen: boolean;
+  onClose: () => void;
+  onOpen: () => void;
+}
+
+export default function PortfolioSizeModal({ isOpen, onClose }: props) {
   const [accountBalance, setAccountBalance] = useState('0');
   const toast = useToast();
 
@@ -25,9 +31,7 @@ export default function PortfolioSizeModal({ isOpen, onClose }: any) {
     async () => {
       const response = await axios.post(
         `${process.env.REACT_APP_SERVER_URL}/portfolio/balance`,
-        {
-          accountBalance,
-        },
+        { accountBalance },
         { withCredentials: true }
       );
       return response.data;

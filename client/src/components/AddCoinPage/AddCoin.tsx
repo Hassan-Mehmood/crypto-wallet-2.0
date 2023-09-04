@@ -24,7 +24,7 @@ import axios from 'axios';
 export default function AddCoin() {
   const [coinQuantity, setCoinQuantity] = useState<string>('0.00');
   const [coinPrice, setCoinPrice] = useState<string>('0');
-  const [disableBtn, setDisableBtn] = useState(false);
+  const [loadingBtn, setLoadingBtn] = useState(false);
 
   const coinData = useSelector((state: RootState) => state.searchCoinReducer);
   const userData = useSelector((state: RootState) => state.userReducer);
@@ -48,8 +48,8 @@ export default function AddCoin() {
       return response.data;
     },
     {
-      onMutate: () => setDisableBtn(true),
-      onSettled: () => setDisableBtn(false),
+      onMutate: () => setLoadingBtn(true),
+      onSettled: () => setLoadingBtn(false),
 
       onSuccess: () => {
         showToast('Success', 'Coin bought successfully', 'success');
@@ -74,8 +74,8 @@ export default function AddCoin() {
     },
 
     {
-      onMutate: () => setDisableBtn(true),
-      onSettled: () => setDisableBtn(false),
+      onMutate: () => setLoadingBtn(true),
+      onSettled: () => setLoadingBtn(false),
 
       onSuccess: () => {
         showToast('Success', 'Coin sold successfully', 'success');
@@ -171,8 +171,6 @@ export default function AddCoin() {
 
     sellCoin.mutate();
   }
-
-  console.log(disableBtn);
 
   return (
     <Box border="1px solid black" borderRadius={"0.5rem"} width={["25.5rem", "28rem", "36rem"]}
@@ -293,13 +291,13 @@ export default function AddCoin() {
                 setCoinQuantity('0.00');
                 setCoinPrice('0');
               }}
-              mt={"0.7rem"}
+              mt={'0.7rem'}
               fontSize="sm"
               borderRadius="8px"
               background="none"
               padding={'0 16px'}
               _hover={{
-                background: "none"
+                background: 'none',
               }}
             >
               Cancel

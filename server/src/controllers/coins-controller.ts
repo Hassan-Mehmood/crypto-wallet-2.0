@@ -222,8 +222,8 @@ export async function sellTransaction(req: Request, res: Response) {
         totalInvestment: remainingInvestment,
       },
     });
-
-    return res.status(200);
+    console.log('Here');
+    return res.status(200).json('Coin sold successfully');
   } catch (error) {
     return res.status(500).json(error.message);
   }

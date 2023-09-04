@@ -129,10 +129,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                       {coin.profitLoss > 0 ? '+' : ''}$
                       {coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })}
                     </Box>
-                    <Box fontSize="14px">
-                      {calculatePercentage(coin.holdingsInDollers, coin.totalInvestment, coin.cost)}
-                      %
-                    </Box>
+                    <Box fontSize="14px">{calculatePercentage(coin.profitLoss, coin.cost)}%</Box>
                   </Flex>
                 </Td>
                 <Td>

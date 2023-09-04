@@ -6,8 +6,10 @@ import { getCoinTransactions } from '../../api/axios';
 import { Image } from '@chakra-ui/image';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
 import { Skeleton, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import { Trash2 } from 'react-feather';
+// import { Trash2 } from 'react-feather';
 import { Transaction } from '../../types';
+import { BiEdit } from 'react-icons/bi';
+import { AiOutlineDelete } from 'react-icons/ai';
 
 interface props {
   setShowTable: React.Dispatch<React.SetStateAction<string>>;
@@ -46,12 +48,7 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
                 fontSize="12px"
                 fontWeight="bold"
               >
-                {calculatePercentage(
-                  data?.coin.holdingsInDollers,
-                  data?.coin.totalInvestment,
-                  data?.coin.cost
-                )}
-                %
+                {calculatePercentage(data?.coin.profitLoss, data?.coin.cost)}%
               </Box>
             </Flex>
           </Box>
@@ -73,12 +70,7 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
             <Box>
               <Text color="#58667e">Total Profit / Loss</Text>
               <Text fontWeight="bold" color={getProfitLossColor(data?.coin.profitLoss)}>
-                {calculatePercentage(
-                  data?.coin.holdingsInDollers,
-                  data?.coin.totalInvestment,
-                  data?.coin.cost
-                )}
-                % ($
+                {calculatePercentage(data?.coin.profitLoss, data?.coin.cost)}% ($
                 {data?.coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })})
               </Text>
             </Box>
@@ -133,16 +125,14 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
                     </Box>
                   </Td>
                   <Td>
-                    <Box as="span" display="inline-block" cursor="pointer">
-                      <Trash2
-                        color="maroon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // setCoinId(coin.id);
-                          // onOpen();
-                        }}
-                      />
-                    </Box>
+                    <Flex>
+                      <Box color="#8bc53f">
+                        <BiEdit size={24} />
+                      </Box>
+                      <Box color="#8bc53f" ml="1rem">
+                        <AiOutlineDelete size={24} />
+                      </Box>
+                    </Flex>
                   </Td>
                 </Tr>
               ))}
