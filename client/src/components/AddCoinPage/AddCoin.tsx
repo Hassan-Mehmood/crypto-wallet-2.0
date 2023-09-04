@@ -174,7 +174,7 @@ export default function AddCoin() {
 
   return (
     <Box border="1px solid black" borderRadius={"0.7rem"} width={["25.5rem", "28rem", "36rem"]}>
-      <Flex justifyContent="space-between" alignItems={"center"} backgroundColor={"#8bc53f"} px={["1rem", "1rem", "1.7rem"]} py={"1.5rem"} borderTopRadius={"0.7rem"} color={"#fff"}>
+      <Flex justifyContent="space-between" alignItems={"center"} px={["1rem", "1rem", "1.7rem"]} py={"1.5rem"} borderTopRadius={"0.7rem"}>
         <Heading as="h6" size="md" fontWeight={"semibold"}>
           Add Coin
         </Heading>
@@ -182,10 +182,15 @@ export default function AddCoin() {
           <>Balance: ${accountBalance?.dollerBalance || 0}</>
         </Heading>
       </Flex>
-      <Flex align="center" mb="2rem" px={["1rem", "1rem", "1.7rem"]} pt={"1rem"}>
-        <Image src={coinData.thumb ? coinData.thumb : ''} />
-        <Heading as="h6" size="sm" textTransform="capitalize" ml={`${coinData.name && ".5rem"}`} fontWeight={"semibold"}>
-          {coinData.name || 'No coin selected'}
+      <Flex justifyContent={"space-between"} px={["1rem", "1rem", "1.7rem"]}>
+        <Flex align="center" mb="2rem"  pt={"1rem"}>
+          <Image src={coinData.thumb ? coinData.thumb : ''} />
+          <Heading as="h6" size="sm" textTransform="capitalize" ml={`${coinData.name && ".5rem"}`} fontWeight={"semibold"}>
+            {coinData.name || 'No coin selected'}
+          </Heading>
+        </Flex>
+        <Heading as="h6" size="sm" mt="1rem" fontWeight={"semibold"}>
+          {coinData.name} ${parseFloat(coinPrice) * parseFloat(coinQuantity)}
         </Heading>
       </Flex>
       <form >
@@ -217,9 +222,6 @@ export default function AddCoin() {
           </FormControl>
         </Flex>
         <Box px={["1rem", "1rem", "1.7rem"]} pb={"1.5rem"}>
-          <Heading as="h6" size="sm" mt="1rem" fontWeight={"semibold"}>
-            {coinData.name} ${parseFloat(coinPrice) * parseFloat(coinQuantity)}
-          </Heading>
           <Flex flexDir={["column", "column", "row"]} mt="1rem" alignItems={"center"}>
             <Button
               onClick={(e) => buyTransaction(e)}

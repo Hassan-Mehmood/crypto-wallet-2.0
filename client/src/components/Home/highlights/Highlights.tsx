@@ -4,7 +4,6 @@ import {
   CardHeader,
   Heading,
   CardBody,
-  Spinner,
   GridItem,
   Skeleton,
 } from '@chakra-ui/react';
@@ -24,8 +23,8 @@ export default function Highlights() {
       spacing={4}
       templateColumns={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
     >
-      <Skeleton isLoaded={!isLoading}>
-        <Card>
+      <Card>
+        <Skeleton isLoaded={!isLoading}>
           <CardHeader>
             <Heading size="md">Trending Coins</Heading>
           </CardHeader>
@@ -34,10 +33,10 @@ export default function Highlights() {
               <TrendingCoins coin={coin} key={coin.item.id} />
             ))}
           </CardBody>
-        </Card>
-      </Skeleton>
-      <Skeleton isLoaded={!isLoading}>
-        <Card>
+        </Skeleton>
+      </Card>
+      <Card>
+        <Skeleton isLoaded={!isLoading}>
           <CardHeader>
             <Heading size="md">Global News</Heading>
           </CardHeader>
@@ -49,10 +48,10 @@ export default function Highlights() {
               isLoading={isLoading}
             />
           </CardBody>
-        </Card>
-      </Skeleton>
-      <Skeleton isLoaded={!isLoading}>
-        <GridItem colSpan={[2, 2, 1]} display={['flex', 'flex', 'block']} justifyContent={'center'}>
+        </Skeleton>
+      </Card>
+      <GridItem colSpan={[2, 2, 1]} display={['flex', 'flex', 'block']} justifyContent={'center'}>
+        <Skeleton isLoaded={!isLoading}>
           <Card width={['48.8vw', '45.1vw', 'full']}>
             <CardHeader>
               <Heading size="md">Market Dominance</Heading>
@@ -64,8 +63,8 @@ export default function Highlights() {
               />
             </CardBody>
           </Card>
-        </GridItem>
-      </Skeleton>
+        </Skeleton>
+      </GridItem>
     </SimpleGrid>
   );
 }
