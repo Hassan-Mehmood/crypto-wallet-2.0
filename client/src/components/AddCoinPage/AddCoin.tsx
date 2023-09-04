@@ -9,6 +9,9 @@ import {
   Box,
   Image,
   useToast,
+  Divider,
+  Text,
+  Center,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -19,7 +22,7 @@ import { useMutation, useQuery } from 'react-query';
 import axios from 'axios';
 
 export default function AddCoin() {
-  const [coinQuantity, setCoinQuantity] = useState<string>('0');
+  const [coinQuantity, setCoinQuantity] = useState<string>('0.00');
   const [coinPrice, setCoinPrice] = useState<string>('0');
   const [loadingBtn, setLoadingBtn] = useState(false);
 
@@ -170,112 +173,131 @@ export default function AddCoin() {
   }
 
   return (
-    <Box border="1px solid black" borderRadius={'0.7rem'} width={['25.5rem', '28rem', '36rem']}>
-      <Flex
-        justifyContent="space-between"
-        alignItems={'center'}
-        backgroundColor={'#8bc53f'}
-        px={['1rem', '1rem', '1.7rem']}
-        py={'1.5rem'}
-        borderTopRadius={'0.7rem'}
-        color={'#fff'}
-      >
-        <Heading as="h6" size="md" fontWeight={'semibold'}>
-          Add Coin
+    <Box border="1px solid black" borderRadius={"0.5rem"} width={["25.5rem", "28rem", "36rem"]}
+      background="rgba(255, 255, 255, 0.2)"
+      backdropFilter="blur(10px)">
+      <Flex justifyContent="space-between" alignItems={"center"} px={["1.5rem", "1.5rem", "1.7rem"]} py={"1.7rem"} borderTopRadius={"0.7rem"}>
+        <Heading as="h6" size="md" fontWeight={"semibold"}>
+          Buy / Sell Coin
         </Heading>
-        <Heading as="h6" size="md" fontWeight={'semibold'}>
-          <>Balance: ${accountBalance?.dollerBalance || 0}</>
+        <Heading as="h6" size="sm" fontWeight={'semibold'} color={"#8bc53f"}>
+          Balance: ${accountBalance?.dollerBalance || 0}
         </Heading>
       </Flex>
-      <Flex align="center" mb="2rem" px={['1rem', '1rem', '1.7rem']} pt={'1rem'}>
-        <Image src={coinData.thumb ? coinData.thumb : ''} />
-        <Heading
-          as="h6"
-          size="sm"
-          textTransform="capitalize"
-          ml={`${coinData.name && '.5rem'}`}
-          fontWeight={'semibold'}
-        >
-          {coinData.name || 'No coin selected'}
+      <Divider />
+      <Flex justifyContent="space-between" alignItems={"center"} px={["1.5rem", "1.5rem", "1.7rem"]} position={"relative"} py={"1.3rem"}>
+        <Flex>
+          <Image src={coinData.thumb ? coinData.thumb : ''} />
+          <Heading as="h6" size="sm" color={`${!coinData.name ? "#a3b1bf" : "#000"}`} textTransform="capitalize" ml={`${coinData.name && ".5rem"}`} fontWeight={"semibold"}>
+            {coinData.name || 'No coin selected'}
+          </Heading>
+        </Flex>
+        <Box
+          position="absolute"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+          background="#000"
+          width="0.05rem"
+          height="100%"
+        />
+        <Heading as="h6" size="sm" fontWeight={"semibold"} color={`${(parseFloat(coinPrice) * parseFloat(coinQuantity)) === 0 ? "#a3b1bf" : "#000"}  `}>
+          ${parseFloat(coinPrice) * parseFloat(coinQuantity)}
         </Heading>
       </Flex>
-      <form>
-        <Flex gap="1rem" px={['1rem', '1rem', '1.7rem']} flexDir={'column'} width={'22rem'}>
-          <FormControl display={'flex'} justifyContent={'space-between'}>
-            <FormLabel>Quantity</FormLabel>
-            <NumberInput
-              step={0.01}
-              precision={2}
-              min={0}
-              value={coinQuantity}
-              width={'13rem'}
-              onChange={(valueString) => handleQuantityInput(valueString)}
-            >
-              <NumberInputField h="35px" border="1px solid black" p=".5rem" />
-            </NumberInput>
+      <Divider color={"#a3b1bf"} />
+      <form >
+        <Flex gap="0.5rem" flexDir={"column"} py={"1rem"}>
+          <FormControl display={'flex'} justifyContent={`center`} px={["1.5rem", "1.5rem", "4.1rem"]}>
+            <Flex width={`${coinData.name ? "full" : "12rem"}`} justifyContent="space-between" alignItems={"center"}>
+              <FormLabel fontWeight={"semibold"}>Quantity</FormLabel>
+              <Flex width={`${coinData.name && ["17rem"]}`} justifyContent={"space-between"} alignItems={"center"} pb={"0.3rem"}>
+                <NumberInput
+                  color={"#a3b1bf"}
+                  step={0.01}
+                  precision={2}
+                  min={0}
+                  value={coinQuantity}
+                  onChange={(valueString) => handleQuantityInput(valueString)}
+                >
+                  <NumberInputField width={`${!coinData.name && "3rem"}`} px={`${!coinData.name ? "0rem" : "0.5rem"}`} fontWeight={"semibold"} border={"none"} disabled={!coinData.name} />
+                </NumberInput>
+                <Text fontWeight={"semibold"}>{coinData.symbol}</Text>
+              </Flex>
+            </Flex>
           </FormControl>
-          <FormControl display={'flex'} justifyContent={'space-between'}>
-            <FormLabel>Price</FormLabel>
-            <NumberInput
-              step={0.01}
-              precision={2}
-              width={'13rem'}
-              value={coinPrice}
-              onChange={(valueString) => handlePriceInput(valueString)}
-            >
-              <NumberInputField h="35px" border="1px solid black" p=".5rem" />
-            </NumberInput>
+          <FormControl display={'flex'} justifyContent={`center`} px={["1.5rem", "1.5rem", "4.1rem"]}>
+            <Flex width={`${coinData.name ? "full" : "12rem"}`} justifyContent="space-between" alignItems={"center"}>
+              <FormLabel fontWeight={"semibold"}>Price</FormLabel>
+              <Flex width={`${coinData.name && "17rem"}`} justifyContent={"space-between"} alignItems={"center"} pb={"0.3rem"}>
+                <NumberInput
+                  color={"#a3b1bf"}
+                  step={0.01}
+                  precision={2}
+                  value={coinPrice}
+                  onChange={(valueString) => handlePriceInput(valueString)}
+                >
+                  <NumberInputField width={`${!coinData.name && "2rem"}`} px={`${!coinData.name ? "0rem" : "0.5rem"}`} fontWeight={"semibold"} border={"none"} disabled={!coinData.name} />
+                </NumberInput>
+                <Text fontWeight={"semibold"}>{coinData.symbol}</Text>
+              </Flex>
+            </Flex>
           </FormControl>
         </Flex>
-        <Box px={['1rem', '1rem', '1.7rem']} pb={'1.5rem'}>
-          <Heading as="h6" size="sm" mt="1rem" fontWeight={'semibold'}>
-            {coinData.name} ${parseFloat(coinPrice) * parseFloat(coinQuantity)}
-          </Heading>
-          <Flex flexDir={['column', 'column', 'row']} mt="1rem" alignItems={'center'}>
+        {coinData.name && <Divider backgroundColor={"black"} height={"0.8px"} />}
+        <Box px={['1.5rem', '1.5rem', '1.7rem']} py={'1rem'}>
+          <Flex flexDir={'column'} mt={`${coinData.name && "1rem"}`} alignItems={'center'}>
+            <Flex flexDir={['column', 'column', 'row']} gap={2}>
+              <Button
+                onClick={(e) => buyTransaction(e)}
+                disabled={disableBtn}
+                type="submit"
+                fontSize="md"
+                borderRadius="0.3rem"
+                color="#8bc53f"
+                background="#fff"
+                margin="0 0.5rem 0 0"
+                padding="0.5rem 1.5rem"
+                border="1.5px solid #8bc53f"
+                width={['16rem', '18rem', '10rem']}
+                _hover={{
+                  background: "none"
+                }}
+              >
+                Buy
+              </Button>
+              <Button
+                onClick={(e) => sellTransaction(e)}
+                disabled={disableBtn}
+                type="submit"
+                fontSize="sm"
+                borderRadius="0.3rem"
+                color="rgb(255, 0, 0)"
+                background="#fff"
+                margin="0 0.5rem 0 0"
+                padding="0.5rem 1.5rem"
+                width={['16rem', '18rem', '10rem']}
+                border="1.5px solid rgb(255, 0, 0)"
+                _hover={{
+                  background: "none"
+                }}
+              >
+                Sell
+              </Button>
+            </Flex>
             <Button
-              onClick={(e) => buyTransaction(e)}
-              isLoading={loadingBtn}
-              type="submit"
-              fontSize="md"
-              borderRadius="8px"
-              color="#fff"
-              background="#8bc53f"
-              margin="0 0.5rem 0 0"
-              padding="0.5rem 1.5rem"
-              border="1.5px solid #8bc53f"
-              width={['18rem', '18rem', '10rem']}
-              _hover={{
-                background: '#fff',
-                color: '#8bc53f',
+              onClick={() => {
+                dispatch(removeCoin());
+                setCoinQuantity('0.00');
+                setCoinPrice('0');
               }}
-            >
-              Buy
-            </Button>
-            <Button
-              onClick={(e) => sellTransaction(e)}
-              isLoading={loadingBtn}
-              type="submit"
-              fontSize="sm"
-              borderRadius="8px"
-              color="#fff"
-              background="rgb(255, 0, 0)"
-              margin="0 0.5rem 0 0"
-              padding="0.5rem 1.5rem"
-              border="1px solid rgb(255, 0, 0)"
-              _hover={{
-                background: 'rgb(200, 0, 0)',
-              }}
-            >
-              Sell
-            </Button>
-            <Button
-              onClick={() => dispatch(removeCoin())}
+              mt={'0.7rem'}
               fontSize="sm"
               borderRadius="8px"
               background="none"
               padding={'0 16px'}
               _hover={{
-                color: '#8bc53f',
+                background: 'none',
               }}
             >
               Cancel

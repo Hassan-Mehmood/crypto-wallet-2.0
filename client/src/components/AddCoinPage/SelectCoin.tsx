@@ -1,4 +1,4 @@
-import { Box, Divider, FormControl, Heading, Icon} from '@chakra-ui/react';
+import { Box, Divider, FormControl, Heading, Icon } from '@chakra-ui/react';
 import { getCoinByName } from '../../api/axios';
 import { useState, useEffect } from 'react';
 import { SearchCoin } from '../../types';
@@ -26,7 +26,10 @@ export default function SelectCoin() {
   }, [searchedCoinName]);
 
   return (
-    <Box zIndex={100} border="1px solid black" borderRadius={"0.7rem"} px={["1rem", "1rem", "1.7rem"]} py={["1rem",  "1.2rem"]} height="8.3rem" mb={"2rem"} width={["25.5rem", "28rem", "36rem"]}>
+    <Box zIndex={100} border="1px solid black" borderRadius={"0.5rem"} px={["1rem", "1rem", "1.7rem"]} py={["1rem", "1.2rem"]} height="8.3rem" mb={"2rem"} width={["25.5rem", "28rem", "36rem"]}
+      background="rgba(255, 255, 255, 0.2)"
+      backdropFilter="blur(10px)"
+    >
       <Box>
         <Heading as="h6" size="md" mb="1.5rem" fontWeight={"semibold"}>
           Select The Coin
@@ -58,10 +61,10 @@ export default function SelectCoin() {
           <Divider />
           <Box py={"0.5rem"}>
             {coinData.slice(0, 5).map((coin) => (
-              <SearchedCoin key={coin.id} 
-              Coin={coin} 
-              setListState={setListState}
-              setSearchedCoinName={setSearchedCoinName}
+              <SearchedCoin key={coin.id}
+                Coin={coin}
+                setListState={setListState}
+                setSearchedCoinName={setSearchedCoinName}
               />
             ))}
           </Box>
