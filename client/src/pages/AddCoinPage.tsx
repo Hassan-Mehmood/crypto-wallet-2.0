@@ -4,7 +4,7 @@ import SelectCoin from '../components/AddCoinPage/SelectCoin';
 
 export default function AddCoinPage() {
   return (
-    <Flex flexDir={"column"} alignItems={"center"} justifyContent={"center"} width={"full"} pt={["1rem", "2rem"]}>
+    <Flex flexDir={"column"} alignItems={"center"} justifyContent={"center"} width={"full"} py={["1.5rem", "2rem"]}>
       <SelectCoin />
       <AddCoin />
     </Flex>

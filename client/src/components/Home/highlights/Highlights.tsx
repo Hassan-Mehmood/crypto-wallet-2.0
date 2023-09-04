@@ -23,14 +23,14 @@ export default function Highlights() {
       spacing={4}
       templateColumns={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
     >
-      <Skeleton isLoaded={!isLoading}>
-        <Card
-          background="rgba(255, 255, 255, 0.2)"
-          borderRadius="16px"
-          boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
-          backdropFilter="blur(10px)"
-          border="1px solid rgba(255, 255, 255, 0.3)"
-        >
+      <Card
+        background="rgba(255, 255, 255, 0.2)"
+        borderRadius="16px"
+        boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+        backdropFilter="blur(10px)"
+        border="1px solid rgba(255, 255, 255, 0.3)"
+      >
+        <Skeleton isLoaded={!isLoading}>
           <CardHeader>
             <Heading size="md">Trending Coins</Heading>
           </CardHeader>
@@ -39,17 +39,17 @@ export default function Highlights() {
               <TrendingCoins coin={coin} key={coin.item.id} />
             ))}
           </CardBody>
-        </Card>
-      </Skeleton>
+        </Skeleton>
+      </Card>
 
-      <Skeleton isLoaded={!isLoading}>
-        <Card
-          background="rgba(255, 255, 255, 0.2)"
-          borderRadius="16px"
-          boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
-          backdropFilter="blur(10px)"
-          border="1px solid rgba(255, 255, 255, 0.3)"
-        >
+      <Card
+        background="rgba(255, 255, 255, 0.2)"
+        borderRadius="16px"
+        boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+        backdropFilter="blur(10px)"
+        border="1px solid rgba(255, 255, 255, 0.3)"
+      >
+        <Skeleton isLoaded={!isLoading}>
           <CardHeader>
             <Heading size="md">Global News</Heading>
           </CardHeader>
@@ -61,11 +61,11 @@ export default function Highlights() {
               isLoading={isLoading}
             />
           </CardBody>
-        </Card>
-      </Skeleton>
+        </Skeleton>
+      </Card>
 
-      <Skeleton isLoaded={!isLoading}>
-        <GridItem colSpan={[2, 2, 1]} display={['flex', 'flex', 'block']} justifyContent={'center'}>
+      <GridItem colSpan={[2, 2, 1]} display={['flex', 'flex', 'block']} justifyContent={'center'}>
+        <Skeleton isLoaded={!isLoading}>
           <Card width={['48.8vw', '45.1vw', 'full']}>
             <CardHeader>
               <Heading size="md">Market Dominance</Heading>
@@ -77,8 +77,8 @@ export default function Highlights() {
               />
             </CardBody>
           </Card>
-      </GridItem>
         </Skeleton>
+      </GridItem>
     </SimpleGrid>
   );
 }
