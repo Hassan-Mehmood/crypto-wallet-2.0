@@ -322,6 +322,7 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
         },
       },
     });
+
     if (transactions.length === 0) {
       const coin = await prisma.coin.findUnique({
         where: { id: coinId },
@@ -342,9 +343,12 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
     }
     const coin = transactions[0].Coin;
     const coinLatestPrice = await getCoinLatestPrice(coin.symbol + 'USDT');
+
     coin.holdingsInDollers = coin.totalQuantity * parseFloat(coinLatestPrice.data.price);
     coin.profitLoss = coin.holdingsInDollers - coin.totalInvestment;
+
     const transactionsWithoutCoin = transactions.map(({ Coin, ...rest }) => rest);
+
     return res.status(200).json({ transactions: transactionsWithoutCoin, coin });
   } catch (error) {
     return res.status(500).json({ message: 'Failed to get transactions.' });
@@ -359,17 +363,61 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
       where: { id },
     });
 
-    await prisma.coin.update({
-      where: { id: transaction.coinId },
+    if (!transaction) {
+      return res.status(404).json({ message: 'Transaction not found.' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+    const coin = await prisma.coin.findUnique({ where: { id: transaction.coinId } });
+
+    const TRANSACTION_COST = transaction.price * transaction.quantity;
+
+    // averageBuyPrice      (DONE)
+    // totalQuantity        (DONE)
+    // totalInvestment      (DONE)
+
+    if (transaction.type === 'BUY') {
+      user.dollerBalance += TRANSACTION_COST;
+      user.cryptoBalance -= TRANSACTION_COST;
+
+      coin.totalInvestment -= TRANSACTION_COST;
+      coin.cost -= TRANSACTION_COST;
+
+      coin.totalQuantity -= transaction.quantity;
+    }
+
+    if (transaction.type === 'SELL') {
+      user.dollerBalance -= TRANSACTION_COST;
+      user.cryptoBalance += TRANSACTION_COST;
+
+      coin.totalInvestment += TRANSACTION_COST;
+      coin.cost -= TRANSACTION_COST;
+
+      coin.totalQuantity += transaction.quantity;
+    }
+
+    if (coin.totalQuantity > 0) coin.averageBuyPrice = coin.totalInvestment / coin.totalQuantity;
+    else coin.averageBuyPrice = 0;
+
+    await prisma.user.update({
+      where: { id: req.user.id },
       data: {
-        totalQuantity: { decrement: transaction.quantity },
+        dollerBalance: user.dollerBalance,
+        cryptoBalance: user.cryptoBalance,
       },
     });
 
-    // transactionCoin.totalInvestment -= transaction.price * transaction.quantity;
-    // transactionCoin.quantity -= transaction.quantity;
+    await prisma.coin.update({
+      where: { id: coin.id },
+      data: {
+        totalInvestment: coin.totalInvestment,
+        cost: coin.cost,
+        totalQuantity: coin.totalQuantity,
+        averageBuyPrice: coin.averageBuyPrice,
+      },
+    });
 
-    return res.status(200).json({ message: 'Transaction deleted successfully.', transaction });
+    return res.status(200).json({ message: 'Transaction deleted successfully.' });
   } catch (error) {
     return res.status(500).json({ message: 'Failed to delete transactions.' });
   }

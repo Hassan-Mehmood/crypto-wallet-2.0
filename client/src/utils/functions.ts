@@ -15,7 +15,7 @@ export function getProfitLossColor(profitLoss: number | undefined) {
 export function calculatePercentage(profitOrLoss: number | undefined, cost: number | undefined) {
   if (!profitOrLoss || !cost) {
     console.log('CalculatePercentage parameters undefined');
-    return;
+    return '0';
   }
 
   const percentage = (profitOrLoss / cost) * 100;
