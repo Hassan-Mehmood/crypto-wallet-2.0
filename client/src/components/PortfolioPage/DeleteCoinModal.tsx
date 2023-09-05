@@ -12,6 +12,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import axios from 'axios';
+import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 interface props {
@@ -24,6 +25,7 @@ interface props {
 export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: props) {
   const queryClient = useQueryClient();
   const toast = useToast();
+  const [disableBtn, setDisableBtn] = useState(false);
 
   const deleteCoinAndDataMutation = useMutation(
     (coinId: number) =>
@@ -34,6 +36,9 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
         }
       ),
     {
+      onMutate: () => setDisableBtn(true),
+      onSettled: () => setDisableBtn(false),
+
       onSuccess: () => {
         queryClient.refetchQueries('userCoins');
         showToast('Success', 'Coin and data successfully deleted.', 'success');
@@ -56,6 +61,9 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
         }
       ),
     {
+      onMutate: () => setDisableBtn(true),
+      onSettled: () => setDisableBtn(false),
+
       onSuccess: () => {
         queryClient.refetchQueries('userCoins');
         showToast('Success', 'Coin successfully deleted.', 'success');
@@ -115,6 +123,7 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
 
               <Box mt="2rem">
                 <Button
+                  isLoading={disableBtn}
                   type="submit"
                   color="#fff"
                   m="0 0.5rem 0.5rem 0"
@@ -127,6 +136,7 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
                   Delete Coin & all transactions
                 </Button>
                 <Button
+                  isLoading={disableBtn}
                   type="submit"
                   color="#fff"
                   m="0 0.5rem 0.5rem 0"

@@ -1,7 +1,7 @@
 import { Button } from '@chakra-ui/button';
 import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
 import React from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { getCoinTransactions } from '../../api/axios';
 import { Image } from '@chakra-ui/image';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
@@ -10,6 +10,7 @@ import { Skeleton, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chak
 import { Transaction } from '../../types';
 import { BiEdit } from 'react-icons/bi';
 import { AiOutlineDelete } from 'react-icons/ai';
+import axios from 'axios';
 
 interface props {
   setShowTable: React.Dispatch<React.SetStateAction<string>>;
@@ -18,6 +19,35 @@ interface props {
 
 export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: props) {
   const { data, isLoading } = useQuery('coinTransaction', () => getCoinTransactions(activeCoinId));
+
+  const delTransaction = useMutation(
+    async (id: number) => {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_SERVER_URL}/portfolio/transactions/delete/${id}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      return response.data;
+    },
+    {
+      // onMutate: () => setLoadingBtn(true),
+      // onSettled: () => setLoadingBtn(false),
+
+      onSuccess: () => {
+        // showToast('Success', 'Coin bought successfully', 'success');
+        // refetchBalance();
+      },
+      onError: () => {
+        // showToast('Error', 'Something went wrong', 'error');
+      },
+    }
+  );
+
+  function deleteTransaction(id: number) {
+    delTransaction.mutate(id);
+  }
 
   return (
     <Box>
@@ -90,52 +120,80 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
               </Tr>
             </Thead>
             <Tbody>
-              {data?.transactions.map((transaction: Transaction) => (
-                <Tr
-                  key={transaction.id}
-                  _hover={{ backgroundColor: '#f4f4f4', cursor: 'pointer' }}
-                  onClick={() => {
-                    setShowTable('transactionsTable');
-                    // setActiveCoinId(coin.id);
-                  }}
-                >
-                  <Td>
-                    <Box fontWeight={'bold'}>
-                      <Text>{transaction.type}</Text>
-                    </Box>
-                  </Td>
-
-                  <Td>
-                    <Box fontWeight={'bold'}>
-                      <Text>${transaction.price}</Text>
-                    </Box>
-                  </Td>
-
-                  <Td>
-                    <Box fontWeight="bold">
-                      <Text>
-                        {transaction.type === 'BUY' ? '-' : '+'}$
-                        {parseFloat(transaction.quantity.toString()) *
-                          parseFloat(transaction.price.toString())}
-                      </Text>
-                      <Text color={transaction.type === 'BUY' ? 'green' : 'red'}>
-                        {transaction.type === 'BUY' ? '+' : '-'}
-                        {transaction.quantity} {data?.coin.name}
-                      </Text>
-                    </Box>
-                  </Td>
-                  <Td>
-                    <Flex>
-                      <Box color="#8bc53f">
-                        <BiEdit size={24} />
-                      </Box>
-                      <Box color="#8bc53f" ml="1rem">
-                        <AiOutlineDelete size={24} />
-                      </Box>
-                    </Flex>
+              {data?.transactions.length === 0 ? (
+                <Tr>
+                  <Td colSpan={4} textAlign="center">
+                    No Transactions to Show
                   </Td>
                 </Tr>
-              ))}
+              ) : (
+                data?.transactions.map((transaction: Transaction) => (
+                  <Tr
+                    key={transaction.id}
+                    _hover={{ backgroundColor: '#f4f4f4' }}
+                    onClick={() => {
+                      setShowTable('transactionsTable');
+                      // setActiveCoinId(coin.id);
+                    }}
+                  >
+                    <Td>
+                      <Box fontWeight={'bold'}>
+                        <Text>{transaction.type}</Text>
+                      </Box>
+                    </Td>
+
+                    <Td>
+                      <Box fontWeight={'bold'}>
+                        <Text>${transaction.price}</Text>
+                      </Box>
+                    </Td>
+
+                    <Td>
+                      <Box fontWeight="bold">
+                        <Text>
+                          {transaction.type === 'BUY' ? '-' : '+'}$
+                          {parseFloat(transaction.quantity.toString()) *
+                            parseFloat(transaction.price.toString())}
+                        </Text>
+                        <Text color={transaction.type === 'BUY' ? 'green' : 'red'}>
+                          {transaction.type === 'BUY' ? '+' : '-'}
+                          {transaction.quantity} {data?.coin.name}
+                        </Text>
+                      </Box>
+                    </Td>
+                    <Td>
+                      <Flex>
+                        <Box
+                          color="#8bc53f"
+                          borderRadius="50%"
+                          padding="0.5rem"
+                          _hover={{
+                            backgroundColor: '#8bc53f',
+                            cursor: 'pointer',
+                            color: '#ffffff',
+                          }}
+                        >
+                          <BiEdit size={24} />
+                        </Box>
+                        <Box
+                          onClick={() => deleteTransaction(transaction.id)}
+                          color="#8bc53f"
+                          ml="1rem"
+                          borderRadius="50%"
+                          padding="0.5rem"
+                          _hover={{
+                            backgroundColor: '#8bc53f',
+                            cursor: 'pointer',
+                            color: '#ffffff',
+                          }}
+                        >
+                          <AiOutlineDelete id="deleteBtn" size={24} />
+                        </Box>
+                      </Flex>
+                    </Td>
+                  </Tr>
+                ))
+              )}
             </Tbody>
           </Table>
         </TableContainer>

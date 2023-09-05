@@ -19,7 +19,6 @@ export default function PortfolioPage() {
       ) : (
         <Box as="section" position="relative">
           {isFetching ? <Spinner position="absolute" top="50%" left="50%" /> : null}
-
           {showTable === 'coinsTable' ? (
             <Box>
               <PortfolioOverview

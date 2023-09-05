@@ -9,6 +9,7 @@ import {
   setUserBalance,
   getTransactions,
   sellTransaction,
+  deleteTransaction,
 } from '../controllers/coins-controller';
 import { verifyToken } from '../utils/jwt';
 
@@ -72,5 +73,6 @@ router.delete('/deleteCoinAndKeepTransactions/:id', verifyToken, deleteCoinAndKe
 router.delete('/deleteCoinAndTransactions/:id', verifyToken, deleteCoinAndTransactions);
 
 router.get('/transactions/:id', verifyToken, getTransactions);
+router.delete('/transactions/delete/:id', verifyToken, deleteTransaction);
 
 export default router;
