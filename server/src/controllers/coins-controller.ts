@@ -7,6 +7,7 @@ import getCoinLatestPrice from '../utils/getCoinLatestPrice';
 import { tokenPayload } from '../utils/jwt';
 import { calculateLatestCryptoBalance } from '../utils/calculateLatestCryptoBalance';
 import updateCoinData from '../utils/updateCoinData';
+import { calculateCostBasis } from '../utils/calculateCostBasis';
 
 interface reqBodyType {
   coinPrice: string;
@@ -59,6 +60,7 @@ export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
       worstPerformer: _worstPerformer, // This is an object
     } = await updateCoinData(userCoins, allTimeProfit, bestPerformer, worstPerformer);
 
+    // This function can be implemented inside the updateCoinData() function
     const updatedCryptoBalance = calculateLatestCryptoBalance(updatedCoins);
     portfolioWorth = updatedCryptoBalance + dollerBalance;
 
@@ -98,6 +100,7 @@ export async function buyTransaction(req: Request, res: Response) {
     });
 
     let coinRecord = userData.coins[0];
+    const costBasis = parseFloat(coinPrice) * parseFloat(coinQuantity);
 
     if (!coinRecord) {
       coinRecord = await prisma.coin.create({
@@ -113,6 +116,7 @@ export async function buyTransaction(req: Request, res: Response) {
             create: {
               price: parseFloat(coinPrice),
               quantity: parseFloat(coinQuantity),
+              costBasis: costBasis,
               timeBought: new Date(),
               type,
             },
@@ -124,6 +128,7 @@ export async function buyTransaction(req: Request, res: Response) {
         data: {
           price: parseFloat(coinPrice),
           quantity: parseFloat(coinQuantity),
+          costBasis: costBasis,
           timeBought: new Date(),
           type,
           Coin: { connect: { id: coinRecord.id } },
@@ -132,13 +137,13 @@ export async function buyTransaction(req: Request, res: Response) {
     }
 
     const transactionCost = parseFloat(coinPrice) * parseFloat(coinQuantity);
-    const latestPrice = await getCoinLatestPrice(coinRecord.symbol + 'USDT');
+    // const latestPrice = await getCoinLatestPrice(coinRecord.symbol + 'USDT');
 
     await prisma.user.update({
       where: { id: userID },
       data: {
         dollerBalance: { decrement: transactionCost },
-        cryptoBalance: { increment: parseFloat(coinQuantity) * parseFloat(latestPrice.data.price) },
+        cryptoBalance: { increment: parseFloat(coinQuantity) * parseFloat(coinPrice) },
       },
     });
 
@@ -167,16 +172,27 @@ export async function sellTransaction(req: Request, res: Response) {
           where: {
             apiSymbol: coin.symbol,
           },
+          include: {
+            transactions: true,
+          },
         },
       },
     });
 
     const coinRecord = userData.coins[0];
 
+    const saleMade = parseFloat(coinPrice) * parseFloat(coinQuantity);
+    const totalCostBasis = calculateCostBasis(coinRecord.transactions);
+
+    const profitLoss = saleMade - totalCostBasis;
+
+    // console.log('Profit or loss', profitLoss);
+
     await prisma.transaction.create({
       data: {
         price: parseFloat(coinPrice),
         quantity: parseFloat(coinQuantity),
+        costBasis: saleMade,
         timeBought: new Date(),
         type,
         Coin: { connect: { id: coinRecord.id } },
@@ -192,10 +208,10 @@ export async function sellTransaction(req: Request, res: Response) {
       },
       data: {
         dollerBalance: {
-          increment: transactionCost,
+          increment: saleMade,
         },
         cryptoBalance: {
-          decrement: transactionCost,
+          decrement: totalCostBasis,
         },
       },
     });
@@ -235,7 +251,6 @@ export async function getUserBalance(req: AuthenticatedRequest, res: Response) {
     return res.status(500).send('An error occurred.');
   }
 }
-
 // This function set the user balance in dollers
 export async function setUserBalance(req: AuthenticatedRequest, res: Response) {
   try {
