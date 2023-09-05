@@ -80,7 +80,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
         </Button>
       ) : null}
 
-      <TableContainer mt="3rem">
+      <TableContainer mt={"2rem"}>
         <Table variant="simple">
           <Thead>
             <Tr>

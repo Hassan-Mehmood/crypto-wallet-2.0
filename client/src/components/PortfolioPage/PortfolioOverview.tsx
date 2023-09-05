@@ -36,100 +36,145 @@ export default function PortfolioOverview({
   return (
     <>
       <PortfolioSizeModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
-      <Box
-        background="rgba(255, 255, 255, 0.2)"
-        borderRadius="16px"
-        boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
-        backdropFilter="blur(10px)"
-        border="1px solid rgba(255, 255, 255, 0.3)">
-        <Box>
-          <Text fontSize={20} mt=".5rem" fontWeight="semibold">
-            Portfolio Worth:{' '}
-            <Box as="span">
-              <>${portfolioWorth?.toLocaleString('en', { maximumFractionDigits: 2 })}</>
-            </Box>
-          </Text>
-          <Text fontSize={20} mt=".5rem" fontWeight="semibold">
-            Crypto Balance:{' '}
-            <Box as="span">
-              <>${cryptoBalance?.toLocaleString('en', { maximumFractionDigits: 2 })}</>
-            </Box>
-          </Text>
-          <Text fontSize={20} mt=".5rem" fontWeight="semibold">
-            Doller Balance:{' '}
-            <Box as="span">
-              <>${dollerBalance?.toLocaleString('en', { maximumFractionDigits: 2 })}</>
-            </Box>
-          </Text>
-        </Box>
+      <Flex flexDir={"column"} gap={6}>
+        <Flex flexDir={"column"} alignItems={"center"} gap={2}>
+          <Flex
+            background="rgba(255, 255, 255, 0.2)"
+            flexDir={"column"}
+            alignItems={"center"}
+            width={["20rem"]}
+            borderRadius="0.5rem"
+            boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+            backdropFilter="blur(10px)"
+            // border="1px solid rgba(255, 255, 255, 0.3)"
+            border={"1.5px solid black"}
+            py={"0.65rem"}
+          >
+            <Text fontSize={"1.05rem"}>
+              Portfolio Worth
+            </Text>
+            <Text fontSize={"1.2rem"} fontWeight="semibold">
+              ${portfolioWorth?.toLocaleString('en', { maximumFractionDigits: 2 })}
+            </Text>
+          </Flex>
+          <Flex
+            background="rgba(255, 255, 255, 0.2)"
+            flexDir={"column"}
+            alignItems={"center"}
+            width={["20rem"]}
+            borderRadius="0.5rem"
+            boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+            backdropFilter="blur(10px)"
+            // border="1px solid rgba(255, 255, 255, 0.3)"
+            border={"1.5px solid black"}
+            py={"0.65rem"}
 
-        <Box zIndex="0">
-          <Button
-            onClick={onOpen}
-            fontSize="sm"
-            borderRadius="4px"
-            color="#fff"
-            background="rgb(105, 162, 53)"
-            padding={'0 16px'}
-            _hover={{
-              background: 'rgb(81, 126, 39)',
-            }}
           >
-            Manage Portfolio Size
-          </Button>
-          <Button
-            onClick={() => navigate('/addcoin')}
-            fontSize="sm"
-            borderRadius="4px"
-            color="#fff"
-            background="rgb(105, 162, 53)"
-            padding={'0 16px'}
-            ml="1rem"
-            _hover={{
-              background: 'rgb(81, 126, 39)',
-            }}
+            <Text fontSize={"1.05rem"}>
+              Crypto Balance
+            </Text>
+            <Text fontSize={"1.2rem"} fontWeight="semibold">
+              ${cryptoBalance?.toLocaleString('en', { maximumFractionDigits: 2 })}
+            </Text>
+          </Flex>
+          <Flex
+            background="rgba(255, 255, 255, 0.2)"
+            flexDir={"column"}
+            alignItems={"center"}
+            width={["20rem"]}
+            borderRadius="0.5rem"
+            boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
+            backdropFilter="blur(10px)"
+            // border="1px solid rgba(255, 255, 255, 0.3)"
+            border={"1.5px solid black"}
+            py={"0.65rem"}
+
           >
-            Add Coins
-          </Button>
-        </Box>
-      </Box>
-      <Flex align="center" mt="1rem">
-        <Box>
-          <Text mt="1rem" fontSize={14} fontWeight="bold">
-            All time profit
+            <Text fontSize={"1.05rem"}>
+              Doller Balance
+            </Text>
+            <Text fontSize={"1.2rem"} fontWeight="semibold">
+              ${dollerBalance?.toLocaleString('en', { maximumFractionDigits: 2 })}
+            </Text>
+          </Flex>
+        </Flex>
+
+        <Flex justifyContent={"center"}>
+          <Flex
+            width={["20rem"]}
+            justifyContent={"space-between"}>
+            <Button
+              onClick={onOpen}
+              width={"9.5rem"}
+              fontSize="1rem"
+              border={"1.5px solid #8bc53f"}
+              borderRadius="4px"
+              color="#fff"
+              background="#8bc53f"
+              py={'1.3rem'}
+              _hover={{
+                background: "#fff",
+                color: "#8bc53f"
+              }}
+            >
+              Portfolio Size
+            </Button>
+            <Button
+              onClick={() => navigate('/addcoin')}
+              fontSize="1rem"
+              width={"9.5rem"}
+              border={"1.5px solid #8bc53f"}
+              borderRadius="4px"
+              color="#fff"
+              background="#8bc53f"
+              py={'1.3rem'}
+              _hover={{
+                background: "#fff",
+                color: "#8bc53f"
+              }}
+            >
+              Add Coins
+            </Button>
+          </Flex>
+        </Flex>
+      </Flex>
+      <Flex justifyContent={"center"} align="center" mt="2rem" gap={8}>
+        <Flex flexDir={"column"} alignItems={"center"} gap={2}>
+          <Text fontSize={"0.85rem"} fontWeight="semibold">
+            All Time Profit
           </Text>
-          <Text fontSize={14} color={getProfitLossColor(allTimeProfit)}>
+          <Text fontSize={"1.05rem"} color={getProfitLossColor(allTimeProfit)}>
             {allTimeProfit !== undefined && allTimeProfit > 0 ? '+' : ''}$
             {allTimeProfit?.toFixed(2)}
           </Text>
-        </Box>
-        <Flex ml="3rem" alignItems="center">
-          <Box mr=".75rem">
-            <Image src={bestPerformer?.thump} />
-          </Box>
-          <Box>
-            <Text mt="1rem" fontSize={14} fontWeight="bold">
+        </Flex>
+        <Flex alignItems="center">
+          <Flex flexDir={"column"} alignItems={"center"} gap={2}>
+            <Text fontSize={"0.85rem"} fontWeight="semibold">
               Best Performer
             </Text>
-            <Text fontSize={14} color={getProfitLossColor(bestPerformer?.value)}>
-              {bestPerformer?.value !== undefined && bestPerformer?.value > 0 ? '+' : ''}$
-              {bestPerformer?.value.toFixed(2)}
-            </Text>
-          </Box>
+            <Flex alignItems={"center"}>
+              <Image src={bestPerformer?.thump} width={'1.3rem'} mr={"0.2rem"}/>
+              <Text fontSize={"1.05rem"} color={getProfitLossColor(bestPerformer?.value)}>
+                {bestPerformer?.value !== undefined && bestPerformer?.value > 0 ? '+' : ''}$
+                {bestPerformer?.value.toFixed(2)}
+              </Text>
+            </Flex>
+          </Flex>
         </Flex>
-        <Flex ml="3rem" alignItems="center">
-          <Box mr="0.75rem">
-            <Image src={worstPerformer?.thump} />
-          </Box>
-          <Box>
-            <Text mt="1rem" fontSize={14} fontWeight="bold">
+        <Flex alignItems="center">
+          <Flex flexDir={"column"} alignItems={"center"} gap={2}>
+            <Text fontSize={"0.85rem"} fontWeight="semibold">
               Worst Performer
             </Text>
-            <Text fontSize={14} color={getProfitLossColor(worstPerformer?.value)}>
-              {worstPerformer?.value !== undefined && worstPerformer?.value > 0 ? '+' : ''}$
-              {worstPerformer?.value.toFixed(2)}
-            </Text>
-          </Box>
+            <Flex alignItems={"center"}>
+              <Image src={worstPerformer?.thump} width={'1.3rem'} mr={"0.2rem"}/>
+              <Text fontSize={"1.05rem"} color={getProfitLossColor(worstPerformer?.value)}>
+                {worstPerformer?.value !== undefined && worstPerformer?.value > 0 ? '+' : ''}$
+                {worstPerformer?.value.toFixed(2)}
+              </Text>
+            </Flex>
+          </Flex>
         </Flex>
       </Flex>
     </>
