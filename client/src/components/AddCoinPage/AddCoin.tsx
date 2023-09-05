@@ -258,13 +258,13 @@ export default function AddCoin() {
                 background="#fff"
                 margin="0 0.5rem 0 0"
                 padding="0.5rem 1.5rem"
-                border="1.5px solid #8bc53f"
+                border="1px solid #8bc53f"
                 width={['16rem', '18rem', '10rem']}
                 _hover={{
                   background: "none"
                 }}
               >
-                Buy
+                BUY
               </Button>
               <Button
                 onClick={(e) => sellTransaction(e)}
@@ -277,12 +277,12 @@ export default function AddCoin() {
                 margin="0 0.5rem 0 0"
                 padding="0.5rem 1.5rem"
                 width={['16rem', '18rem', '10rem']}
-                border="1.5px solid rgb(255, 0, 0)"
+                border="1px solid rgb(255, 0, 0)"
                 _hover={{
                   background: "none"
                 }}
               >
-                Sell
+                SELL
               </Button>
             </Flex>
             <Button
@@ -300,7 +300,7 @@ export default function AddCoin() {
                 background: 'none',
               }}
             >
-              Cancel
+              cancel
             </Button>
           </Flex>
         </Box>
