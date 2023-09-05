@@ -250,7 +250,7 @@ export default function AddCoin() {
             <Flex flexDir={['column', 'column', 'row']} gap={2}>
               <Button
                 onClick={(e) => buyTransaction(e)}
-                disabled={disableBtn}
+                // disabled={disableBtn}
                 type="submit"
                 fontSize="md"
                 borderRadius="0.3rem"
@@ -268,7 +268,7 @@ export default function AddCoin() {
               </Button>
               <Button
                 onClick={(e) => sellTransaction(e)}
-                disabled={disableBtn}
+                // disabled={disableBtn}
                 type="submit"
                 fontSize="sm"
                 borderRadius="0.3rem"
