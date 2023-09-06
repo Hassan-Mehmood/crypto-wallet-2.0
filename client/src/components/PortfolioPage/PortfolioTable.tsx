@@ -135,7 +135,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                 <Td>
                   <Box as="span" display="inline-block" cursor="pointer">
                     <Trash2
-                      color="maroon"
+                      color="rgb(255, 0, 0)"
                       onClick={(e) => {
                         e.stopPropagation();
                         setCoinId(coin.id);

@@ -34,13 +34,14 @@ const Navbar = () => {
         justify="space-between"
         align="center"
         direction='row'
-        py={['2rem', '1rem']}
-        minH="75px"
+        py={{base:'1rem', md:'1.5rem'}}
+        mb={{base: "2rem", md: "3rem"}}
+        borderBottom={"1px solid #000"}
       >
-        <Heading fontSize="1.4rem" mb={['0.75rem']} cursor="pointer">
+        <Heading fontSize="1.4rem" cursor="pointer">
           <Link to="/" >
             <Flex align={"center"}>
-              <Icon as={PiWalletLight} marginRight={"0.5rem"} fontSize={"1.75rem"}/>
+              <Icon as={PiWalletLight} marginRight={"0.5rem"} fontSize={"1.75rem"} color={"#8bc53f"}/>
               <Text>Wallet Track</Text>
             </Flex>
           </Link>
