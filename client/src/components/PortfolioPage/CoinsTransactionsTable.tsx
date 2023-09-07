@@ -22,58 +22,77 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
   return (
     <Box>
       <Button onClick={() => setShowTable('coinsTable')}>Back</Button>
-
       <Skeleton isLoaded={!isLoading}>
-        <Flex mt="1rem" justify="space-between" align="center">
-          <Box>
+        <Flex flexDir={"column"} justify="space-between" align="center" gap={2}>
+          <Flex
+            flexDir={"column"}
+            alignItems={"center"}
+            border={"1px solid #000"}
+            width={["20rem"]}
+            px={"1.5rem"} py={"0.7rem"}
+            borderRadius={"0.5rem"}
+            gap={2}>
             <Box>
-              <Text color="#58667e">
+              <Text color="#a3b1bf" fontSize={"0.9rem"}>
                 {data?.coin.name} ({data?.coin.symbol}) Balance
               </Text>
             </Box>
-            <Flex alignItems="center" mt="0.5rem">
-              <Image src={data?.coin.thump} width="30px" height="auto" mr="1rem" />
-              <Heading fontSize="32px">
-                ${data?.coin.holdingsInDollers.toLocaleString('en')}
-              </Heading>
+            <Flex flexDir={"column"} alignItems="center" gap={1}>
+              <Flex alignItems={"center"} gap={2}>
+                <Image src={data?.coin.thump} width="1.7rem" height="1.7rem" />
+                <Heading fontSize="1.85rem" fontWeight={"semibold"}>
+                  $ {data?.coin.holdingsInDollers.toLocaleString('en')}
+                </Heading>
+              </Flex>
               <Box
-                backgroundColor={getProfitLossColor(data?.coin.profitLoss)}
-                borderRadius="5px"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                padding="5px 10px"
-                color="white"
-                ml="1rem"
-                fontSize="12px"
-                fontWeight="bold"
+                color={`${getProfitLossColor(data?.coin.profitLoss)}`}
+                fontSize="0.9rem"
+                fontWeight="semibold"
               >
                 {calculatePercentage(data?.coin.profitLoss, data?.coin.cost)}%
               </Box>
             </Flex>
-          </Box>
-          <Flex>
-            <Box mr="4rem">
-              <Text color="#58667e">Total Cost</Text>
-              <Text fontWeight="bold">${data?.coin.cost}</Text>
-            </Box>
-            <Box>
-              <Text color="#58667e">Quantity</Text>
-              <Text fontWeight="bold">
-                {data?.coin.totalQuantity} {data?.coin.name}
-              </Text>
-            </Box>
-            <Box mx="4rem">
-              <Text color="#58667e">Avg Buy price</Text>
-              <Text fontWeight="bold">${data?.coin.averageBuyPrice}</Text>
-            </Box>
-            <Box>
-              <Text color="#58667e">Total Profit / Loss</Text>
-              <Text fontWeight="bold" color={getProfitLossColor(data?.coin.profitLoss)}>
+          </Flex>
+          <Flex flexDir={"column"} alignItems={"center"} gap={2} >
+            <Flex
+              border={"1px solid #000"}
+              justifyContent={"center"}
+              width={["20rem"]}
+              gap={5} px={"1.5rem"} py={"0.7rem"}
+              borderRadius={"0.5rem"}>
+              <Flex flexDir={"column"} alignItems={"center"} gap={1}>
+                <Text color="#a3b1bf" fontSize={"0.9rem"}>Total Cost</Text>
+                <Text fontWeight={"semibold"} fontSize={"1.1rem"}>
+                  $ {data?.coin.cost}
+                </Text>
+              </Flex>
+              <Flex flexDir={"column"} alignItems={"center"} gap={1}>
+                <Text color="#a3b1bf" fontSize={"0.9rem"}>Quantity</Text>
+                <Text fontWeight={"semibold"} fontSize={"1.1rem"}>
+                  {data?.coin.totalQuantity} {data?.coin.symbol}
+                </Text>
+              </Flex>
+              <Flex flexDir={"column"} alignItems={"center"} gap={1}>
+                <Text color="#a3b1bf" fontSize={"0.9rem"}>Avg Buy price</Text>
+                <Text fontWeight={"semibold"} fontSize={"1.1rem"}>
+                  $ {data?.coin.averageBuyPrice}
+                </Text>
+              </Flex>
+            </Flex>
+            <Flex
+              border={"1px solid #000"}
+              px={"2rem"} py={"0.7rem"}
+              width={["20rem"]}
+              flexDir={"column"}
+              alignItems={"center"}
+              gap={1}
+              borderRadius={"0.5rem"}>
+              <Text color="#a3b1bf" fontSize={"0.9rem"}>Total Profit / Loss</Text>
+              <Text fontWeight="semibold" color={getProfitLossColor(data?.coin.profitLoss)} >
                 {calculatePercentage(data?.coin.profitLoss, data?.coin.cost)}% ($
                 {data?.coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })})
               </Text>
-            </Box>
+            </Flex>
           </Flex>
         </Flex>
       </Skeleton>
