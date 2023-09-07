@@ -84,12 +84,12 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th>Name</Th>
-              <Th>Price</Th>
-              <Th>Holding</Th>
-              <Th>Avg Buy Price</Th>
-              <Th>Profit/Loss</Th>
-              <Th pr="0">Actions</Th>
+              <Th textAlign={"center"}>Name</Th>
+              <Th textAlign={"center"}>Price</Th>
+              <Th textAlign={"center"}>Holding</Th>
+              <Th textAlign={"center"}>Avg Buy Price</Th>
+              <Th textAlign={"center"}>Profit/Loss</Th>
+              <Th textAlign={"center"}>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -103,36 +103,36 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                 }}
               >
                 <Td>
-                  <Flex alignItems="center">
-                    <Image src={coin.thump} width="25px" height="auto" mr="5px" />
+                  <Flex alignItems="center" justifyContent={"center"} gap={2}>
+                    <Image src={coin.thump} width="25px" height="auto"/>
                     {coin.name}
                   </Flex>
                 </Td>
-                <Td>${coin.latestPrice.toLocaleString('en')}</Td>
-                <Td>
+                <Td textAlign={"center"}>$ {coin.latestPrice.toLocaleString('en')}</Td>
+                <Td textAlign={"center"}>
                   <Flex flexDirection="column">
-                    <Box fontWeight="bold">
+                    <Box fontWeight="semibold">
                       {coin.totalQuantity}{' '}
                       <Box as="span" fontSize="12px">
                         {coin.symbol}
                       </Box>
                     </Box>
                     <Box fontSize="14px">
-                      (${coin.holdingsInDollers.toLocaleString('en', { maximumFractionDigits: 2 })})
+                      ($ {coin.holdingsInDollers.toLocaleString('en', { maximumFractionDigits: 2 })})
                     </Box>
                   </Flex>
                 </Td>
-                <Td>${coin.averageBuyPrice.toLocaleString('en')}</Td>
-                <Td color={getProfitLossColor(coin.profitLoss)}>
+                <Td textAlign={"center"}>$ {coin.averageBuyPrice.toLocaleString('en')}</Td>
+                <Td textAlign={"center"} color={getProfitLossColor(coin.profitLoss)}>
                   <Flex flexDirection="column">
                     <Box>
-                      {coin.profitLoss > 0 ? '+' : ''}$
+                      {coin.profitLoss > 0 ? '+' : ''}$ {" "}
                       {coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })}
                     </Box>
                     <Box fontSize="14px">{calculatePercentage(coin.profitLoss, coin.cost)}%</Box>
                   </Flex>
                 </Td>
-                <Td>
+                <Td textAlign={"center"}>
                   <Box as="span" display="inline-block" cursor="pointer">
                     <Trash2
                       color="rgb(255, 0, 0)"

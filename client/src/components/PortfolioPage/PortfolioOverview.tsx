@@ -36,7 +36,8 @@ export default function PortfolioOverview({
   return (
     <Flex
       alignItems={"center"}
-      justifyContent={"center"}>
+      justifyContent={"center"}
+      mb={"4rem"}>
       <Flex
         flexDir={{ base: "column", xl: "row" }}
         border={{ xl: "1px solid black" }}
