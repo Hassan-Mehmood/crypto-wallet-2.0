@@ -123,17 +123,17 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                   </Flex>
                 </Td>
                 <Td>${coin.averageBuyPrice.toLocaleString('en')}</Td>
+
                 <Td color={getProfitLossColor(coin.profitLoss)}>
                   <Flex flexDirection="column">
                     <Box>
                       {coin.profitLoss > 0 ? '+' : ''}$
                       {coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })}
                     </Box>
-                    <Box fontSize="14px">
-                      {calculatePercentage(coin.profitLoss, coin.cost, coin.totalInvestment)}%
-                    </Box>
+                    <Box fontSize="14px">{calculatePercentage(coin.profitLoss, coin.cost)}%</Box>
                   </Flex>
                 </Td>
+
                 <Td>
                   <Box as="span" display="inline-block" cursor="pointer">
                     <Trash2

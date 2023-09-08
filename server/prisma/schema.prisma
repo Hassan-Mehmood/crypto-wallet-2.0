@@ -32,6 +32,7 @@ model Coin {
   latestPrice       Float         @default(0)
   holdingsInDollers Float         @default(0)
   profitLoss        Float         @default(0)
+  realizedPNL       Float         @default(0)
   totalInvestment   Float         @default(0)
   cost              Float         @default(0)
   // totalCostBasis    Float

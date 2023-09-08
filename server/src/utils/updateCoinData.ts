@@ -26,9 +26,11 @@ export default async function updateCoinData(
 
     if (coin.totalQuantity === 0) {
       coin.holdingsInDollers = 0;
+      coin.profitLoss = coin.realizedPNL;
+      allTimeProfit += coin.profitLoss;
     } else {
       coin.holdingsInDollers = coin.totalQuantity * coin.latestPrice;
-      coin.profitLoss += coin.latestPrice - coin.totalInvestment;
+      coin.profitLoss += coin.latestPrice - coin.totalInvestment + coin.realizedPNL;
 
       console.log('latest price', coin.latestPrice);
       console.log('total investment', coin.totalInvestment);

@@ -8,7 +8,6 @@ import { tokenPayload } from '../utils/jwt';
 import { calculateLatestCryptoBalance } from '../utils/calculateLatestCryptoBalance';
 import updateCoinData from '../utils/updateCoinData';
 import { calculateCostBasis } from '../utils/calculateCostBasis';
-import { parse } from 'path';
 
 interface reqBodyType {
   coinPrice: string;
@@ -143,13 +142,11 @@ export async function buyTransaction(req: Request, res: Response) {
       });
     }
 
-    // const latestPrice = await getCoinLatestPrice(coinRecord.symbol + 'USDT');
-
     await prisma.user.update({
       where: { id: userID },
       data: {
         dollerBalance: { decrement: transactionWorth },
-        cryptoBalance: { increment: transactionWorth },
+        // cryptoBalance: { increment: transactionWorth }, // I am gonna calculate cryptoBalance based on data from api
       },
     });
 
@@ -195,27 +192,8 @@ export async function sellTransaction(req: Request, res: Response) {
     const coinRecord = userData.coins[0];
 
     const transactionWorth = parseFloat(coinSellPrice) * parseFloat(coinSellQuantity);
-    const totalCostBasis = calculateCostBasis(coinRecord.transactions);
 
-    // Formula to calculate Profit and loss
-    const profitLoss = (parseFloat(coinSellPrice) - totalCostBasis) * parseFloat(coinSellPrice);
-
-    console.log('Total Cost Basis: ', totalCostBasis);
-    console.log(
-      'Average Costed for the amoutn sold: ',
-      totalCostBasis * parseFloat(coinSellQuantity)
-    );
-    console.log('Sale Made: ', transactionWorth);
-    console.log('Coin Price', coinSellPrice);
-    console.log('Profit/Loss: ', profitLoss);
-    console.log('------------');
-    console.log(
-      `Doller Balance: ${userData.dollerBalance + transactionWorth}
-      Crypto Balance: ${totalCostBasis * parseFloat(coinSellQuantity)}
-    `
-    );
-
-    await prisma.transaction.create({
+    const newTransaction = await prisma.transaction.create({
       data: {
         price: parseFloat(coinSellPrice),
         quantity: parseFloat(coinSellQuantity),
@@ -226,26 +204,42 @@ export async function sellTransaction(req: Request, res: Response) {
       },
     });
 
+    coinRecord.transactions.push(newTransaction);
+    const { totalCostBasis, realizedPNL } = calculateCostBasis(coinRecord.transactions);
+
+    console.log('------------');
+    console.log('Total Cost Basis: ', totalCostBasis);
+    console.log('Sale Made: ', transactionWorth);
+    console.log('Coin Sold at', coinSellPrice);
+    console.log('Realized Profit/Loss: ', realizedPNL);
+    console.log('------------');
+
     await prisma.user.update({
       where: {
         id: userID,
       },
       data: {
         dollerBalance: { increment: transactionWorth },
-        cryptoBalance: { decrement: totalCostBasis * parseFloat(coinSellQuantity) },
+        // cryptoBalance: { decrement: totalCostBasis - coinRecord.averageBuyPrice }, // A HACK
       },
     });
 
     const coinRemainingQuantity = coinRecord.totalQuantity - parseFloat(coinSellQuantity);
     const remainingInvestment = totalCostBasis * coinRemainingQuantity;
-    // const remainingCost = totalCostBasis * parseFloat(coinQuantity);
+
+    let coinAverageBuyPrice = coinRecord.averageBuyPrice;
+
+    if (coinRemainingQuantity <= 0) {
+      coinAverageBuyPrice = 0;
+    }
 
     await prisma.coin.update({
       where: { id: coinRecord.id },
       data: {
         totalQuantity: coinRemainingQuantity,
         totalInvestment: remainingInvestment,
-        profitLoss: { increment: profitLoss },
+        averageBuyPrice: coinAverageBuyPrice,
+        realizedPNL: realizedPNL,
       },
     });
 
@@ -304,9 +298,9 @@ export async function deleteCoinAndTransactions(req: AuthenticatedRequest, res: 
       where: { id: req.user.id },
       data: {
         dollerBalance: { increment: deletedCoin.totalInvestment },
-        cryptoBalance: {
-          decrement: deletedCoin.totalQuantity * parseFloat(latestPrice.data.price),
-        },
+        // cryptoBalance: {
+        //   decrement: deletedCoin.totalQuantity * parseFloat(latestPrice.data.price),
+        // },
       },
     });
 
@@ -348,6 +342,7 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
             totalInvestment: true,
             holdingsInDollers: true,
             profitLoss: true,
+            realizedPNL: true,
             cost: true,
           },
         },
@@ -366,18 +361,25 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
           totalInvestment: true,
           holdingsInDollers: true,
           profitLoss: true,
+          realizedPNL: true,
           cost: true,
         },
       });
+      coin.profitLoss = coin.realizedPNL;
 
       return res.status(200).json({ transactions: [], coin });
     }
-    const coin = transactions[0].Coin;
-    const coinLatestPrice = await getCoinLatestPrice(coin.symbol + 'USDT');
 
-    coin.holdingsInDollers = coin.totalQuantity * parseFloat(coinLatestPrice.data.price);
+    const coin = transactions[0].Coin;
+    const latestPriceData = await getCoinLatestPrice(coin.symbol + 'USDT');
+    const latestPrice = parseFloat(latestPriceData.data.price);
+
+    coin.holdingsInDollers = coin.totalQuantity * latestPrice;
+    // coin.profitLoss += latestPrice - coin.totalInvestment + coin.realizedPNL;
 
     const transactionsWithoutCoin = transactions.map(({ Coin, ...rest }) => rest);
+
+    console.log(coin);
 
     return res.status(200).json({ transactions: transactionsWithoutCoin, coin });
   } catch (error) {
@@ -433,7 +435,7 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
       where: { id: req.user.id },
       data: {
         dollerBalance: user.dollerBalance,
-        cryptoBalance: user.cryptoBalance,
+        // cryptoBalance: user.cryptoBalance,
       },
     });
 

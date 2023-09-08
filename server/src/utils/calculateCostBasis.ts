@@ -1,13 +1,21 @@
 import { Transaction } from '@prisma/client';
+import { CostBasisCalculator } from './CostBaseCalculator';
 
 export function calculateCostBasis(transactions: Transaction[]) {
-  const buyTransactions = transactions.filter((transaction) => transaction.type === 'BUY');
-  let totalQuantity = 0;
+  const calculator = new CostBasisCalculator();
 
-  const totalCost = buyTransactions.reduce((totalCost, transaction) => {
-    totalQuantity += transaction.quantity;
-    return totalCost + transaction.price * transaction.quantity;
-  }, 0);
+  for (const transaction of transactions) {
+    if (transaction.type === 'BUY') {
+      calculator.buy(transaction.quantity, transaction.price);
+    }
 
-  return totalQuantity === 0 ? 0 : totalCost / totalQuantity;
+    if (transaction.type === 'SELL') {
+      calculator.sell(transaction.quantity, transaction.price);
+    }
+  }
+
+  const realizedPNL = calculator.getRealizedPNL();
+  const totalCostBasis = calculator.getTotalCostBasis();
+
+  return { realizedPNL, totalCostBasis };
 }

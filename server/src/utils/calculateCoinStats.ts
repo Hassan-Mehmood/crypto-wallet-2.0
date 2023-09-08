@@ -13,19 +13,13 @@ export async function calculateCoinStats(coin: Coin): Promise<void> {
     return total;
   }, 0);
 
-  const totalCost = transactions.reduce((total, transaction) => {
+  let totalInvestment = transactions.reduce((total, transaction) => {
     if (transaction.type === 'BUY') total += transaction.price * transaction.quantity;
+    if (transaction.type === 'SELL') total -= transaction.price * transaction.quantity;
     return total;
   }, 0);
 
-  // let totalInvestment = transactions.reduce((total, transaction) => {
-  //   if (transaction.type === 'BUY') total += transaction.price * transaction.quantity;
-  //   if (transaction.type === 'SELL') total -= transaction.price * transaction.quantity;
-  //   return total;
-  // }, 0);
-
-  let totalCostBasis = calculateCostBasis(transactions);
-  let totalInvestment = totalCostBasis * totalQuantity;
+  let { totalCostBasis, realizedPNL } = calculateCostBasis(transactions);
 
   if (totalInvestment < 0) totalInvestment = 0;
 
@@ -33,13 +27,13 @@ export async function calculateCoinStats(coin: Coin): Promise<void> {
   if (totalQuantity > 0) averageBuyPrice = totalInvestment / totalQuantity;
 
   console.log('Quantity', totalQuantity);
-  console.log('Total Cost', totalCost);
   console.log('Total Cost Basis', totalCostBasis);
   console.log('Total investment', totalInvestment);
   console.log('Average Buy Price', averageBuyPrice);
+  console.log('Realized PNL', realizedPNL);
 
   await prisma.coin.update({
     where: { id: coin.id },
-    data: { averageBuyPrice, totalQuantity, totalInvestment, cost: totalCost },
+    data: { averageBuyPrice, totalQuantity, totalInvestment, cost: totalInvestment, realizedPNL },
   });
 }
