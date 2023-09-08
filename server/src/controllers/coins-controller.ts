@@ -87,7 +87,13 @@ export async function buyTransaction(req: Request, res: Response) {
   }
 
   try {
-    const { coinPrice, coinQuantity, coin, user: userID, type } = req.body as reqBodyType;
+    const {
+      coinPrice: coinBuyPrice,
+      coinQuantity: coinBuyQuantity,
+      type: transactionType,
+      user: userID,
+      coin,
+    } = req.body as reqBodyType;
 
     const userData = await prisma.user.findUnique({
       where: { id: userID },
@@ -101,7 +107,7 @@ export async function buyTransaction(req: Request, res: Response) {
     });
 
     let coinRecord = userData.coins[0];
-    const costBasis = parseFloat(coinPrice) * parseFloat(coinQuantity);
+    const transactionWorth = parseFloat(coinBuyPrice) * parseFloat(coinBuyQuantity);
 
     if (!coinRecord) {
       coinRecord = await prisma.coin.create({
@@ -115,10 +121,10 @@ export async function buyTransaction(req: Request, res: Response) {
           user: { connect: { id: userData.id } },
           transactions: {
             create: {
-              price: parseFloat(coinPrice),
-              quantity: parseFloat(coinQuantity),
-              costBasis: costBasis,
-              type: type,
+              price: parseFloat(coinBuyPrice),
+              quantity: parseFloat(coinBuyQuantity),
+              costBasis: transactionWorth,
+              type: transactionType,
               timeBought: new Date(),
             },
           },
@@ -127,28 +133,28 @@ export async function buyTransaction(req: Request, res: Response) {
     } else {
       await prisma.transaction.create({
         data: {
-          price: parseFloat(coinPrice),
-          quantity: parseFloat(coinQuantity),
-          costBasis: costBasis,
-          type: type,
+          price: parseFloat(coinBuyPrice),
+          quantity: parseFloat(coinBuyQuantity),
+          costBasis: transactionWorth,
+          type: transactionType,
           timeBought: new Date(),
           Coin: { connect: { id: coinRecord.id } },
         },
       });
     }
 
-    const transactionCost = parseFloat(coinPrice) * parseFloat(coinQuantity);
     // const latestPrice = await getCoinLatestPrice(coinRecord.symbol + 'USDT');
 
     await prisma.user.update({
       where: { id: userID },
       data: {
-        dollerBalance: { decrement: transactionCost },
-        cryptoBalance: { increment: parseFloat(coinQuantity) * parseFloat(coinPrice) },
+        dollerBalance: { decrement: transactionWorth },
+        cryptoBalance: { increment: transactionWorth },
       },
     });
 
-    calculateCoinStats(coinRecord); // Calculating averageBuyPrice, totalQuantity, totalInvestment
+    // Calculating averageBuyPrice, totalQuantity, totalInvestment
+    calculateCoinStats(coinRecord);
 
     return res.status(201).json('Coin added to wallet');
   } catch (error) {
@@ -164,7 +170,13 @@ export async function sellTransaction(req: Request, res: Response) {
   }
 
   try {
-    const { coinPrice, coinQuantity, coin, user: userID, type } = req.body as reqBodyType;
+    const {
+      coinPrice: coinSellPrice,
+      coinQuantity: coinSellQuantity,
+      type: transactionType,
+      user: userID,
+      coin,
+    } = req.body as reqBodyType;
 
     const userData = await prisma.user.findUnique({
       where: { id: userID },
@@ -182,31 +194,34 @@ export async function sellTransaction(req: Request, res: Response) {
 
     const coinRecord = userData.coins[0];
 
-    const saleMade = parseFloat(coinPrice) * parseFloat(coinQuantity);
+    const transactionWorth = parseFloat(coinSellPrice) * parseFloat(coinSellQuantity);
     const totalCostBasis = calculateCostBasis(coinRecord.transactions);
 
     // Formula to calculate Profit and loss
-    const profitLoss = (parseFloat(coinPrice) - totalCostBasis) * parseFloat(coinQuantity);
+    const profitLoss = (parseFloat(coinSellPrice) - totalCostBasis) * parseFloat(coinSellPrice);
 
     console.log('Total Cost Basis: ', totalCostBasis);
-    console.log('Average Costed for the amoutn sold: ', totalCostBasis * parseFloat(coinQuantity));
-    console.log('Sale Made: ', saleMade);
-    console.log('Coin Price', coinPrice);
+    console.log(
+      'Average Costed for the amoutn sold: ',
+      totalCostBasis * parseFloat(coinSellQuantity)
+    );
+    console.log('Sale Made: ', transactionWorth);
+    console.log('Coin Price', coinSellPrice);
     console.log('Profit/Loss: ', profitLoss);
     console.log('------------');
     console.log(
-      `Doller Balance: ${userData.dollerBalance + saleMade}
-      Crypto Balance: ${totalCostBasis * parseFloat(coinQuantity)}
+      `Doller Balance: ${userData.dollerBalance + transactionWorth}
+      Crypto Balance: ${totalCostBasis * parseFloat(coinSellQuantity)}
     `
     );
 
     await prisma.transaction.create({
       data: {
-        price: parseFloat(coinPrice),
-        quantity: parseFloat(coinQuantity),
-        costBasis: saleMade,
+        price: parseFloat(coinSellPrice),
+        quantity: parseFloat(coinSellQuantity),
+        costBasis: transactionWorth,
         timeBought: new Date(),
-        type,
+        type: transactionType,
         Coin: { connect: { id: coinRecord.id } },
       },
     });
@@ -216,23 +231,17 @@ export async function sellTransaction(req: Request, res: Response) {
         id: userID,
       },
       data: {
-        dollerBalance: {
-          increment: saleMade,
-        },
-        cryptoBalance: {
-          decrement: totalCostBasis * parseFloat(coinQuantity),
-        },
+        dollerBalance: { increment: transactionWorth },
+        cryptoBalance: { decrement: totalCostBasis * parseFloat(coinSellQuantity) },
       },
     });
 
-    const coinRemainingQuantity = coinRecord.totalQuantity - parseFloat(coinQuantity);
+    const coinRemainingQuantity = coinRecord.totalQuantity - parseFloat(coinSellQuantity);
     const remainingInvestment = totalCostBasis * coinRemainingQuantity;
     // const remainingCost = totalCostBasis * parseFloat(coinQuantity);
 
     await prisma.coin.update({
-      where: {
-        id: coinRecord.id,
-      },
+      where: { id: coinRecord.id },
       data: {
         totalQuantity: coinRemainingQuantity,
         totalInvestment: remainingInvestment,

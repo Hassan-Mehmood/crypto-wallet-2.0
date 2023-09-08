@@ -1,7 +1,6 @@
 import { Coin } from '@prisma/client';
 import { prisma } from './client';
 import { calculateCostBasis } from './calculateCostBasis';
-// import { calculateCostBasis } from './calculateCostBasis';
 
 export async function calculateCoinStats(coin: Coin): Promise<void> {
   const transactions = await prisma.transaction.findMany({
