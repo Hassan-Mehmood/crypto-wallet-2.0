@@ -12,7 +12,11 @@ export function getProfitLossColor(profitLoss: number | undefined) {
   }
 }
 
-export function calculatePercentage(profitOrLoss: number | undefined, cost: number | undefined) {
+export function calculatePercentage(
+  profitOrLoss: number | undefined,
+  cost: number | undefined,
+  investment?: number | undefined
+) {
   if (!profitOrLoss || !cost) {
     console.log('CalculatePercentage parameters undefined');
     return '0';

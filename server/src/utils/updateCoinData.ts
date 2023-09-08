@@ -1,5 +1,6 @@
 import { Coin, Transaction } from '@prisma/client';
 import getCoinLatestPrice from './getCoinLatestPrice';
+import { calculateCostBasis } from './calculateCostBasis';
 
 interface Performer {
   value: number;
@@ -22,11 +23,19 @@ export default async function updateCoinData(
     const latestPriceData = await getCoinLatestPrice(symbol);
 
     coin.latestPrice = parseFloat(latestPriceData.data.price);
-    coin.holdingsInDollers = coin.totalQuantity * coin.latestPrice;
-    coin.profitLoss = coin.holdingsInDollers - coin.totalInvestment;
 
-    allTimeProfit += coin.profitLoss;
+    if (coin.totalQuantity === 0) {
+      coin.holdingsInDollers = 0;
+    } else {
+      coin.holdingsInDollers = coin.totalQuantity * coin.latestPrice;
+      coin.profitLoss += coin.latestPrice - coin.totalInvestment;
 
+      console.log('latest price', coin.latestPrice);
+      console.log('total investment', coin.totalInvestment);
+      console.log('profit loss', coin.profitLoss);
+
+      allTimeProfit += coin.profitLoss;
+    }
     if (coin.profitLoss > bestPerformer.value) {
       bestPerformer.value = coin.profitLoss;
       bestPerformer.thump = coin.thump;

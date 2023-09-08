@@ -8,6 +8,7 @@ import { tokenPayload } from '../utils/jwt';
 import { calculateLatestCryptoBalance } from '../utils/calculateLatestCryptoBalance';
 import updateCoinData from '../utils/updateCoinData';
 import { calculateCostBasis } from '../utils/calculateCostBasis';
+import { parse } from 'path';
 
 interface reqBodyType {
   coinPrice: string;
@@ -117,8 +118,8 @@ export async function buyTransaction(req: Request, res: Response) {
               price: parseFloat(coinPrice),
               quantity: parseFloat(coinQuantity),
               costBasis: costBasis,
+              type: type,
               timeBought: new Date(),
-              type,
             },
           },
         },
@@ -129,8 +130,8 @@ export async function buyTransaction(req: Request, res: Response) {
           price: parseFloat(coinPrice),
           quantity: parseFloat(coinQuantity),
           costBasis: costBasis,
+          type: type,
           timeBought: new Date(),
-          type,
           Coin: { connect: { id: coinRecord.id } },
         },
       });
@@ -184,9 +185,20 @@ export async function sellTransaction(req: Request, res: Response) {
     const saleMade = parseFloat(coinPrice) * parseFloat(coinQuantity);
     const totalCostBasis = calculateCostBasis(coinRecord.transactions);
 
-    const profitLoss = saleMade - totalCostBasis;
+    // Formula to calculate Profit and loss
+    const profitLoss = (parseFloat(coinPrice) - totalCostBasis) * parseFloat(coinQuantity);
 
-    // console.log('Profit or loss', profitLoss);
+    console.log('Total Cost Basis: ', totalCostBasis);
+    console.log('Average Costed for the amoutn sold: ', totalCostBasis * parseFloat(coinQuantity));
+    console.log('Sale Made: ', saleMade);
+    console.log('Coin Price', coinPrice);
+    console.log('Profit/Loss: ', profitLoss);
+    console.log('------------');
+    console.log(
+      `Doller Balance: ${userData.dollerBalance + saleMade}
+      Crypto Balance: ${totalCostBasis * parseFloat(coinQuantity)}
+    `
+    );
 
     await prisma.transaction.create({
       data: {
@@ -199,9 +211,6 @@ export async function sellTransaction(req: Request, res: Response) {
       },
     });
 
-    const transactionCost = parseFloat(coinPrice) * parseFloat(coinQuantity);
-    // const latestPrice = await getCoinLatestPrice(coinRecord.symbol + 'USDT');
-
     await prisma.user.update({
       where: {
         id: userID,
@@ -211,17 +220,14 @@ export async function sellTransaction(req: Request, res: Response) {
           increment: saleMade,
         },
         cryptoBalance: {
-          decrement: totalCostBasis,
+          decrement: totalCostBasis * parseFloat(coinQuantity),
         },
       },
     });
 
-    const coinRemainingQuantity =
-      parseFloat(coinRecord.totalQuantity.toString()) - parseFloat(coinQuantity);
-    const remainingInvestment = parseFloat(coinRecord.totalInvestment.toString()) - transactionCost;
-
-    // const coinRemainingQuantity = coinRecord.totalQuantity - parseFloat(coinQuantity);
-    // const remainingInvestment = coinRecord.totalInvestment - transactionCost;
+    const coinRemainingQuantity = coinRecord.totalQuantity - parseFloat(coinQuantity);
+    const remainingInvestment = totalCostBasis * coinRemainingQuantity;
+    // const remainingCost = totalCostBasis * parseFloat(coinQuantity);
 
     await prisma.coin.update({
       where: {
@@ -230,6 +236,7 @@ export async function sellTransaction(req: Request, res: Response) {
       data: {
         totalQuantity: coinRemainingQuantity,
         totalInvestment: remainingInvestment,
+        profitLoss: { increment: profitLoss },
       },
     });
 
@@ -360,7 +367,6 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
     const coinLatestPrice = await getCoinLatestPrice(coin.symbol + 'USDT');
 
     coin.holdingsInDollers = coin.totalQuantity * parseFloat(coinLatestPrice.data.price);
-    coin.profitLoss = coin.holdingsInDollers - coin.totalInvestment;
 
     const transactionsWithoutCoin = transactions.map(({ Coin, ...rest }) => rest);
 
