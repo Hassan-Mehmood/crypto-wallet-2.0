@@ -9,6 +9,7 @@ import { Transaction } from '../../types';
 import { Image } from '@chakra-ui/image';
 import { useQuery } from 'react-query';
 import { DeleteTransactionModal } from './DeleteTransactionModal';
+import { EditTransactionModal } from './EditTransactionModal';
 
 interface props {
   setShowTable: React.Dispatch<React.SetStateAction<string>>;
@@ -18,11 +19,12 @@ interface props {
 export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: props) {
   const { data, isLoading } = useQuery('coinTransaction', () => getCoinTransactions(activeCoinId));
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen:isEditOpen, onOpen:onEditOpen, onClose:onEditClose } = useDisclosure();
 
   return (
     <>
       <DeleteTransactionModal isOpen={isOpen} onClose={onClose} />
-
+      <EditTransactionModal isOpen={isEditOpen} onClose={onEditClose}/>
       <Box>
         <Button
           display={"flex"}
@@ -195,7 +197,7 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
                     <Td textAlign={"center"}>
                       <Flex justifyContent={"center"} gap={2}>
                         <Box color="#8bc53f">
-                          <BiEdit size={24} />
+                          <BiEdit size={24} onClick={() => onEditOpen()}/>
                         </Box>
                         <Box color="rgb(255, 0, 0)">
                           <AiOutlineDelete size={24} onClick={() => onOpen()} />
