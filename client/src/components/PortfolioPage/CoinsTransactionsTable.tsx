@@ -1,15 +1,13 @@
-import { Button } from '@chakra-ui/button';
-import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
-import React from 'react';
-import { useQuery } from 'react-query';
-import { getCoinTransactions } from '../../api/axios';
-import { Image } from '@chakra-ui/image';
+import { Skeleton, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
-import { Skeleton, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-// import { Trash2 } from 'react-feather';
-import { Transaction } from '../../types';
+import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
+import { getCoinTransactions } from '../../api/axios';
 import { BiArrowBack, BiEdit } from 'react-icons/bi';
 import { AiOutlineDelete } from 'react-icons/ai';
+import { Button } from '@chakra-ui/button';
+import { Transaction } from '../../types';
+import { Image } from '@chakra-ui/image';
+import { useQuery } from 'react-query';
 
 interface props {
   setShowTable: React.Dispatch<React.SetStateAction<string>>;
@@ -18,6 +16,7 @@ interface props {
 
 export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: props) {
   const { data, isLoading } = useQuery('coinTransaction', () => getCoinTransactions(activeCoinId));
+  const { isOpen, onClose } = useDisclosure();
 
   return (
     <Box>
