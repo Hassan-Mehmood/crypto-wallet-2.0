@@ -9,7 +9,7 @@ export const DeleteTransactionModal = ({ isOpen, onClose }: IDeleteTransactionMo
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent width={"25.6rem"} position={"relative"} mt={"12rem"}>
-                <ModalHeader textAlign={"center"}>Delete Transaction?</ModalHeader>
+                <ModalHeader textAlign={"center"}>Delete Transaction</ModalHeader>
                 <ModalCloseButton position={"absolute"} right={"0.8rem"} top={"1.1rem"} />
                 <ModalBody>
                     <form>

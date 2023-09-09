@@ -1,8 +1,9 @@
-import { Menu, MenuButton, MenuList, MenuItem, Text, Icon, Box, Flex } from '@chakra-ui/react';
+import { Menu, MenuButton, MenuList, MenuItem, Text, Icon, Box, Flex, useColorMode, Button } from '@chakra-ui/react';
 import { UserState, logout } from '../../slices/userSlice';
 import { AiOutlineProfile } from "react-icons/ai"
 import { FaRegCircleUser } from "react-icons/fa6";
-import { BiBitcoin } from "react-icons/bi";
+import { BiBitcoin, BiSolidSun } from "react-icons/bi";
+import { HiMoon } from "react-icons/hi";
 import { useDispatch } from 'react-redux';
 import { FiLogOut } from "react-icons/fi"
 import { Link } from 'react-router-dom';
@@ -13,6 +14,7 @@ interface props {
 }
 
 export default function UserInfoAvatar({ user }: props) {
+  const { colorMode, toggleColorMode } = useColorMode();
   const dispatch = useDispatch();
 
   async function handleLogout() {
@@ -26,6 +28,14 @@ export default function UserInfoAvatar({ user }: props) {
   return (
     <>
       <Box display={["none", "none", "flex"]} fontSize={"lg"} gap={[8, 8, 8, 14]} fontWeight={"semibold"}>
+        <Flex alignItems={"center"} cursor={"pointer"}
+          onClick={() => toggleColorMode()}
+          _hover={{
+            color: "#8bc53f"
+          }}>
+          <Icon as={colorMode === "light" ? BiSolidSun : HiMoon} mr={"1rem"} />
+          <Text>{colorMode} mode</Text>
+        </Flex>
         <Link to={'/addcoin'}>
           <Flex alignItems={"center"} cursor={"pointer"}
             _hover={{
@@ -77,6 +87,14 @@ export default function UserInfoAvatar({ user }: props) {
                   {user.name}
                 </Text>
               </Box>
+            </MenuItem>
+            <MenuItem
+              onClick={() => toggleColorMode()}
+              _hover={{ backgroundColor: 'rgba(0, 0, 0,0.1)' }}>
+              <Flex alignItems={"center"}>
+                <Icon as={colorMode === "light" ? BiSolidSun : HiMoon} mr={"1rem"} />
+                <Text>{colorMode} mode</Text>
+              </Flex>
             </MenuItem>
             <Link to={'/addcoin'}>
               <MenuItem _hover={{ backgroundColor: 'rgba(0, 0, 0,0.1)' }}>

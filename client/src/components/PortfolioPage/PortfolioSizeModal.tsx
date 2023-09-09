@@ -12,6 +12,7 @@ import {
   NumberInputField,
   Button,
   useToast,
+  Flex,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useState } from 'react';
@@ -71,40 +72,72 @@ export default function PortfolioSizeModal({ isOpen, onClose }: props) {
     setPortfolioSize.mutate();
   }
 
+  // <Modal isOpen={isOpen} onClose={onClose}>
+  //           <ModalOverlay />
+  //           <ModalContent width={"25.6rem"} position={"relative"} mt={"12rem"}>
+  //               <ModalHeader textAlign={"center"}>Edit Transaction</ModalHeader>
+  //               <ModalCloseButton position={"absolute"} right={"0.8rem"} top={"1.1rem"} />
+  //               <form>
+  //                   <ModalBody display={"flex"} flexDir={"column"} gap={1.5}>
+  //                       <FormControl>
+  //                           <FormLabel textAlign={"center"}>
+  //                               Do you want to edit the following <Text as={'b'}>Transaction</Text>?
+  //                           </FormLabel>
+  //                       </FormControl>
+  //                       <Flex flexDir={"column"} alignItems={"center"} my="1rem" gap={"0.6rem"}>
+  //                           <Button
+  //                               type="submit"
+  //                               width={"17rem"}
+  //                               fontWeight={"normal"}
+  //                               background="#fff"
+  //                               color={"#a3b1bf"}
+  //                               border="1px solid #a3b1bf"
+  //                               _hover={{
+  //                                   backgroundColor: "none"
+  //                               }}
+  //                           >
+  //                               Edit Transaction
+  //                           </Button>
+  //                       </Flex>
+  //                   </ModalBody>
+  //               </form>
+  //           </ModalContent>
+  //       </Modal>
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Portfolio Size</ModalHeader>
-          <ModalCloseButton />
+        <ModalContent py={"1rem"}>
+          <ModalHeader textAlign={"center"}>Portfolio Size</ModalHeader>
+          <ModalCloseButton position={"absolute"} right={"0.8rem"} top={"2rem"} />
           <ModalBody>
             <form onSubmit={(e) => handleSubmit(e)}>
-              <FormControl>
-                <FormLabel>Enter your portfolio size</FormLabel>
+              <FormControl display={"flex"} justifyContent={"center"} mt={"0.5rem"}>
+                <FormLabel>Total Quatity</FormLabel>
                 <NumberInput
                   min={0}
                   value={accountBalance}
                   precision={2}
                   onChange={(valueAsString) => handleFormValue(valueAsString)}
                 >
-                  <NumberInputField h="35px" border="1px solid black" p=".5rem" />
+                  <NumberInputField h="35px" border="1px solid black" />
                 </NumberInput>
               </FormControl>
 
-              <Box mt="2rem">
+              <Flex mt="1.2rem" justify={"center"}>
                 <Button
                   type="submit"
                   mb="0.5rem"
                   backgroundColor="#fff"
                   maxW="100%"
-                  width="100%"
+                  width="21rem"
+                  py={"1.35rem"}
                   border="1px solid"
                   _hover={{ backgroundColor: 'rgba(216, 216, 216, 0.541)' }}
                 >
                   Set portfolio size
                 </Button>
-              </Box>
+              </Flex>
             </form>
           </ModalBody>
         </ModalContent>

@@ -13,40 +13,40 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
-import { Trash2 } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import DeleteCoinModal from './DeleteCoinModal';
 import { useState } from 'react';
+import { AiOutlineDelete } from 'react-icons/ai';
 
 interface props {
   coins:
-    | {
-        id: number;
-        name: string;
-        apiSymbol: string;
-        symbol: string;
-        thump: string;
-        large: string;
-        marketCapRank: number;
-        averageBuyPrice: number;
-        latestPrice: number;
-        totalQuantity: number;
-        holdingsInDollers: number;
-        profitLoss: number;
-        totalInvestment: number;
-        userId: number;
-        createdAt: Date;
-        updatedAt: Date;
-        transactions: {
-          id: number;
-          price: number;
-          quantity: number;
-          timeBought: Date;
-          createdAt: Date;
-          updatedAt: Date;
-        }[];
-      }[]
-    | undefined;
+  | {
+    id: number;
+    name: string;
+    apiSymbol: string;
+    symbol: string;
+    thump: string;
+    large: string;
+    marketCapRank: number;
+    averageBuyPrice: number;
+    latestPrice: number;
+    totalQuantity: number;
+    holdingsInDollers: number;
+    profitLoss: number;
+    totalInvestment: number;
+    userId: number;
+    createdAt: Date;
+    updatedAt: Date;
+    transactions: {
+      id: number;
+      price: number;
+      quantity: number;
+      timeBought: Date;
+      createdAt: Date;
+      updatedAt: Date;
+    }[];
+  }[]
+  | undefined;
   setShowTable: React.Dispatch<React.SetStateAction<string>>;
   setActiveCoinId: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -104,7 +104,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
               >
                 <Td>
                   <Flex alignItems="center" justifyContent={"center"} gap={2}>
-                    <Image src={coin.thump} width="25px" height="auto"/>
+                    <Image src={coin.thump} width="25px" height="auto" />
                     {coin.name}
                   </Flex>
                 </Td>
@@ -134,7 +134,8 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                 </Td>
                 <Td textAlign={"center"}>
                   <Box as="span" display="inline-block" cursor="pointer">
-                    <Trash2
+                    <AiOutlineDelete
+                      size={24}
                       color="rgb(255, 0, 0)"
                       onClick={(e) => {
                         e.stopPropagation();

@@ -6,6 +6,7 @@ import {
   CardBody,
   GridItem,
   Skeleton,
+  useColorMode,
 } from '@chakra-ui/react';
 import GlobalData from './GlobalData';
 import MarketDominance from './MarketDominance';
@@ -15,6 +16,7 @@ import { getHighlightsData } from '../../../api/axios';
 
 export default function Highlights() {
   const { data, isLoading } = useQuery('trendingCoins', getHighlightsData);
+
   const trendingCoins = data && data[0];
   const globalData = data && data[1].data;
 
@@ -23,13 +25,7 @@ export default function Highlights() {
       spacing={4}
       templateColumns={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
     >
-      <Card
-        background="rgba(255, 255, 255, 0.2)"
-        borderRadius="16px"
-        boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
-        backdropFilter="blur(10px)"
-        border="1px solid rgba(255, 255, 255, 0.3)"
-      >
+      <Card>
         <Skeleton isLoaded={!isLoading}>
           <CardHeader>
             <Heading size="md">Trending Coins</Heading>
@@ -42,13 +38,7 @@ export default function Highlights() {
         </Skeleton>
       </Card>
 
-      <Card
-        background="rgba(255, 255, 255, 0.2)"
-        borderRadius="16px"
-        boxShadow=" 0 2px 4px rgba(0, 0, 0, 0.1)"
-        backdropFilter="blur(10px)"
-        border="1px solid rgba(255, 255, 255, 0.3)"
-      >
+      <Card>
         <Skeleton isLoaded={!isLoading}>
           <CardHeader>
             <Heading size="md">Global News</Heading>
@@ -66,7 +56,8 @@ export default function Highlights() {
 
       <GridItem colSpan={[2, 2, 1]} display={['flex', 'flex', 'block']} justifyContent={'center'}>
         <Skeleton isLoaded={!isLoading}>
-          <Card width={['48.8vw', '45.1vw', 'full']}>
+          <Card
+            width={['48.8vw', '45.1vw', 'full']}>
             <CardHeader>
               <Heading size="md">Market Dominance</Heading>
             </CardHeader>

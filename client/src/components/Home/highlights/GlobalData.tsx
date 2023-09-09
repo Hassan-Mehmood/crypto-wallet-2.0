@@ -1,4 +1,4 @@
-import { Box, Spinner, Text } from '@chakra-ui/react';
+import { Box, Spinner, Text, useColorMode } from '@chakra-ui/react';
 
 type props = {
   activeCurrencies: number | undefined;
@@ -8,6 +8,8 @@ type props = {
 };
 
 export default function GlobalData({ activeCurrencies, markets, icos, isLoading }: props) {
+  const { colorMode } = useColorMode();
+
   if (isLoading) {
     return <Spinner position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)" />;
   }
@@ -15,15 +17,15 @@ export default function GlobalData({ activeCurrencies, markets, icos, isLoading 
   return (
     <Box mb={3}>
       <Box>
-        <Box fontSize={["0.8rem", "0.85rem", "0.92rem"]} color="#000" width={"full"} display={"flex"} justifyContent={"space-between"} fontWeight={"semibold"}>
-          <Text as="span" display="inline-block" mb={3}>
+        <Box fontSize={["0.8rem", "0.85rem", "0.92rem"]} color="#000" width={"full"} display={"flex"} justifyContent={"space-between"}>
+          <Text as="span" display="inline-block" mb={3} fontSize={["0.8rem", "0.85rem", "0.92rem"]} color={`${colorMode === "light" ? "#000" : "#fff"}`}>
             Active Currencies
           </Text>
           <Text color={"#8bc53f"} >
             {activeCurrencies}
           </Text>
         </Box>
-        <Box fontSize={["0.8rem", "0.85rem", "0.92rem"]} color="#000" width={"full"} display={"flex"} justifyContent={"space-between"} fontWeight={"semibold"}>
+        <Box fontSize={["0.8rem", "0.85rem", "0.92rem"]} color="#000" width={"full"} display={"flex"} justifyContent={"space-between"}>
           <Text as="span" display="inline-block" mb={3}>
             Markets
           </Text>
@@ -31,7 +33,7 @@ export default function GlobalData({ activeCurrencies, markets, icos, isLoading 
             {markets}
           </Text>
         </Box>
-        <Box fontSize={["0.8rem", "0.85rem", "0.92rem"]} color="#000" width={"full"} display={"flex"} justifyContent={"space-between"} fontWeight={"semibold"}>
+        <Box fontSize={["0.8rem", "0.85rem", "0.92rem"]} color="#000" width={"full"} display={"flex"} justifyContent={"space-between"}>
           <Text as="span" display="inline-block" mb={3}>
             Initial Coin Offerings
           </Text>

@@ -1,4 +1,4 @@
-import { Text, Image, Box, Flex, Button, useDisclosure } from '@chakra-ui/react';
+import { Text, Image, Box, Flex, Button, useDisclosure, useColorMode } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { getProfitLossColor } from '../../utils/functions';
 import PortfolioSizeModal from './PortfolioSizeModal';
@@ -32,7 +32,6 @@ export default function PortfolioOverview({
 }: props) {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   return (
     <Flex
       alignItems={"center"}
@@ -43,7 +42,7 @@ export default function PortfolioOverview({
         border={{ xl: "1px solid black" }}
         borderRadius={{ xl: "0.5rem" }}
         px={{ xl: "2rem" }}
-        gap={{ xl:  12}}>
+        gap={{ xl: 12 }}>
         <PortfolioSizeModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
         <Flex
           flexDir={{ base: "column", md: "row" }}
@@ -178,14 +177,14 @@ export default function PortfolioOverview({
               </Button>
             </Flex>
           </Flex>
-            <Box
-          display={{ base: "none", xl: "block" }}
-          background="#000"
-          width="0.05rem"
-          height="100%"
-        />
+          <Box
+            display={{ base: "none", xl: "block" }}
+            background="#000"
+            width="0.05rem"
+            height="100%"
+          />
         </Flex>
-       
+
         <Flex
           mt={{ base: "2rem", xl: "0rem" }}
           flexDir={{ base: "row", xl: "column" }}
