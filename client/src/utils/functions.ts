@@ -21,6 +21,8 @@ export function calculatePercentage(
     console.log('CalculatePercentage parameters undefined');
     return '0';
   }
+  console.log('profitOrLoss', profitOrLoss);
+  console.log('cost', cost);
 
   const percentage = (profitOrLoss / cost) * 100;
   const sign = `${percentage > 0 ? '+' : ''}`;

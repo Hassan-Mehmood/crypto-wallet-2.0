@@ -125,6 +125,7 @@ export async function buyTransaction(req: Request, res: Response) {
               costBasis: transactionWorth,
               type: transactionType,
               timeBought: new Date(),
+              User: { connect: { id: userData.id } },
             },
           },
         },
@@ -138,6 +139,7 @@ export async function buyTransaction(req: Request, res: Response) {
           type: transactionType,
           timeBought: new Date(),
           Coin: { connect: { id: coinRecord.id } },
+          User: { connect: { id: userData.id } },
         },
       });
     }
@@ -201,6 +203,7 @@ export async function sellTransaction(req: Request, res: Response) {
         timeBought: new Date(),
         type: transactionType,
         Coin: { connect: { id: coinRecord.id } },
+        User: { connect: { id: userData.id } },
       },
     });
 
@@ -375,7 +378,7 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
     const latestPrice = parseFloat(latestPriceData.data.price);
 
     coin.holdingsInDollers = coin.totalQuantity * latestPrice;
-    // coin.profitLoss += latestPrice - coin.totalInvestment + coin.realizedPNL;
+    coin.profitLoss += (latestPrice - coin.totalInvestment) * coin.totalQuantity + coin.realizedPNL;
 
     const transactionsWithoutCoin = transactions.map(({ Coin, ...rest }) => rest);
 

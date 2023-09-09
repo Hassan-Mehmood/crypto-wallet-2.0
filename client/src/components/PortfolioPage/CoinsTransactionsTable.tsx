@@ -84,8 +84,8 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
           </Box>
           <Flex>
             <Box mr="4rem">
-              <Text color="#58667e">Total Cost</Text>
-              <Text fontWeight="bold">${data?.coin.cost}</Text>
+              <Text color="#58667e">Total Investment (Remaining)</Text>
+              <Text fontWeight="bold">${data?.coin.totalInvestment}</Text>
             </Box>
             <Box>
               <Text color="#58667e">Quantity</Text>

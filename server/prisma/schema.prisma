@@ -8,15 +8,16 @@ datasource db {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   name          String
-  email         String   @unique
+  email         String        @unique
   password      String
-  dollerBalance Float    @default(0)
-  cryptoBalance Float    @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  dollerBalance Float         @default(0)
+  cryptoBalance Float         @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   coins         Coin[]
+  Transaction   Transaction[]
 }
 
 model Coin {
@@ -53,6 +54,8 @@ model Transaction {
   costBasis  Float
   Coin       Coin     @relation(fields: [coinId], references: [id])
   coinId     Int
+  User       User     @relation(fields: [user], references: [id])
+  user       Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
