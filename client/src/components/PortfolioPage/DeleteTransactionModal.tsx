@@ -6,9 +6,9 @@ interface IDeleteTransactionModal {
 }
 export const DeleteTransactionModal = ({ isOpen, onClose }: IDeleteTransactionModal) => {
     return (
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
             <ModalOverlay />
-            <ModalContent width={"25.6rem"} position={"relative"} mt={"12rem"}>
+            <ModalContent width={"25.6rem"} position={"relative"}>
                 <ModalHeader textAlign={"center"}>Delete Transaction</ModalHeader>
                 <ModalCloseButton position={"absolute"} right={"0.8rem"} top={"1.1rem"} />
                 <ModalBody>

@@ -6,7 +6,6 @@ import {
   CardBody,
   GridItem,
   Skeleton,
-  useColorMode,
 } from '@chakra-ui/react';
 import GlobalData from './GlobalData';
 import MarketDominance from './MarketDominance';
@@ -25,20 +24,19 @@ export default function Highlights() {
       spacing={4}
       templateColumns={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
     >
-      <Card p={{lg: "0.5rem"}}>
+      <Card p={{ lg: "0.5rem" }}>
         <Skeleton isLoaded={!isLoading}>
           <CardHeader>
             <Heading size="md">Trending Coins</Heading>
           </CardHeader>
-          <CardBody>
+          <CardBody display={"flex"} flexDir={"column"} gap={3}>
             {trendingCoins?.slice(0, 3).map((coin) => (
               <TrendingCoins coin={coin} key={coin.item.id} />
             ))}
           </CardBody>
         </Skeleton>
       </Card>
-
-      <Card p={{lg: "0.5rem"}}>
+      <Card p={{ lg: "0.5rem" }}>
         <Skeleton isLoaded={!isLoading}>
           <CardHeader>
             <Heading size="md">Global News</Heading>
@@ -53,10 +51,9 @@ export default function Highlights() {
           </CardBody>
         </Skeleton>
       </Card>
-
       <GridItem colSpan={[2, 2, 1]} display={['flex', 'flex', 'block']} justifyContent={'center'}>
         <Skeleton isLoaded={!isLoading}>
-          <Card p={{lg: "0.5rem"}}
+          <Card p={{ lg: "0.5rem" }}
             width={['48.8vw', '45.1vw', 'full']}>
             <CardHeader>
               <Heading size="md">Market Dominance</Heading>

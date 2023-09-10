@@ -1,5 +1,4 @@
 import {
-  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -99,9 +98,9 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent width={"25.6rem"} position={"relative"} mt={"12rem"}>
+      <ModalContent width={"25.6rem"} position={"relative"}>
         <ModalHeader textAlign={"center"}>Delete Coin?</ModalHeader>
         <ModalCloseButton position={"absolute"} right={"0.8rem"} top={"1.1rem"} />
         <ModalBody>

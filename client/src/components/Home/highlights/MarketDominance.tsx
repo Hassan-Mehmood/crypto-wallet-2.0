@@ -1,4 +1,4 @@
-import { Box, Text, Spinner, useColorMode } from '@chakra-ui/react';
+import { Text, Spinner, useColorMode, Flex } from '@chakra-ui/react';
 
 type props = {
   dominance:
@@ -16,33 +16,36 @@ export default function MarketDominance({ dominance, isLoading }: props) {
   }
 
   return (
-    <Box
-      mb={3} width={["10rem", "35vw", "25vw", "20vw"]}
-      pl={{ xl: "1rem" }} fontSize={["0.8rem", "0.85rem", "0.92rem"]}>
-      <Box display={"flex"} justifyContent={"space-between"}>
-        <Text as="span" display="inline-block" mr="1rem" mb={3} color={`${colorMode === "light" ? "#000" : "#fff"}`}>
+    <Flex
+      flexDir={"column"}
+      width={["10rem", "35vw", "25vw", "20vw"]}
+      pl={{ xl: "1.5rem" }}
+      fontSize={["0.8rem", "0.85rem", "0.92rem"]}
+      gap={3}>
+      <Flex justifyContent={"space-between"}>
+        <Text color={`${colorMode === "light" ? "#000" : "#fff"}`}>
           BTC
         </Text>
         <Text color={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`} fontWeight={"semibold"}>
           {dominance?.btc.toFixed(2)}%
         </Text>
-      </Box>
-      <Box display={"flex"} justifyContent={"space-between"} >
-        <Text as="span" display="inline-block" mr="1rem" mb={3} color={`${colorMode === "light" ? "#000" : "#fff"}`}>
+      </Flex>
+      <Flex justifyContent={"space-between"} >
+        <Text color={`${colorMode === "light" ? "#000" : "#fff"}`}>
           ETH
         </Text>
         <Text color={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`} fontWeight={"semibold"}>
           {dominance?.eth.toFixed(2)}%
         </Text>
-      </Box>
-      <Box display={"flex"} justifyContent={"space-between"} >
-        <Text as="span" display="inline-block" mr="1rem" mb={3} color={`${colorMode === "light" ? "#000" : "#fff"}`}>
+      </Flex>
+      <Flex justifyContent={"space-between"} >
+        <Text color={`${colorMode === "light" ? "#000" : "#fff"}`}>
           USDT
         </Text>
         <Text color={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`} fontWeight={"semibold"}>
           {dominance?.usdt.toFixed(2)}%
         </Text>
-      </Box>
-    </Box>
+      </Flex>
+    </Flex>
   );
 }
