@@ -25,7 +25,7 @@ export default function Highlights() {
       spacing={4}
       templateColumns={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
     >
-      <Card>
+      <Card p={{lg: "0.5rem"}}>
         <Skeleton isLoaded={!isLoading}>
           <CardHeader>
             <Heading size="md">Trending Coins</Heading>
@@ -38,7 +38,7 @@ export default function Highlights() {
         </Skeleton>
       </Card>
 
-      <Card>
+      <Card p={{lg: "0.5rem"}}>
         <Skeleton isLoaded={!isLoading}>
           <CardHeader>
             <Heading size="md">Global News</Heading>
@@ -56,7 +56,7 @@ export default function Highlights() {
 
       <GridItem colSpan={[2, 2, 1]} display={['flex', 'flex', 'block']} justifyContent={'center'}>
         <Skeleton isLoaded={!isLoading}>
-          <Card
+          <Card p={{lg: "0.5rem"}}
             width={['48.8vw', '45.1vw', 'full']}>
             <CardHeader>
               <Heading size="md">Market Dominance</Heading>

@@ -14,6 +14,7 @@ import NavLinks from './NavLinks';
 const Navbar = () => {
   const { isOpen: isOpenLogin, onOpen: onOpenLogin, onClose: onCloseLogin } = useDisclosure();
   const { isOpen: isOpenSignup, onOpen: onOpenSignup, onClose: onCloseSignup } = useDisclosure();
+  const { colorMode } = useColorMode();
 
   const user = useSelector((state: RootState) => state.userReducer);
 
@@ -41,7 +42,7 @@ const Navbar = () => {
         <Heading fontSize="1.4rem" cursor="pointer">
           <Link to="/" >
             <Flex align={"center"}>
-              <Icon as={PiWalletLight} marginRight={"0.5rem"} fontSize={"1.75rem"} color={"#8bc53f"} />
+              <Icon as={PiWalletLight} marginRight={"0.5rem"} fontSize={"1.75rem"} color={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`} />
               <Text>Wallet Track</Text>
             </Flex>
           </Link>
