@@ -86,7 +86,7 @@ export default function SignupForm({ onClose }: any) {
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           />
-          <FormErrorMessage>{formErrors.name}</FormErrorMessage>
+          <FormErrorMessage color={"rgb(255, 0, 0)"}>{formErrors.name}</FormErrorMessage>
         </FormControl>
 
         <FormControl isInvalid={!!formErrors.email}>
@@ -97,7 +97,7 @@ export default function SignupForm({ onClose }: any) {
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
-          <FormErrorMessage>{formErrors.email}</FormErrorMessage>
+          <FormErrorMessage color={"rgb(255, 0, 0)"}>{formErrors.email}</FormErrorMessage>
         </FormControl>
 
         <FormControl isInvalid={!!formErrors.password}>
@@ -115,7 +115,7 @@ export default function SignupForm({ onClose }: any) {
               </Button>
             </InputRightElement>
           </InputGroup>
-          <FormErrorMessage>{formErrors.password}</FormErrorMessage>
+          <FormErrorMessage color={"rgb(255, 0, 0)"}>{formErrors.password}</FormErrorMessage>
         </FormControl>
 
         <FormControl isInvalid={!!formErrors.confirmPass}>
@@ -133,7 +133,7 @@ export default function SignupForm({ onClose }: any) {
               </Button>
             </InputRightElement>
           </InputGroup>
-          <FormErrorMessage>{formErrors.confirmPass}</FormErrorMessage>
+          <FormErrorMessage color={"rgb(255, 0, 0)"}>{formErrors.confirmPass}</FormErrorMessage>
         </FormControl>
       </Flex>
 
@@ -141,13 +141,13 @@ export default function SignupForm({ onClose }: any) {
         type="submit" mt={7}
         borderRadius="8px"
         color="#fff"
-        background={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`}
+        background={colorMode === "light" ? "#8bc53f" : "#0facf0"}
         border={`1px solid ${colorMode === "light" ? "#8bc53f" : "#0facf0"}`}
         px={'0.7rem'}
         py={"1.3rem"}
         _hover={{
           background: 'none',
-          color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+          color: colorMode === "light" ? "#8bc53f" : "#0facf0",
         }} w="100%">
         Sign up
       </Button>

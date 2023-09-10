@@ -34,7 +34,7 @@ export default function UserInfoAvatar({ user }: props) {
           gap={2}
           onClick={() => toggleColorMode()}
           _hover={{
-            color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+            color: colorMode === "light" ? "#8bc53f" : "#0facf0",
           }}>
           <Icon as={colorMode === "light" ? HiMoon : BiSolidSun} />
           <Text>{colorMode === "light" ? "dark" : "light"} mode</Text>
@@ -45,7 +45,7 @@ export default function UserInfoAvatar({ user }: props) {
             cursor={"pointer"}
             gap={2}
             _hover={{
-              color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+              color: colorMode === "light" ? "#8bc53f" : "#0facf0",
             }}>
             <Icon as={BiBitcoin} />
             <Text>Add Coin</Text>
@@ -57,7 +57,7 @@ export default function UserInfoAvatar({ user }: props) {
             cursor={"pointer"}
             gap={2}
             _hover={{
-              color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+              color: colorMode === "light" ? "#8bc53f" : "#0facf0",
             }}>
             <Icon as={AiOutlineProfile} />
             <Text>Portfolio</Text>
@@ -68,7 +68,7 @@ export default function UserInfoAvatar({ user }: props) {
           cursor={"pointer"}
           gap={2}
           _hover={{
-            color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+            color: colorMode === "light" ? "#8bc53f" : "#0facf0",
           }}>
           <Icon as={FiLogOut} />
           <Text
@@ -78,15 +78,15 @@ export default function UserInfoAvatar({ user }: props) {
       </Box>
       <Box zIndex={200} display={["block", "block", "none"]}>
         <Menu>
-          <MenuButton bg={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`} border={"2px solid"} borderRadius="100%" color={`${colorMode === "light" ? "#fff" : "#1a202c"}`}
+          <MenuButton bg={colorMode === "light" ? "#8bc53f" : "#0facf0"} border={"2px solid"} borderRadius="100%" color={colorMode === "light" ? "#fff" : "#1a202c"}
             width={["2.5rem", "2.5rem", "2.8rem"]} height={["2.5rem", "2.5rem", "2.8rem"]}
             _hover={{
-              background: `${colorMode === "light" ? "#fff" : "#1a202c"}`,
-              color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`
+              background: colorMode === "light" ? "#fff" : "#1a202c",
+              color: colorMode === "light" ? "#8bc53f" : "#0facf0"
             }}
             _active={{
-              background: `${colorMode === "light" ? "#fff" : "#1a202c"}`,
-              color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`
+              background: colorMode === "light" ? "#fff" : "#1a202c",
+              color: colorMode === "light" ? "#8bc53f" : "#0facf0"
             }}>
             <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
               <Icon as={FaRegCircleUser} fontSize={["1.3rem", "1.5rem"]} />
@@ -101,7 +101,7 @@ export default function UserInfoAvatar({ user }: props) {
             <MenuItem
               onClick={() => toggleColorMode()}
               _hover={{
-                color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+                color: colorMode === "light" ? "#8bc53f" : "#0facf0",
               }}>
               <Flex alignItems={"center"} gap={4}>
                 <Icon as={colorMode === "light" ? HiMoon : BiSolidSun} />
@@ -111,7 +111,7 @@ export default function UserInfoAvatar({ user }: props) {
             <Link to={'/addcoin'}>
               <MenuItem
                 _hover={{
-                  color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+                  color: colorMode === "light" ? "#8bc53f" : "#0facf0",
                 }}>
                 <Flex alignItems={"center"} gap={4}>
                   <Icon as={BiBitcoin} />
@@ -124,7 +124,7 @@ export default function UserInfoAvatar({ user }: props) {
             <Link to={'/portfolio'}>
               <MenuItem
                 _hover={{
-                  color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+                  color: colorMode === "light" ? "#8bc53f" : "#0facf0",
                 }}>
                 <Flex alignItems={"center"} gap={4}>
                   <Icon as={AiOutlineProfile} />
@@ -137,7 +137,7 @@ export default function UserInfoAvatar({ user }: props) {
             <MenuItem
               onClick={() => dispatch(logout())}
               _hover={{
-                color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+                color: colorMode === "light" ? "#8bc53f" : "#0facf0",
               }}>
               <Flex alignItems={"center"} gap={4}>
                 <Icon as={FiLogOut} />

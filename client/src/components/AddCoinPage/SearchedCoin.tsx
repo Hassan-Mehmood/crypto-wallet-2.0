@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Image, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Image, Text, useColorMode } from '@chakra-ui/react';
 import { SearchCoin } from '../../types';
 import { useDispatch } from 'react-redux';
 import { addCoin } from '../../slices/coinSlice';
@@ -11,34 +11,28 @@ interface Props {
 
 const SearchedCoin = ({ Coin, setListState, setSearchedCoinName }: Props) => {
   const dispatch = useDispatch();
+  const { colorMode } = useColorMode();
 
   return (
     <Box py="0.5rem" >
       <Flex align="center" justify="space-between">
-        <Flex align="center">
+        <Flex align="center" gap={4}>
           <Image src={Coin.thumb} maxW="1.5rem" />
-          <Text fontWeight="semibold" ml="1rem">
-            {Coin.name}
-            <Text as="span" color="blackAlpha.600" ml="0.5rem">
-              ({Coin.symbol})
-            </Text>
-          </Text>
+          <Flex gap={2} alignItems={"baseline"}>
+            <Text fontWeight="semibold">{Coin.name}</Text>
+            <Text fontSize={"sm"}>({Coin.symbol})</Text>
+          </Flex>
         </Flex>
         <Button
+          fontSize="sm"
+          borderRadius="0.3rem"
+          color={colorMode === "light" ? "#8bc53f" : "#0facf0"}
+          background="none"
+          px={"0.8rem"}
           onClick={() => {
             dispatch(addCoin(Coin));
             setListState(false);
             setSearchedCoinName("");
-          }}
-          fontSize="sm"
-          borderRadius="0.3rem"
-          color="#fff"
-          background="#8bc53f"
-          px={"0.8rem"}
-          border="1.5px solid #8bc53f"
-          _hover={{
-            background: '#fff',
-            color: "#8bc53f"
           }}
         >
           Add

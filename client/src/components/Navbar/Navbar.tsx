@@ -40,8 +40,8 @@ const Navbar = () => {
       >
         <Link to="/" >
           <Heading fontSize="1.4rem" cursor="pointer">
-            <Flex align={"center"}>
-              <Icon as={PiWalletLight} marginRight={"0.5rem"} fontSize={"1.75rem"} color={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`} />
+            <Flex align={"center"} gap={2}>
+              <Icon as={PiWalletLight} fontSize={"1.75rem"} color={colorMode === "light" ? "#8bc53f" : "#0facf0"} />
               <Text>Wallet Track</Text>
             </Flex>
           </Heading>

@@ -2,7 +2,7 @@ import { useQuery } from 'react-query';
 import { getUserPortfolio } from '../api/axios';
 import PortfolioOverview from '../components/PortfolioPage/PortfolioOverview';
 import PortfolioTable from '../components/PortfolioPage/PortfolioTable';
-import { Box, Spinner } from '@chakra-ui/react';
+import { Box, Spinner, useColorMode } from '@chakra-ui/react';
 import Loading from '../utils/Loading';
 import { useState } from 'react';
 import CoinsTransactionsTable from '../components/PortfolioPage/CoinsTransactionsTable';
@@ -11,6 +11,7 @@ export default function PortfolioPage() {
   const { data, isLoading, isFetching } = useQuery('userCoins', getUserPortfolio);
   const [showTable, setShowTable] = useState('coinsTable');
   const [activeCoinId, setActiveCoinId] = useState<number>(0);
+  const { colorMode } = useColorMode();
 
   return (
     <>

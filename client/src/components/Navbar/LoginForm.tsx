@@ -9,6 +9,7 @@ import {
   useToast,
   Flex,
   useColorMode,
+  Text,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Eye, EyeOff } from 'react-feather';
@@ -31,11 +32,22 @@ export default function LoginForm({ onClose }: any) {
   const toast = useToast();
   function loginConfirmationToast() {
     return toast({
-      title: 'Login successful',
       position: 'top',
       status: 'success',
-      duration: 3000,
+      duration: 1000,
       isClosable: true,
+      render: () => (
+        <Flex
+          justifyContent={"center"}
+          fontWeight={"semibold"}
+          backgroundColor={colorMode === "light" ? "#8bc53f" : "#0facf0"}
+          color={"#fff"}
+          px={"0.5rem"}
+          py={"1rem"}
+          fontSize={"1.1rem"}
+          borderRadius={"0.4rem"}>
+          <Text>Login Successful</Text>
+        </Flex>)
     });
   }
 
@@ -87,7 +99,7 @@ export default function LoginForm({ onClose }: any) {
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
-          <FormErrorMessage>{formErrors.email}</FormErrorMessage>
+          <FormErrorMessage color={"rgb(255, 0, 0)"}>{formErrors.email}</FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={!!formErrors.password}>
           <FormLabel>Password</FormLabel>
@@ -104,20 +116,20 @@ export default function LoginForm({ onClose }: any) {
               </Button>
             </InputRightElement>
           </InputGroup>
-          <FormErrorMessage>{formErrors.password}</FormErrorMessage>
+          <FormErrorMessage color={"rgb(255, 0, 0)"}>{formErrors.password}</FormErrorMessage>
         </FormControl>
       </Flex>
 
       <Button type="submit" mt={7}
         borderRadius="8px"
         color="#fff"
-        background={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`}
+        background={colorMode === "light" ? "#8bc53f" : "#0facf0"}
         border={`1px solid ${colorMode === "light" ? "#8bc53f" : "#0facf0"}`}
         px={'0.7rem'}
         py={"1.3rem"}
         _hover={{
           background: 'none',
-          color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+          color: colorMode === "light" ? "#8bc53f" : "#0facf0",
         }} w="100%">
         Login
       </Button>

@@ -26,23 +26,23 @@ export default function GlobalData({ activeCurrencies, markets, icos, isLoading 
         <Text color={`${colorMode === "light" ? "#000" : "#fff"}`}>
           Active Currencies
         </Text>
-        <Text color={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`} fontWeight={"semibold"}>
+        <Text color={colorMode === "light" ? "#8bc53f" : "#0facf0"} fontWeight={"semibold"}>
           {activeCurrencies}
         </Text>
       </Flex>
       <Flex justifyContent={"space-between"}>
-        <Text color={`${colorMode === "light" ? "#000" : "#fff"}`}>
+        <Text color={colorMode === "light" ? "#000" : "#fff"}>
           Markets
         </Text>
-        <Text color={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`} fontWeight={"semibold"}>
+        <Text color={colorMode === "light" ? "#8bc53f" : "#0facf0"} fontWeight={"semibold"}>
           {markets}
         </Text>
       </Flex>
       <Flex justifyContent={"space-between"}>
-        <Text color={`${colorMode === "light" ? "#000" : "#fff"}`}>
+        <Text color={colorMode === "light" ? "#000" : "#fff"}>
           Initial Coin Offerings
         </Text>
-        <Text color={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`} fontWeight={"semibold"}>
+        <Text color={colorMode === "light" ? "#8bc53f" : "#0facf0"} fontWeight={"semibold"}>
           {icos}
         </Text>
       </Flex>

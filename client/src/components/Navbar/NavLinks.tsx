@@ -16,7 +16,7 @@ export default function NavLinks({ onOpenLogin, onOpenSignup }: props) {
       <Flex alignItems={"center"} cursor={"pointer"}
         onClick={() => toggleColorMode()}
         _hover={{
-          color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+          color: colorMode === "light" ? "#8bc53f" : "#0facf0",
         }}>
         <Icon as={colorMode === "light" ? BiSolidSun : HiMoon} marginRight={{md: "0.5rem"}} />
         <Text display={{ base: "none", md: "block" }} textTransform={"capitalize"}>{colorMode} mode</Text>
@@ -28,7 +28,7 @@ export default function NavLinks({ onOpenLogin, onOpenSignup }: props) {
         px={'0.7rem'}
         py={"1.3rem"}
         _hover={{
-          color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+          color: colorMode === "light" ? "#8bc53f" : "#0facf0",
         }}
       >
         <Icon as={AiOutlineUserAdd} marginRight={"0.5rem"} />
@@ -38,13 +38,13 @@ export default function NavLinks({ onOpenLogin, onOpenSignup }: props) {
         onClick={onOpenSignup}
         borderRadius="8px"
         color="#fff"
-        background={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`}
+        background={colorMode === "light" ? "#8bc53f" : "#0facf0"}
         border={`1px solid ${colorMode === "light" ? "#8bc53f" : "#0facf0"}`}
         px={'0.7rem'}
         py={"1.3rem"}
         _hover={{
           background: 'none',
-          color: `${colorMode === "light" ? "#8bc53f" : "#0facf0"}`,
+          color: colorMode === "light" ? "#8bc53f" : "#0facf0",
         }}
       >
         <Icon as={AiOutlineUser} marginRight={"0.5rem"} />

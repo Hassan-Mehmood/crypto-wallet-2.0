@@ -23,26 +23,26 @@ export default function MarketDominance({ dominance, isLoading }: props) {
       fontSize={["0.8rem", "0.85rem", "0.92rem"]}
       gap={3}>
       <Flex justifyContent={"space-between"}>
-        <Text color={`${colorMode === "light" ? "#000" : "#fff"}`}>
+        <Text color={colorMode === "light" ? "#000" : "#fff"}>
           BTC
         </Text>
-        <Text color={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`} fontWeight={"semibold"}>
+        <Text color={colorMode === "light" ? "#8bc53f" : "#0facf0"} fontWeight={"semibold"}>
           {dominance?.btc.toFixed(2)}%
         </Text>
       </Flex>
       <Flex justifyContent={"space-between"} >
-        <Text color={`${colorMode === "light" ? "#000" : "#fff"}`}>
+        <Text color={colorMode === "light" ? "#000" : "#fff"}>
           ETH
         </Text>
-        <Text color={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`} fontWeight={"semibold"}>
+        <Text color={colorMode === "light" ? "#8bc53f" : "#0facf0"} fontWeight={"semibold"}>
           {dominance?.eth.toFixed(2)}%
         </Text>
       </Flex>
       <Flex justifyContent={"space-between"} >
-        <Text color={`${colorMode === "light" ? "#000" : "#fff"}`}>
+        <Text color={colorMode === "light" ? "#000" : "#fff"}>
           USDT
         </Text>
-        <Text color={`${colorMode === "light" ? "#8bc53f" : "#0facf0"}`} fontWeight={"semibold"}>
+        <Text color={colorMode === "light" ? "#8bc53f" : "#0facf0"} fontWeight={"semibold"}>
           {dominance?.usdt.toFixed(2)}%
         </Text>
       </Flex>
