@@ -1,0 +1,62 @@
+[
+  {
+    "user": 17,
+    "coin": {
+      "id": "litecoin",
+      "name": "Litecoin",
+      "api_symbol": "litecoin",
+      "symbol": "LTC",
+      "market_cap_rank": 15,
+      "thumb": "https://assets.coingecko.com/coins/images/2/thumb/litecoin.png",
+      "large": "https://assets.coingecko.com/coins/images/2/large/litecoin.png"
+    },
+    "coinQuantity": "1.00",
+    "coinPrice": "50.00",
+    "type": "BUY"
+  },
+  {
+    "user": 17,
+    "coin": {
+      "id": "litecoin",
+      "name": "Litecoin",
+      "api_symbol": "litecoin",
+      "symbol": "LTC",
+      "market_cap_rank": 15,
+      "thumb": "https://assets.coingecko.com/coins/images/2/thumb/litecoin.png",
+      "large": "https://assets.coingecko.com/coins/images/2/large/litecoin.png"
+    },
+    "coinQuantity": "1.00",
+    "coinPrice": "70.00",
+    "type": "BUY"
+  },
+  {
+    "user": 17,
+    "coin": {
+      "id": "litecoin",
+      "name": "Litecoin",
+      "api_symbol": "litecoin",
+      "symbol": "LTC",
+      "market_cap_rank": 15,
+      "thumb": "https://assets.coingecko.com/coins/images/2/thumb/litecoin.png",
+      "large": "https://assets.coingecko.com/coins/images/2/large/litecoin.png"
+    },
+    "coinQuantity": "2.00",
+    "coinPrice": "90.00",
+    "type": "SELL"
+  },
+  {
+    "user": 17,
+    "coin": {
+      "id": "litecoin",
+      "name": "Litecoin",
+      "api_symbol": "litecoin",
+      "symbol": "LTC",
+      "market_cap_rank": 15,
+      "thumb": "https://assets.coingecko.com/coins/images/2/thumb/litecoin.png",
+      "large": "https://assets.coingecko.com/coins/images/2/large/litecoin.png"
+    },
+    "coinQuantity": "1.00",
+    "coinPrice": "67.00",
+    "type": "BUY"
+  }
+]

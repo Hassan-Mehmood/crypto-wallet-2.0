@@ -42,7 +42,7 @@ export default function SignupForm({ onClose }: any) {
       const response = await axios.post(
         `${process.env.REACT_APP_SERVER_URL}/auth/register-user`,
         formData
-      );
+      );      
       return response.data;
     },
     {

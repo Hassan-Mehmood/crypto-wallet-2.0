@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,15 +8,16 @@ datasource db {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   name          String
-  email         String   @unique
+  email         String        @unique
   password      String
-  dollerBalance Float    @default(0)
-  cryptoBalance Float    @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  dollerBalance Float         @default(0)
+  cryptoBalance Float         @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   coins         Coin[]
+  Transaction   Transaction[]
 }
 
 model Coin {
@@ -35,13 +33,16 @@ model Coin {
   latestPrice       Float         @default(0)
   holdingsInDollers Float         @default(0)
   profitLoss        Float         @default(0)
+  realizedPNL       Float         @default(0)
   totalInvestment   Float         @default(0)
+  cost              Float         @default(0)
+  // totalCostBasis    Float
   active            Boolean       @default(true)
-  user              User          @relation(fields: [userId], references: [id])
-  transactions      Transaction[]
   userId            Int
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
+  user              User          @relation(fields: [userId], references: [id])
+  transactions      Transaction[]
 }
 
 model Transaction {
@@ -49,8 +50,12 @@ model Transaction {
   price      Float
   quantity   Float
   timeBought DateTime
+  type       String
+  costBasis  Float
   Coin       Coin     @relation(fields: [coinId], references: [id])
   coinId     Int
+  User       User     @relation(fields: [user], references: [id])
+  user       Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

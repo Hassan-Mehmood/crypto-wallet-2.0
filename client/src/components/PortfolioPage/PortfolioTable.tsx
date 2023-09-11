@@ -47,9 +47,11 @@ interface props {
         }[];
       }[]
     | undefined;
+  setShowTable: React.Dispatch<React.SetStateAction<string>>;
+  setActiveCoinId: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function PortfolioTable({ coins }: props) {
+export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }: props) {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [coinId, setCoinId] = useState<number | null>(null);
@@ -92,7 +94,14 @@ export default function PortfolioTable({ coins }: props) {
           </Thead>
           <Tbody>
             {coins?.map((coin: any) => (
-              <Tr key={coin.id}>
+              <Tr
+                key={coin.id}
+                _hover={{ backgroundColor: '#f4f4f4', cursor: 'pointer' }}
+                onClick={() => {
+                  setShowTable('transactionsTable');
+                  setActiveCoinId(coin.id);
+                }}
+              >
                 <Td>
                   <Flex alignItems="center">
                     <Image src={coin.thump} width="25px" height="auto" mr="5px" />
@@ -114,22 +123,23 @@ export default function PortfolioTable({ coins }: props) {
                   </Flex>
                 </Td>
                 <Td>${coin.averageBuyPrice.toLocaleString('en')}</Td>
+
                 <Td color={getProfitLossColor(coin.profitLoss)}>
                   <Flex flexDirection="column">
                     <Box>
                       {coin.profitLoss > 0 ? '+' : ''}$
                       {coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })}
                     </Box>
-                    <Box fontSize="14px">
-                      {calculatePercentage(coin.holdingsInDollers, coin.totalInvestment)}%
-                    </Box>
+                    <Box fontSize="14px">{calculatePercentage(coin.profitLoss, coin.cost)}%</Box>
                   </Flex>
                 </Td>
+
                 <Td>
                   <Box as="span" display="inline-block" cursor="pointer">
                     <Trash2
                       color="maroon"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setCoinId(coin.id);
                         onOpen();
                       }}
