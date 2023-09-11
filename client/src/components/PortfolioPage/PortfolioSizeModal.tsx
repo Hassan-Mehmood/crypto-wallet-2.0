@@ -1,5 +1,4 @@
 import {
-  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -12,6 +11,8 @@ import {
   NumberInputField,
   Button,
   useToast,
+  Flex,
+  useColorMode,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useState } from 'react';
@@ -25,6 +26,7 @@ interface props {
 
 export default function PortfolioSizeModal({ isOpen, onClose }: props) {
   const [accountBalance, setAccountBalance] = useState('0');
+  const { colorMode } = useColorMode();
   const toast = useToast();
 
   const setPortfolioSize = useMutation(
@@ -70,45 +72,44 @@ export default function PortfolioSizeModal({ isOpen, onClose }: props) {
     e.preventDefault();
     setPortfolioSize.mutate();
   }
-
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Portfolio Size</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <form onSubmit={(e) => handleSubmit(e)}>
-              <FormControl>
-                <FormLabel>Enter your portfolio size</FormLabel>
-                <NumberInput
-                  min={0}
-                  value={accountBalance}
-                  precision={2}
-                  onChange={(valueAsString) => handleFormValue(valueAsString)}
-                >
-                  <NumberInputField h="35px" border="1px solid black" p=".5rem" />
-                </NumberInput>
-              </FormControl>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <ModalOverlay />
+      <ModalContent width={"25.6rem"} py={"1rem"}>
+        <ModalHeader textAlign={"center"}>Portfolio Size</ModalHeader>
+        <ModalCloseButton position={"absolute"} right={"0.8rem"} top={"2rem"} />
+        <ModalBody>
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <FormControl display={"flex"} justifyContent={"center"} mt={"0.5rem"}>
+              <FormLabel>Total Quatity</FormLabel>
+              <NumberInput
+                min={0}
+                value={accountBalance}
+                precision={2}
+                onChange={(valueAsString) => handleFormValue(valueAsString)}
+              >
+                <NumberInputField h="35px" border={`1px solid ${colorMode === "light" ? "#000" : "#fff"}`} />
+              </NumberInput>
+            </FormControl>
 
-              <Box mt="2rem">
-                <Button
-                  type="submit"
-                  mb="0.5rem"
-                  backgroundColor="#fff"
-                  maxW="100%"
-                  width="100%"
-                  border="1px solid"
-                  _hover={{ backgroundColor: 'rgba(216, 216, 216, 0.541)' }}
-                >
-                  Set portfolio size
-                </Button>
-              </Box>
-            </form>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
+            <Flex mt="1.2rem" justify={"center"}>
+              <Button
+                type="submit"
+                mb="0.5rem"
+                color={colorMode === "light" ? "#000" : "#fff"}
+                backgroundColor={colorMode === "light" ? "#fff" : "#2d3748"}
+                maxW="100%"
+                width="21rem"
+                py={"1.35rem"}
+                border="1px solid"
+                _hover={{ backgroundColor: "none" }}
+              >
+                Set portfolio size
+              </Button>
+            </Flex>
+          </form>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 }

@@ -1,4 +1,4 @@
-import { Flex, Heading, useDisclosure, Icon, Text } from '@chakra-ui/react';
+import { Flex, Heading, useDisclosure, Icon, Text, useColorMode } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from '../../slices/userSlice';
 import { getUserStatus } from '../../api/axios';
@@ -14,6 +14,7 @@ import NavLinks from './NavLinks';
 const Navbar = () => {
   const { isOpen: isOpenLogin, onOpen: onOpenLogin, onClose: onCloseLogin } = useDisclosure();
   const { isOpen: isOpenSignup, onOpen: onOpenSignup, onClose: onCloseSignup } = useDisclosure();
+  const { colorMode } = useColorMode();
 
   const user = useSelector((state: RootState) => state.userReducer);
 
@@ -33,18 +34,18 @@ const Navbar = () => {
       <Flex
         justify="space-between"
         align="center"
-        direction='row'
-        py={['2rem', '1rem']}
-        minH="75px"
+        py={{ base: '1rem', md: '1.5rem' }}
+        mb={{ base: "2rem", md: "3rem" }}
+        borderBottom={`1px solid ${colorMode === "light" ? "#000" : "#fff"}`}
       >
-        <Heading fontSize="1.4rem" mb={['0.75rem']} cursor="pointer">
-          <Link to="/" >
-            <Flex align={"center"}>
-              <Icon as={PiWalletLight} marginRight={"0.5rem"} fontSize={"1.75rem"}/>
+        <Link to="/" >
+          <Heading fontSize="1.4rem" cursor="pointer">
+            <Flex align={"center"} gap={2}>
+              <Icon as={PiWalletLight} fontSize={"1.75rem"} color={colorMode === "light" ? "#8bc53f" : "#0facf0"} />
               <Text>Wallet Track</Text>
             </Flex>
-          </Link>
-        </Heading>
+          </Heading>
+        </Link>
         {user.id !== null ? (
           <UserInfoAvatar user={user} />
         ) : (

@@ -13,14 +13,14 @@ export default function CoinsTable() {
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th>#</Th>
-              <Th>Coin</Th>
-              <Th>Price</Th>
-              <Th>1h</Th>
-              <Th>24h</Th>
-              <Th>7d</Th>
-              <Th>Total Volume</Th>
-              <Th>Mkt Cap</Th>
+              <Th textAlign={"center"}>#</Th>
+              <Th textAlign={"center"}>Coin</Th>
+              <Th textAlign={"center"}>Price</Th>
+              <Th textAlign={"center"}>1h</Th>
+              <Th textAlign={"center"}>24h</Th>
+              <Th textAlign={"center"}>7d</Th>
+              <Th textAlign={"center"}>Total Volume</Th>
+              <Th textAlign={"center"}>Mkt Cap</Th>
             </Tr>
           </Thead>
           <Tbody>

@@ -1,5 +1,4 @@
 import {
-  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -10,6 +9,9 @@ import {
   FormLabel,
   Button,
   useToast,
+  Text,
+  Flex,
+  useColorMode,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useState } from 'react';
@@ -24,6 +26,7 @@ interface props {
 
 export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: props) {
   const queryClient = useQueryClient();
+  const { colorMode } = useColorMode();
   const toast = useToast();
   const [disableBtn, setDisableBtn] = useState(false);
 
@@ -105,54 +108,56 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
   }
 
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Confirmation: Delete Coin</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <form>
-              <FormControl>
-                <FormLabel>
-                  Are you sure you want to delete the historical record of this coin from your
-                  portfolio?
-                  <Box>This action cannot be undone.</Box>
-                </FormLabel>
-              </FormControl>
-
-              <Box mt="2rem">
-                <Button
-                  isLoading={disableBtn}
-                  type="submit"
-                  color="#fff"
-                  m="0 0.5rem 0.5rem 0"
-                  backgroundColor="#ff0000"
-                  maxW="100%"
-                  width="100%"
-                  _hover={{ backgroundColor: '#dd0000' }}
-                  onClick={deleteCoinAndData}
-                >
-                  Delete Coin & all transactions
-                </Button>
-                <Button
-                  isLoading={disableBtn}
-                  type="submit"
-                  color="#fff"
-                  m="0 0.5rem 0.5rem 0"
-                  backgroundColor="#ff0000"
-                  maxW="100%"
-                  width="100%"
-                  _hover={{ backgroundColor: '#dd0000' }}
-                  onClick={deleteCoinAndKeepTransaction}
-                >
-                  Delete Coin But transactions remain
-                </Button>
-              </Box>
-            </form>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <ModalOverlay />
+      <ModalContent width={"25.6rem"} position={"relative"}>
+        <ModalHeader textAlign={"center"}>Delete Coin?</ModalHeader>
+        <ModalCloseButton position={"absolute"} right={"0.8rem"} top={"1.1rem"} />
+        <ModalBody>
+          <form>
+            <FormControl>
+              <FormLabel textAlign={"center"}>
+                All records of this coin in your <Text as={'b'}>Portfolio</Text> will be deleted.
+                <Text color={"#a3b1bf"} mt={"0.7rem"}>
+                  This action cannot be undone.
+                </Text>
+              </FormLabel>
+            </FormControl>
+            <Flex flexDir={"column"} alignItems={"center"} my="1rem" gap={"0.6rem"}>
+              <Button
+                isDisabled={disableBtn}
+                type="submit"
+                width={"17rem"}
+                fontWeight={"normal"}
+                background={colorMode === "light" ? "#fff" : "none"}
+                color="rgb(255, 0, 0)"
+                border="1px solid rgb(255, 0, 0)"
+                _hover={{
+                  backgroundColor: "none"
+                }}
+                onClick={deleteCoinAndData}
+              >
+                Delete Coin & All Transactions
+              </Button>
+              <Button
+                isDisabled={disableBtn}
+                type="submit"
+                width={"17rem"}
+                fontWeight={"normal"}
+                background={colorMode === "light" ? "#fff" : "none"}
+                color="rgb(255, 0, 0)"
+                border="1px solid rgb(255, 0, 0)"
+                onClick={deleteCoinAndKeepTransaction}
+                _hover={{
+                  backgroundColor: "none"
+                }}
+              >
+                Delete Coin, Keep Transactions
+              </Button>
+            </Flex>
+          </form>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 }

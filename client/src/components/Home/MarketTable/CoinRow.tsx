@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Tr, Td, Flex, Image, Text } from '@chakra-ui/react';
+import { Tr, Td, Image, Text, useColorMode } from '@chakra-ui/react';
 import { HomeTableCoin } from '../../../types';
 
 type PropsType = {
@@ -8,6 +8,8 @@ type PropsType = {
 };
 
 const CoinRow: FC<PropsType> = ({ coin, coinCounter }) => {
+  const { colorMode } = useColorMode();
+
   const {
     name,
     symbol,
@@ -33,46 +35,46 @@ const CoinRow: FC<PropsType> = ({ coin, coinCounter }) => {
   return (
     <Tr
       cursor="pointer"
-      _hover={{
-        backgroundColor: '#f5f5f5',
-      }}
+      _hover={{ backgroundColor: colorMode === "light" ? '#f4f4f4' : "#212835", cursor: 'pointer' }}
     >
-      <Td>{coinCounter}</Td>
-      <Td color="#000" fontWeight="semibold">
-        <Flex alignItems="center">
-          <Image
-            src={image}
-            maxW="1.25rem"
-            mr="0.5rem"
-            display="inline-block"
-            alignItems="center"
-          />
-          <Text>
-            {name}
-            <Text
-              as="span"
-              ml="1rem"
-              textTransform="uppercase"
-              color="blackAlpha.600"
-              fontSize={12}
-            >
-              {symbol}
-            </Text>
+      <Td textAlign={"center"}>{coinCounter}</Td>
+      <Td
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems="center"
+        fontWeight="semibold">
+        <Image
+          src={image}
+          maxW="1.25rem"
+          mr="0.5rem"
+          display="inline-block"
+          alignItems="center"
+        />
+        <Text>
+          {name}
+          <Text
+            as="span"
+            ml="1rem"
+            textTransform="uppercase"
+            color="rgb(128, 138, 157)"
+            fontSize={12}
+          >
+            {symbol}
           </Text>
-        </Flex>
+        </Text>
       </Td>
-      <Td>{currentPrice}</Td>
-      <Td color={getPercentageColor(oneHourChange)}>
+      <Td textAlign={"center"}>{currentPrice}</Td>
+      <Td textAlign={"center"} color={getPercentageColor(oneHourChange)}>
         {oneHourChange ? oneHourChange.toFixed(2) : ''}
       </Td>
-      <Td color={getPercentageColor(twoFourHourChange)}>
+      <Td textAlign={"center"} color={getPercentageColor(twoFourHourChange)}>
         {twoFourHourChange ? twoFourHourChange.toFixed(2) : ''}
       </Td>
-      <Td color={getPercentageColor(sevenDayChange)}>
+      <Td textAlign={"center"} color={getPercentageColor(sevenDayChange)}>
         {sevenDayChange ? sevenDayChange.toFixed(2) : ''}
       </Td>
-      <Td>${totalVolume?.toLocaleString('en-US')}</Td>
-      <Td>${marketCap?.toLocaleString('en-US')}</Td>
+      <Td textAlign={"center"}>${totalVolume?.toLocaleString('en-US')}</Td>
+      <Td textAlign={"center"}>${marketCap?.toLocaleString('en-US')}</Td>
     </Tr>
   );
 };

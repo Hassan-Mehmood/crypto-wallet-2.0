@@ -11,50 +11,53 @@ import {
   Image,
   Button,
   useDisclosure,
+  useColorMode,
 } from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
-import { Trash2 } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import DeleteCoinModal from './DeleteCoinModal';
 import { useState } from 'react';
+import { AiOutlineDelete } from 'react-icons/ai';
 
 interface props {
   coins:
-    | {
-        id: number;
-        name: string;
-        apiSymbol: string;
-        symbol: string;
-        thump: string;
-        large: string;
-        marketCapRank: number;
-        averageBuyPrice: number;
-        latestPrice: number;
-        totalQuantity: number;
-        holdingsInDollers: number;
-        profitLoss: number;
-        totalInvestment: number;
-        userId: number;
-        createdAt: Date;
-        updatedAt: Date;
-        transactions: {
-          id: number;
-          price: number;
-          quantity: number;
-          timeBought: Date;
-          createdAt: Date;
-          updatedAt: Date;
-        }[];
-      }[]
-    | undefined;
+  | {
+    id: number;
+    name: string;
+    apiSymbol: string;
+    symbol: string;
+    thump: string;
+    large: string;
+    marketCapRank: number;
+    averageBuyPrice: number;
+    latestPrice: number;
+    totalQuantity: number;
+    holdingsInDollers: number;
+    profitLoss: number;
+    totalInvestment: number;
+    userId: number;
+    createdAt: Date;
+    updatedAt: Date;
+    transactions: {
+      id: number;
+      price: number;
+      quantity: number;
+      timeBought: Date;
+      createdAt: Date;
+      updatedAt: Date;
+    }[];
+  }[]
+  | undefined;
   setShowTable: React.Dispatch<React.SetStateAction<string>>;
   setActiveCoinId: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }: props) {
-  const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [coinId, setCoinId] = useState<number | null>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode } = useColorMode();
+  const navigate = useNavigate();
+
 
   return (
     <>
@@ -80,64 +83,63 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
         </Button>
       ) : null}
 
-      <TableContainer mt="3rem">
+      <TableContainer mt={"2rem"}>
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th>Name</Th>
-              <Th>Price</Th>
-              <Th>Holding</Th>
-              <Th>Avg Buy Price</Th>
-              <Th>Profit/Loss</Th>
-              <Th pr="0">Actions</Th>
+              <Th textAlign={"center"}>Name</Th>
+              <Th textAlign={"center"}>Price</Th>
+              <Th textAlign={"center"}>Holding</Th>
+              <Th textAlign={"center"}>Avg Buy Price</Th>
+              <Th textAlign={"center"}>Profit/Loss</Th>
+              <Th textAlign={"center"}>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
             {coins?.map((coin: any) => (
               <Tr
                 key={coin.id}
-                _hover={{ backgroundColor: '#f4f4f4', cursor: 'pointer' }}
+                _hover={{ backgroundColor: colorMode === "light" ? '#f4f4f4' : "#212835", cursor: 'pointer' }}
                 onClick={() => {
                   setShowTable('transactionsTable');
                   setActiveCoinId(coin.id);
                 }}
               >
                 <Td>
-                  <Flex alignItems="center">
-                    <Image src={coin.thump} width="25px" height="auto" mr="5px" />
+                  <Flex alignItems="center" justifyContent={"center"} gap={2} fontWeight="semibold">
+                    <Image src={coin.thump} width="25px" height="auto" />
                     {coin.name}
                   </Flex>
                 </Td>
-                <Td>${coin.latestPrice.toLocaleString('en')}</Td>
-                <Td>
+                <Td textAlign={"center"}>$ {coin.latestPrice.toLocaleString('en')}</Td>
+                <Td textAlign={"center"}>
                   <Flex flexDirection="column">
-                    <Box fontWeight="bold">
+                    <Box fontWeight="semibold">
                       {coin.totalQuantity}{' '}
                       <Box as="span" fontSize="12px">
                         {coin.symbol}
                       </Box>
                     </Box>
                     <Box fontSize="14px">
-                      (${coin.holdingsInDollers.toLocaleString('en', { maximumFractionDigits: 2 })})
+                      ($ {coin.holdingsInDollers.toLocaleString('en', { maximumFractionDigits: 2 })})
                     </Box>
                   </Flex>
                 </Td>
-                <Td>${coin.averageBuyPrice.toLocaleString('en')}</Td>
-
-                <Td color={getProfitLossColor(coin.profitLoss)}>
+                <Td textAlign={"center"}>$ {coin.averageBuyPrice.toLocaleString('en')}</Td>
+                <Td textAlign={"center"} color={getProfitLossColor(coin.profitLoss, colorMode)}>
                   <Flex flexDirection="column">
                     <Box>
-                      {coin.profitLoss > 0 ? '+' : ''}$
+                      {coin.profitLoss > 0 ? '+' : ''}$ {" "}
                       {coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })}
                     </Box>
                     <Box fontSize="14px">{calculatePercentage(coin.profitLoss, coin.cost)}%</Box>
                   </Flex>
                 </Td>
-
-                <Td>
+                <Td textAlign={"center"}>
                   <Box as="span" display="inline-block" cursor="pointer">
-                    <Trash2
-                      color="maroon"
+                    <AiOutlineDelete
+                      size={24}
+                      color="rgb(255, 0, 0)"
                       onClick={(e) => {
                         e.stopPropagation();
                         setCoinId(coin.id);
