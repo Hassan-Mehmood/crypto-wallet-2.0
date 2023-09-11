@@ -9,7 +9,6 @@ export class CostBasisCalculator {
 
   sell(quantitySold: number, sellingPrice: number) {
     let quantityToBeSold = quantitySold;
-    const costBasisOfSellTransaction = quantityToBeSold * sellingPrice; // Cost basis of current sell transaction
 
     while (quantityToBeSold > 0 && this.assets.length > 0) {
       const assetToBeSold = this.assets.shift();
@@ -17,23 +16,23 @@ export class CostBasisCalculator {
       if (!assetToBeSold) return;
 
       if (assetToBeSold.quantity <= quantityToBeSold) {
-        console.log('IF');
-        console.log('Asset being sold', assetToBeSold);
         // If the entire asset is sold
-        const costBasisForAssetToBeSold = assetToBeSold.quantity * assetToBeSold.pricePerUnit; // Cost basis of asset which going to be sold
-        this.realizedPNL += costBasisOfSellTransaction - costBasisForAssetToBeSold;
+        const costBasis_AssetToBeSold = assetToBeSold.quantity * assetToBeSold.pricePerUnit; // Cost basis of asset which going to be sold
+        const asset_costBasis = assetToBeSold.quantity * sellingPrice;
+        this.realizedPNL += asset_costBasis - costBasis_AssetToBeSold;
+
         quantityToBeSold -= assetToBeSold.quantity;
       } else {
         // If only a part of the asset is sold
-        console.log('else');
-        console.log('Asset being sold partially', assetToBeSold);
         const costBasisForSoldQuantity = quantityToBeSold * assetToBeSold.pricePerUnit;
+        const asset_costBasis = quantityToBeSold * sellingPrice;
+
         this.assets.unshift({
           quantity: assetToBeSold.quantity - quantityToBeSold,
           pricePerUnit: assetToBeSold.pricePerUnit,
         });
 
-        this.realizedPNL += costBasisOfSellTransaction - costBasisForSoldQuantity;
+        this.realizedPNL += asset_costBasis - costBasisForSoldQuantity;
         quantityToBeSold = 0;
       }
     }

@@ -204,7 +204,6 @@ export async function sellTransaction(req: Request, res: Response) {
     });
 
     coinRecord.transactions.push(newTransaction);
-    console.log(coinRecord.transactions);
     const { totalCostBasis, realizedPNL } = calculateCostBasis(coinRecord.transactions);
 
     console.log('-----Sell Transaction Function -------');
