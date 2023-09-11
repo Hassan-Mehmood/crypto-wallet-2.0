@@ -11,6 +11,7 @@ import {
   Image,
   Button,
   useDisclosure,
+  useColorMode,
 } from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
 import { useNavigate } from 'react-router-dom';
@@ -52,9 +53,11 @@ interface props {
 }
 
 export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }: props) {
-  const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [coinId, setCoinId] = useState<number | null>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode } = useColorMode();
+  const navigate = useNavigate();
+
 
   return (
     <>
@@ -96,14 +99,14 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
             {coins?.map((coin: any) => (
               <Tr
                 key={coin.id}
-                _hover={{ backgroundColor: '#f4f4f4', cursor: 'pointer' }}
+                _hover={{ backgroundColor: colorMode === "light" ? '#f4f4f4' : "#212835", cursor: 'pointer' }}
                 onClick={() => {
                   setShowTable('transactionsTable');
                   setActiveCoinId(coin.id);
                 }}
               >
                 <Td>
-                  <Flex alignItems="center" justifyContent={"center"} gap={2}>
+                  <Flex alignItems="center" justifyContent={"center"} gap={2} fontWeight="semibold">
                     <Image src={coin.thump} width="25px" height="auto" />
                     {coin.name}
                   </Flex>

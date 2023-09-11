@@ -32,6 +32,8 @@ export default function PortfolioOverview({
 }: props) {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode } = useColorMode();
+
   return (
     <Flex
       alignItems={"center"}
@@ -39,7 +41,7 @@ export default function PortfolioOverview({
       mb={"4rem"}>
       <Flex
         flexDir={{ base: "column", xl: "row" }}
-        border={{ xl: "1px solid black" }}
+        border={{ xl: `1px solid ${colorMode === "light" ? "#000" : "#fff"}` }}
         borderRadius={{ xl: "0.5rem" }}
         px={{ xl: "2rem" }}
         gap={{ xl: 12 }}>
@@ -49,7 +51,7 @@ export default function PortfolioOverview({
           justifyContent={{ md: "space-between" }}
           gap={{ base: 6, md: 0 }}
           px={{ md: "2rem", xl: "0rem" }}
-          border={{ md: "1px solid black", xl: "0px" }}
+          border={{ md: `1px solid ${colorMode === "light" ? "#000" : "#fff"}`, xl: "0px" }}
           borderRadius={"0.5rem"}
           py={{ md: "1.9rem", lg: "2.2rem" }}
           width={{ md: "45.5rem", lg: "55rem" }}
@@ -64,7 +66,7 @@ export default function PortfolioOverview({
               alignItems={"center"}
               width={["20rem", "25rem", "fit-content"]}
               borderRadius={{ base: "0.5rem", md: "0rem" }}
-              border={{ base: "1px solid black", md: "0px" }}
+              border={{ base: `1px solid ${colorMode === "light" ? "#000" : "#fff"}`, md: "0px" }}
               py={"0.95rem"}
             >
               <Text fontSize={{ base: "1rem", md: "0.85rem", lg: "0.92rem" }} fontWeight={{ base: "medium", md: "semibold" }}>
@@ -76,7 +78,7 @@ export default function PortfolioOverview({
             </Flex>
             <Box
               display={{ base: "none", md: "block" }}
-              background="#000"
+              background={colorMode === "light" ? "#000" : "#fff"}
               width="0.05rem"
               height="100%"
             />
@@ -86,7 +88,7 @@ export default function PortfolioOverview({
               alignItems={"center"}
               width={["20rem", "25rem", "fit-content"]}
               borderRadius={{ base: "0.5rem", md: "0rem" }}
-              border={{ base: "1px solid black", md: "0px" }}
+              border={{ base: `1px solid ${colorMode === "light" ? "#000" : "#fff"}`, md: "0px" }}
               py={"0.95rem"}
             >
               <Text fontSize={{ base: "1rem", md: "0.85rem", lg: "0.92rem" }} fontWeight={{ base: "medium", md: "semibold" }}>
@@ -98,7 +100,7 @@ export default function PortfolioOverview({
             </Flex>
             <Box
               display={{ base: "none", md: "block" }}
-              background="#000"
+              background={colorMode === "light" ? "#000" : "#fff"}
               width="0.05rem"
               height="100%"
             />
@@ -108,7 +110,7 @@ export default function PortfolioOverview({
               alignItems={"center"}
               width={["20rem", "25rem", "fit-content"]}
               borderRadius={{ base: "0.5rem", md: "0rem" }}
-              border={{ base: "1px solid black", md: "0px" }}
+              border={{ base: `1px solid ${colorMode === "light" ? "#000" : "#fff"}`, md: "0px" }}
               py={"0.95rem"}
             >
               <Text fontSize={{ base: "1rem", md: "0.85rem", lg: "0.92rem" }} fontWeight={{ base: "medium", md: "semibold" }}>
@@ -120,7 +122,7 @@ export default function PortfolioOverview({
             </Flex>
             <Box
               display={{ base: "none", md: "block" }}
-              background="#000"
+              background={colorMode === "light" ? "#000" : "#fff"}
               width="0.05rem"
               height="100%"
             />
@@ -147,14 +149,14 @@ export default function PortfolioOverview({
                 onClick={onOpen}
                 width={["9.5rem", "12rem", "7rem"]}
                 fontSize={{ base: "1rem", md: "0.9rem" }}
-                border={"1px solid #8bc53f"}
+                border={`1px solid ${colorMode === "light" ? "#8bc53f" : "#0facf0"}`}
                 borderRadius="4px"
-                color="#fff"
-                background="#8bc53f"
+                color={colorMode === "light" ? "#fff" : "#1a202c"}
+                background={colorMode === "light" ? "#8bc53f" : "#0facf0"}
                 py={'1.3rem'}
                 _hover={{
-                  background: "#fff",
-                  color: "#8bc53f"
+                  background: 'none',
+                  color: colorMode === "light" ? "#8bc53f" : "#0facf0",
                 }}
               >
                 Portfolio Size
@@ -163,14 +165,14 @@ export default function PortfolioOverview({
                 onClick={() => navigate('/addcoin')}
                 fontSize={{ base: "1rem", md: "0.9rem" }}
                 width={["9.5rem", "12rem", "7rem"]}
-                border={"1px solid #8bc53f"}
+                border={`1px solid ${colorMode === "light" ? "#8bc53f" : "#0facf0"}`}
                 borderRadius="4px"
-                color="#fff"
-                background="#8bc53f"
+                color={colorMode === "light" ? "#fff" : "#1a202c"}
+                background={colorMode === "light" ? "#8bc53f" : "#0facf0"}
                 py={'1.3rem'}
                 _hover={{
-                  background: "#fff",
-                  color: "#8bc53f"
+                  background: 'none',
+                  color: colorMode === "light" ? "#8bc53f" : "#0facf0",
                 }}
               >
                 Add Coins

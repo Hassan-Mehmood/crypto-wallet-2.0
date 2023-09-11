@@ -12,13 +12,13 @@ export default function NavLinks({ onOpenLogin, onOpenSignup }: props) {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <Flex alignItems="center" gap={{base: 1, sm: 2, md:4}}>
+    <Flex alignItems="center" gap={{ base: 1, sm: 2, md: 4 }}>
       <Flex alignItems={"center"} cursor={"pointer"}
         onClick={() => toggleColorMode()}
         _hover={{
           color: colorMode === "light" ? "#8bc53f" : "#0facf0",
         }}>
-        <Icon as={colorMode === "light" ? BiSolidSun : HiMoon} marginRight={{md: "0.5rem"}} />
+        <Icon as={colorMode === "light" ? BiSolidSun : HiMoon} marginRight={{ md: "0.5rem" }} />
         <Text display={{ base: "none", md: "block" }} textTransform={"capitalize"}>{colorMode} mode</Text>
       </Flex>
       <Button
@@ -37,7 +37,7 @@ export default function NavLinks({ onOpenLogin, onOpenSignup }: props) {
       <Button
         onClick={onOpenSignup}
         borderRadius="8px"
-        color="#fff"
+        color={colorMode === "light" ? "#fff" : "#1a202c"}
         background={colorMode === "light" ? "#8bc53f" : "#0facf0"}
         border={`1px solid ${colorMode === "light" ? "#8bc53f" : "#0facf0"}`}
         px={'0.7rem'}

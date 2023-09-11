@@ -1,10 +1,12 @@
-import { Button, Flex, FormControl, FormLabel, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react"
+import { Button, Flex, FormControl, FormLabel, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text, useColorMode } from "@chakra-ui/react"
 
 interface IDeleteTransactionModal {
     isOpen: boolean;
     onClose: () => void;
 }
 export const DeleteTransactionModal = ({ isOpen, onClose }: IDeleteTransactionModal) => {
+  const { colorMode } = useColorMode();
+
     return (
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
             <ModalOverlay />
@@ -27,7 +29,7 @@ export const DeleteTransactionModal = ({ isOpen, onClose }: IDeleteTransactionMo
                                 type="submit"
                                 width={"17rem"}
                                 fontWeight={"normal"}
-                                background="#fff"
+                                background={colorMode=== "light" ? "#fff" : "none"}
                                 color="rgb(255, 0, 0)"
                                 border="1px solid rgb(255, 0, 0)"
                                 _hover={{

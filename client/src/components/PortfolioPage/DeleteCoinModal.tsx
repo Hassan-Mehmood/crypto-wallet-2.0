@@ -11,6 +11,7 @@ import {
   useToast,
   Text,
   Flex,
+  useColorMode,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
@@ -24,6 +25,7 @@ interface props {
 
 export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: props) {
   const queryClient = useQueryClient();
+  const { colorMode } = useColorMode();
   const toast = useToast();
 
   const deleteCoinAndDataMutation = useMutation(
@@ -119,7 +121,7 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
                 type="submit"
                 width={"17rem"}
                 fontWeight={"normal"}
-                background="#fff"
+                background={colorMode=== "light" ? "#fff" : "none"}
                 color="rgb(255, 0, 0)"
                 border="1px solid rgb(255, 0, 0)"
                 _hover={{
@@ -133,7 +135,7 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
                 type="submit"
                 width={"17rem"}
                 fontWeight={"normal"}
-                background="#fff"
+                background={colorMode=== "light" ? "#fff" : "none"}
                 color="rgb(255, 0, 0)"
                 border="1px solid rgb(255, 0, 0)"
                 onClick={deleteCoinAndKeepTransaction}

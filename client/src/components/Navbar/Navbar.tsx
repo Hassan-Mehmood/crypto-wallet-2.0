@@ -36,7 +36,7 @@ const Navbar = () => {
         align="center"
         py={{ base: '1rem', md: '1.5rem' }}
         mb={{ base: "2rem", md: "3rem" }}
-        borderBottom={"1px solid #000"}
+        borderBottom={`1px solid ${colorMode === "light" ? "#000" : "#fff"}`}
       >
         <Link to="/" >
           <Heading fontSize="1.4rem" cursor="pointer">

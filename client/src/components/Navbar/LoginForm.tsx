@@ -122,7 +122,7 @@ export default function LoginForm({ onClose }: any) {
 
       <Button type="submit" mt={7}
         borderRadius="8px"
-        color="#fff"
+        color={colorMode === "light" ? "#fff" : "#1a202c"}
         background={colorMode === "light" ? "#8bc53f" : "#0facf0"}
         border={`1px solid ${colorMode === "light" ? "#8bc53f" : "#0facf0"}`}
         px={'0.7rem'}

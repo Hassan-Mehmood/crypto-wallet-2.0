@@ -1,4 +1,4 @@
-import { Skeleton, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from '@chakra-ui/react';
+import { Skeleton, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useColorMode, useDisclosure } from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
 import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
 import { getCoinTransactions } from '../../api/axios';
@@ -19,12 +19,13 @@ interface props {
 export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: props) {
   const { data, isLoading } = useQuery('coinTransaction', () => getCoinTransactions(activeCoinId));
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen:isEditOpen, onOpen:onEditOpen, onClose:onEditClose } = useDisclosure();
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
+  const { colorMode } = useColorMode();
 
   return (
     <>
       <DeleteTransactionModal isOpen={isOpen} onClose={onClose} />
-      <EditTransactionModal isOpen={isEditOpen} onClose={onEditClose}/>
+      <EditTransactionModal isOpen={isEditOpen} onClose={onEditClose} />
       <Box>
         <Button
           display={"flex"}
@@ -36,7 +37,7 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
           gap={1}
           _hover={{
             backgroundColor: "none",
-            color: "#8bc53f"
+            color: colorMode === "light" ? "#8bc53f" : "#0facf0"
           }}
           _active={{
             backgroundColor: "none",
@@ -166,7 +167,7 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
                 {data?.transactions.map((transaction: Transaction) => (
                   <Tr
                     key={transaction.id}
-                    _hover={{ backgroundColor: '#f4f4f4', cursor: 'pointer' }}
+                    _hover={{ backgroundColor: colorMode === "light" ? '#f4f4f4' : "#212835", cursor: 'pointer' }}
                     onClick={() => {
                       setShowTable('transactionsTable');
                       // setActiveCoinId(coin.id);
@@ -197,7 +198,7 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
                     <Td textAlign={"center"}>
                       <Flex justifyContent={"center"} gap={2}>
                         <Box color="#8bc53f">
-                          <BiEdit size={24} onClick={() => onEditOpen()}/>
+                          <BiEdit size={24} onClick={() => onEditOpen()} />
                         </Box>
                         <Box color="rgb(255, 0, 0)">
                           <AiOutlineDelete size={24} onClick={() => onOpen()} />
