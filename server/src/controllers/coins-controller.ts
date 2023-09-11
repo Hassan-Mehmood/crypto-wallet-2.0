@@ -181,12 +181,8 @@ export async function sellTransaction(req: Request, res: Response) {
       where: { id: userID },
       include: {
         coins: {
-          where: {
-            apiSymbol: coin.symbol,
-          },
-          include: {
-            transactions: true,
-          },
+          where: { apiSymbol: coin.symbol },
+          include: { transactions: true },
         },
       },
     });
@@ -208,14 +204,15 @@ export async function sellTransaction(req: Request, res: Response) {
     });
 
     coinRecord.transactions.push(newTransaction);
+    console.log(coinRecord.transactions);
     const { totalCostBasis, realizedPNL } = calculateCostBasis(coinRecord.transactions);
 
-    console.log('------------');
+    console.log('-----Sell Transaction Function -------');
     console.log('Total Cost Basis: ', totalCostBasis);
     console.log('Sale Made: ', transactionWorth);
     console.log('Coin Sold at', coinSellPrice);
     console.log('Realized Profit/Loss: ', realizedPNL);
-    console.log('------------');
+    console.log('-----Sell Transaction Function -------');
 
     await prisma.user.update({
       where: {
@@ -382,7 +379,7 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
 
     const transactionsWithoutCoin = transactions.map(({ Coin, ...rest }) => rest);
 
-    console.log(coin);
+    // console.log(coin);
 
     return res.status(200).json({ transactions: transactionsWithoutCoin, coin });
   } catch (error) {

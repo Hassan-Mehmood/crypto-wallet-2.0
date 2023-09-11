@@ -9,28 +9,31 @@ export class CostBasisCalculator {
 
   sell(quantitySold: number, sellingPrice: number) {
     let quantityToBeSold = quantitySold;
+    const costBasisOfSellTransaction = quantityToBeSold * sellingPrice; // Cost basis of current sell transaction
 
     while (quantityToBeSold > 0 && this.assets.length > 0) {
-      const asset = this.assets.shift();
+      const assetToBeSold = this.assets.shift();
 
-      if (!asset) {
-        return;
-      }
+      if (!assetToBeSold) return;
 
-      if (asset.quantity <= quantityToBeSold) {
+      if (assetToBeSold.quantity <= quantityToBeSold) {
+        console.log('IF');
+        console.log('Asset being sold', assetToBeSold);
         // If the entire asset is sold
-        const costBasisForAsset = asset.quantity * asset.pricePerUnit;
-        this.realizedPNL += sellingPrice - costBasisForAsset;
-        quantityToBeSold -= asset.quantity;
+        const costBasisForAssetToBeSold = assetToBeSold.quantity * assetToBeSold.pricePerUnit; // Cost basis of asset which going to be sold
+        this.realizedPNL += costBasisOfSellTransaction - costBasisForAssetToBeSold;
+        quantityToBeSold -= assetToBeSold.quantity;
       } else {
         // If only a part of the asset is sold
-        const costBasisForSoldQuantity = quantityToBeSold * asset.pricePerUnit;
+        console.log('else');
+        console.log('Asset being sold partially', assetToBeSold);
+        const costBasisForSoldQuantity = quantityToBeSold * assetToBeSold.pricePerUnit;
         this.assets.unshift({
-          quantity: asset.quantity - quantityToBeSold,
-          pricePerUnit: asset.pricePerUnit,
+          quantity: assetToBeSold.quantity - quantityToBeSold,
+          pricePerUnit: assetToBeSold.pricePerUnit,
         });
-        this.realizedPNL += sellingPrice - costBasisForSoldQuantity;
 
+        this.realizedPNL += costBasisOfSellTransaction - costBasisForSoldQuantity;
         quantityToBeSold = 0;
       }
     }
@@ -46,26 +49,3 @@ export class CostBasisCalculator {
     return this.realizedPNL;
   }
 }
-
-// Sell assets and calculate the cost basis
-// sell(quantitySold: number, sellingPrice: number) {
-//   let quantityToBeSold = quantitySold;
-
-//   while (quantityToBeSold > 0 && this.assets.length > 0) {
-//     const asset = this.assets.shift();
-
-//     if (!asset) return;
-
-//     if (asset.quantity <= quantityToBeSold) {
-//       quantityToBeSold -= asset.quantity;
-//       this.realizedPNL += sellingPrice - asset.quantity * asset.pricePerUnit;
-//     } else {
-//       this.assets.unshift({
-//         quantity: asset.quantity - quantityToBeSold,
-//         pricePerUnit: asset.pricePerUnit,
-//       });
-//       quantityToBeSold = 0;
-//       this.realizedPNL += sellingPrice - quantityToBeSold * asset.pricePerUnit;
-//     }
-//   }
-// }

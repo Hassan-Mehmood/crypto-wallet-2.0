@@ -7,6 +7,8 @@ export async function calculateCoinStats(coin: Coin): Promise<void> {
     where: { coinId: coin.id, user: coin.userId },
   });
 
+  console.log('---------buy Transaction calculateCoinStats()------------');
+
   const totalQuantity = transactions.reduce((total, transaction) => {
     if (transaction.type === 'BUY') total += transaction.quantity;
     if (transaction.type === 'SELL') total -= transaction.quantity;
@@ -37,6 +39,7 @@ export async function calculateCoinStats(coin: Coin): Promise<void> {
   // console.log('Total investment', totalInvestment);
   console.log('Average Buy Price', averageBuyPrice);
   console.log('Realized PNL', realizedPNL);
+  console.log('---------buy Transaction calculateCoinStats()------------');
 
   await prisma.coin.update({
     where: { id: coin.id },
