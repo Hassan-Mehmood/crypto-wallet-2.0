@@ -206,12 +206,12 @@ export async function sellTransaction(req: Request, res: Response) {
     coinRecord.transactions.push(newTransaction);
     const { totalCostBasis, realizedPNL } = calculateCostBasis(coinRecord.transactions);
 
-    console.log('-----Sell Transaction Function -------');
-    console.log('Total Cost Basis: ', totalCostBasis);
-    console.log('Sale Made: ', transactionWorth);
-    console.log('Coin Sold at', coinSellPrice);
-    console.log('Realized Profit/Loss: ', realizedPNL);
-    console.log('-----Sell Transaction Function -------');
+    // console.log('-----Sell Transaction Function -------');
+    // console.log('Total Cost Basis: ', totalCostBasis);
+    // console.log('Sale Made: ', transactionWorth);
+    // console.log('Coin Sold at', coinSellPrice);
+    // console.log('Realized Profit/Loss: ', realizedPNL);
+    // console.log('-----Sell Transaction Function -------');
 
     await prisma.user.update({
       where: {
@@ -291,7 +291,7 @@ export async function deleteCoinAndTransactions(req: AuthenticatedRequest, res: 
       },
     });
 
-    const latestPrice = await getCoinLatestPrice(deletedCoin.symbol + 'USDT');
+    // const latestPrice = await getCoinLatestPrice(deletedCoin.symbol + 'USDT');
 
     await prisma.user.update({
       where: { id: req.user.id },
@@ -403,10 +403,6 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
 
     const TRANSACTION_COST = transaction.price * transaction.quantity;
 
-    // averageBuyPrice      (DONE)
-    // totalQuantity        (DONE)
-    // totalInvestment      (DONE)
-
     if (transaction.type === 'BUY') {
       user.dollerBalance += TRANSACTION_COST;
       user.cryptoBalance -= TRANSACTION_COST;
@@ -432,10 +428,7 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
 
     await prisma.user.update({
       where: { id: req.user.id },
-      data: {
-        dollerBalance: user.dollerBalance,
-        // cryptoBalance: user.cryptoBalance,
-      },
+      data: { dollerBalance: user.dollerBalance },
     });
 
     await prisma.coin.update({
@@ -451,5 +444,26 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
     return res.status(200).json({ message: 'Transaction deleted successfully.' });
   } catch (error) {
     return res.status(500).json({ message: 'Failed to delete transactions.' });
+  }
+}
+
+export async function getCoinHoldingQuantity(req: AuthenticatedRequest, res: Response) {
+  try {
+    const coinSymbol = req.params.coinSymbol;
+
+    const coin = await prisma.coin.findFirst({
+      where: { symbol: coinSymbol },
+      select: {
+        totalQuantity: true,
+        symbol: true,
+      },
+    });
+
+    console.log(coinSymbol);
+    console.log(coin.symbol);
+
+    return res.status(200).json({ holdingsInPortfolio: coin.totalQuantity });
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to get coin.' });
   }
 }

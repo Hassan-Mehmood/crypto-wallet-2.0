@@ -11,14 +11,13 @@ import {
   useToast,
   Divider,
   Text,
-  Center,
   useColorMode,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { removeCoin } from '../../slices/coinSlice';
 import { useEffect, useState } from 'react';
-import { getCoinMarketData, getUserBalance } from '../../api/axios';
+import { getCoinHoldingQuantity, getCoinMarketData, getUserBalance } from '../../api/axios';
 import { useMutation, useQuery } from 'react-query';
 import axios from 'axios';
 
@@ -36,6 +35,16 @@ export default function AddCoin() {
   const { data: accountBalance, refetch: refetchBalance } = useQuery(
     'accountBalance',
     getUserBalance
+  );
+
+  const { data: coinHoldingQuantity, refetch: refetchCoinQuantity } = useQuery(
+    'coinHoldingQuantity',
+    () => {
+      if (!coinData.symbol) {
+        return;
+      }
+      return getCoinHoldingQuantity(coinData.symbol);
+    }
   );
 
   const buyCoin = useMutation(
@@ -136,11 +145,13 @@ export default function AddCoin() {
       setCoinPrice(marketData.current_price?.usd.toString() || '0');
     });
 
+    refetchCoinQuantity();
+
     return () => {
       isMounted = false;
       dispatch(removeCoin());
     };
-  }, [coinData.id, dispatch]);
+  }, [coinData.id, dispatch, refetchCoinQuantity]);
 
   function buyTransaction(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -171,35 +182,51 @@ export default function AddCoin() {
       return;
     }
 
+    if (coinHoldingQuantity && parseFloat(coinQuantity) > coinHoldingQuantity) {
+      showToast('Error', 'Insufficient coins', 'error');
+      return;
+    }
+
     sellCoin.mutate();
   }
 
   return (
     <Box
-      width={["25.5rem", "28rem", "36rem"]}
-      borderRadius={"0.5rem"}
-      border={colorMode === "light" ? "1px solid black" : "none"}
-      backgroundColor={colorMode === "light" ? "none" : "#2d3748"}>
+      width={['25.5rem', '28rem', '36rem']}
+      borderRadius={'0.5rem'}
+      border={colorMode === 'light' ? '1px solid black' : 'none'}
+      backgroundColor={colorMode === 'light' ? 'none' : '#2d3748'}
+    >
       <Flex
         justifyContent="space-between"
-        alignItems={"center"}
-        fontWeight={"semibold"}
-        px={["1.5rem", "1.5rem", "1.7rem"]}
-        py={"1.7rem"} >
-        <Heading size="md">
-          Buy / Sell Coin
-        </Heading>
-        <Heading
-          size="sm"
-          color={colorMode === "light" ? "#8bc53f" : "#0facf0"}>
+        alignItems={'center'}
+        fontWeight={'semibold'}
+        px={['1.5rem', '1.5rem', '1.7rem']}
+        py={'1.7rem'}
+      >
+        <Heading size="md">Buy / Sell Coin</Heading>
+        <Heading size="sm" color={colorMode === 'light' ? '#8bc53f' : '#0facf0'}>
           Balance: ${accountBalance?.dollerBalance || 0}
         </Heading>
       </Flex>
-      <Divider borderColor={colorMode === "light" ? "#000" : "#fff"} />
-      <Flex justifyContent="space-between" alignItems={"center"} px={["1.5rem", "1.5rem", "1.7rem"]} position={"relative"} py={"1.3rem"}>
+      <Divider borderColor={colorMode === 'light' ? '#000' : '#fff'} />
+
+      {/* Coin name and coin worth in doller starts */}
+      <Flex
+        justifyContent="space-between"
+        alignItems={'center'}
+        px={['1.5rem', '1.5rem', '1.7rem']}
+        position={'relative'}
+        py={'1.3rem'}
+      >
         <Flex>
           <Image src={coinData.thumb ? coinData.thumb : ''} />
-          <Heading size="sm" color={!coinData.name ? "#a3b1bf" : (colorMode === "light" ? "#000" : "#fff")} textTransform="capitalize" ml={`${coinData.name && ".5rem"}`}>
+          <Heading
+            size="sm"
+            color={!coinData.name ? '#a3b1bf' : colorMode === 'light' ? '#000' : '#fff'}
+            textTransform="capitalize"
+            ml={`${coinData.name && '.5rem'}`}
+          >
             {coinData.name || 'No coin selected'}
           </Heading>
         </Flex>
@@ -207,22 +234,63 @@ export default function AddCoin() {
           position="absolute"
           top="50%"
           left="50%"
-          backgroundColor={colorMode === "light" ? "#000" : "#fff"}
+          backgroundColor={colorMode === 'light' ? '#000' : '#fff'}
           transform="translate(-50%, -50%)"
           width="0.03rem"
           height="100%"
         />
-        <Heading as="h6" size="sm" fontWeight={"semibold"} color={`${(parseFloat(coinPrice) * parseFloat(coinQuantity)) === 0 ? "#a3b1bf" : (colorMode === "light" ? "#000" : "#fff")}  `}>
+        <Heading
+          as="h6"
+          size="sm"
+          fontWeight={'semibold'}
+          color={`${
+            parseFloat(coinPrice) * parseFloat(coinQuantity) === 0
+              ? '#a3b1bf'
+              : colorMode === 'light'
+              ? '#000'
+              : '#fff'
+          }  `}
+        >
           ${parseFloat(coinPrice) * parseFloat(coinQuantity)}
         </Heading>
       </Flex>
-      <Divider borderColor={colorMode === "light" ? "#000" : "#fff"} />
-      <form >
-        <Flex gap="0.5rem" flexDir={"column"} py={"1rem"}>
-          <FormControl display={'flex'} justifyContent={`center`} px={["1.5rem", "1.5rem", "4.1rem"]}>
-            <Flex width={`${coinData.name ? "full" : "12rem"}`} justifyContent="space-between" alignItems={"center"}>
-              <FormLabel fontWeight={"semibold"}>Quantity</FormLabel>
-              <Flex width={`${coinData.name && ["17rem"]}`} justifyContent={"space-between"} alignItems={"center"} pb={"0.3rem"}>
+      {/* Coin name and coin worth in doller ends */}
+
+      {/* Coin Quantity in portfolio ends */}
+      {coinData.name !== null && (
+        <Box px={['1.5rem', '1.5rem', '1.7rem']} position={'relative'}>
+          <Heading
+            size="sm"
+            color={colorMode === 'light' ? '#000' : '#fff'}
+            textTransform="capitalize"
+            m={'0 0 1.3rem 0.5rem'}
+          >
+            {coinHoldingQuantity} {coinData.name} in portfolio
+          </Heading>
+        </Box>
+      )}
+      {/* Coin Quantity in portfolio ends */}
+
+      <Divider borderColor={colorMode === 'light' ? '#000' : '#fff'} />
+      <form>
+        <Flex gap="0.5rem" flexDir={'column'} py={'1rem'}>
+          <FormControl
+            display={'flex'}
+            justifyContent={`center`}
+            px={['1.5rem', '1.5rem', '4.1rem']}
+          >
+            <Flex
+              width={`${coinData.name ? 'full' : '12rem'}`}
+              justifyContent="space-between"
+              alignItems={'center'}
+            >
+              <FormLabel fontWeight={'semibold'}>Quantity</FormLabel>
+              <Flex
+                width={`${coinData.name && ['17rem']}`}
+                justifyContent={'space-between'}
+                alignItems={'center'}
+                pb={'0.3rem'}
+              >
                 <NumberInput
                   color={'#a3b1bf'}
                   step={0.01}
@@ -280,7 +348,9 @@ export default function AddCoin() {
             </Flex>
           </FormControl>
         </Flex>
-        {coinData.name && <Divider borderColor={colorMode === "light" ? "#000" : "#fff"} height={"0.8px"} />}
+        {coinData.name && (
+          <Divider borderColor={colorMode === 'light' ? '#000' : '#fff'} height={'0.8px'} />
+        )}
         <Box px={['1.5rem', '1.5rem', '1.7rem']} py={'1rem'}>
           <Flex flexDir={'column'} mt={`${coinData.name && '1rem'}`} alignItems={'center'}>
             <Flex flexDir={['column', 'column', 'row']} gap={2}>
@@ -290,9 +360,9 @@ export default function AddCoin() {
                 type="submit"
                 fontSize="md"
                 borderRadius="0.3rem"
-                color={colorMode === "light" ? "#8bc53f" : "#0facf0"}
-                backgroundColor={colorMode === "light" ? "#fff" : "#2d3748"}
-                border={`1px solid ${colorMode === "light" ? "#8bc53f" : "#0facf0"}`}
+                color={colorMode === 'light' ? '#8bc53f' : '#0facf0'}
+                backgroundColor={colorMode === 'light' ? '#fff' : '#2d3748'}
+                border={`1px solid ${colorMode === 'light' ? '#8bc53f' : '#0facf0'}`}
                 margin="0 0.5rem 0 0"
                 padding="0.5rem 1.5rem"
                 width={['16rem', '18rem', '10rem']}
@@ -308,7 +378,7 @@ export default function AddCoin() {
                 type="submit"
                 fontSize="sm"
                 borderRadius="0.3rem"
-                backgroundColor={colorMode === "light" ? "#fff" : "#2d3748"}
+                backgroundColor={colorMode === 'light' ? '#fff' : '#2d3748'}
                 color="rgb(255, 0, 0)"
                 background="#fff"
                 margin="0 0.5rem 0 0"

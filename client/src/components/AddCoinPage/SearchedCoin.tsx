@@ -14,25 +14,25 @@ const SearchedCoin = ({ Coin, setListState, setSearchedCoinName }: Props) => {
   const { colorMode } = useColorMode();
 
   return (
-    <Box py="0.5rem" >
+    <Box py="0.5rem">
       <Flex align="center" justify="space-between">
         <Flex align="center" gap={4}>
           <Image src={Coin.thumb} maxW="1.5rem" />
-          <Flex gap={2} alignItems={"baseline"}>
+          <Flex gap={2} alignItems={'baseline'}>
             <Text fontWeight="semibold">{Coin.name}</Text>
-            <Text fontSize={"sm"}>({Coin.symbol})</Text>
+            <Text fontSize={'sm'}>({Coin.symbol})</Text>
           </Flex>
         </Flex>
         <Button
           fontSize="sm"
           borderRadius="0.3rem"
-          color={colorMode === "light" ? "#8bc53f" : "#0facf0"}
+          color={colorMode === 'light' ? '#8bc53f' : '#0facf0'}
           background="none"
-          px={"0.8rem"}
+          px={'0.8rem'}
           onClick={() => {
             dispatch(addCoin(Coin));
             setListState(false);
-            setSearchedCoinName("");
+            setSearchedCoinName('');
           }}
         >
           Add

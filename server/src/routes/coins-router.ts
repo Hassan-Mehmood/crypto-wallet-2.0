@@ -9,6 +9,7 @@ import {
   setUserBalance,
   getTransactions,
   sellTransaction,
+  getCoinHoldingQuantity,
   deleteTransaction,
 } from '../controllers/coins-controller';
 import { verifyToken } from '../utils/jwt';
@@ -27,20 +28,20 @@ const router = express.Router();
 
 router.post(
   '/buy',
-  // body('coin')
-  //   .custom((coin: transactionCoin) => coin.id !== null)
-  //   .withMessage('Coin Data is required'),
-  // body('user')
-  //   .custom((userID: number) => userID !== null)
-  //   .withMessage('User not logged in'),
-  // body('coinQuantity')
-  //   .notEmpty()
-  //   .custom((num: number) => num > 0)
-  //   .withMessage('Coin Quantity must be greater than 0'),
-  // body('coinPrice')
-  //   .notEmpty()
-  //   .custom((num: number) => num > 0)
-  //   .withMessage('Coin Price must be greater than 0'),
+  body('coin')
+    .custom((coin: transactionCoin) => coin.id !== null)
+    .withMessage('Coin Data is required'),
+  body('user')
+    .custom((userID: number) => userID !== null)
+    .withMessage('User not logged in'),
+  body('coinQuantity')
+    .notEmpty()
+    .custom((num: number) => num > 0)
+    .withMessage('Coin Quantity must be greater than 0'),
+  body('coinPrice')
+    .notEmpty()
+    .custom((num: number) => num > 0)
+    .withMessage('Coin Price must be greater than 0'),
 
   buyTransaction
 );
@@ -74,5 +75,7 @@ router.delete('/deleteCoinAndTransactions/:id', verifyToken, deleteCoinAndTransa
 
 router.get('/transactions/:id', verifyToken, getTransactions);
 router.delete('/transactions/delete/:id', verifyToken, deleteTransaction);
+
+router.get('/holdings/:coinSymbol', getCoinHoldingQuantity);
 
 export default router;
