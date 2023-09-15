@@ -30,7 +30,7 @@ export default async function updateCoinData(
       allTimeProfit += coin.profitLoss;
     } else {
       coin.holdingsInDollers = coin.totalQuantity * coin.latestPrice;
-      coin.profitLoss += coin.latestPrice - coin.totalInvestment + coin.realizedPNL;
+      coin.profitLoss += coin.holdingsInDollers - coin.totalInvestment + coin.realizedPNL;
 
       console.log('===============================');
       console.log('coin', coin.symbol);

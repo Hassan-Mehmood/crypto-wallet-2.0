@@ -459,8 +459,9 @@ export async function getCoinHoldingQuantity(req: AuthenticatedRequest, res: Res
       },
     });
 
-    console.log(coinSymbol);
-    console.log(coin.symbol);
+    if (!coin) {
+      return res.status(200).json({ holdingsInPortfolio: 0 });
+    }
 
     return res.status(200).json({ holdingsInPortfolio: coin.totalQuantity });
   } catch (error) {

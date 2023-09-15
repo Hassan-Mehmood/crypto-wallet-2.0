@@ -25,12 +25,16 @@ export default function AddCoin() {
   const [coinQuantity, setCoinQuantity] = useState<string>('0.00');
   const [coinPrice, setCoinPrice] = useState<string>('0');
   const [loadingBtn, setLoadingBtn] = useState(false);
+
   const { colorMode } = useColorMode();
 
   const coinData = useSelector((state: RootState) => state.searchCoinReducer);
   const userData = useSelector((state: RootState) => state.userReducer);
+
   const dispatch = useDispatch();
   const toast = useToast();
+
+  // console.log(coinData);
 
   const { data: accountBalance, refetch: refetchBalance } = useQuery(
     'accountBalance',
@@ -265,7 +269,7 @@ export default function AddCoin() {
             textTransform="capitalize"
             m={'0 0 1.3rem 0.5rem'}
           >
-            {coinHoldingQuantity} {coinData.name} in portfolio
+            {coinHoldingQuantity || 0} {coinData.name} in portfolio
           </Heading>
         </Box>
       )}

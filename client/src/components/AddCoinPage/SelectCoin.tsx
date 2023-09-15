@@ -1,4 +1,4 @@
-import { Box, Divider, FormControl, Heading, Icon, useColorMode } from '@chakra-ui/react';
+import { Box, FormControl, Heading, Icon, useColorMode } from '@chakra-ui/react';
 import { getCoinByName } from '../../api/axios';
 import { useState, useEffect, useRef } from 'react';
 import { SearchCoin } from '../../types';
@@ -9,9 +9,11 @@ export default function SelectCoin() {
   const [searchedCoinName, setSearchedCoinName] = useState('');
   const [listState, setListState] = useState(false);
   const [coinData, setCoinData] = useState<SearchCoin[]>([]);
-  const [visibleState, setVisibleState] = useState(false);
-  const { colorMode } = useColorMode();
+
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const { colorMode } = useColorMode();
+
   useEffect(() => {
     const delay = setTimeout(() => {
       if (searchedCoinName.length > 0) {
@@ -21,6 +23,7 @@ export default function SelectCoin() {
         });
       } else {
         setCoinData([]);
+        setListState(false);
       }
     }, 250);
 
@@ -60,59 +63,36 @@ export default function SelectCoin() {
                 borderTopRightRadius: '0.5rem',
                 borderTopLeftRadius: '0.5rem',
                 backgroundColor: colorMode === 'light' ? '#fff' : '#2d3748',
-                borderBottomLeftRadius:
-                  coinData.length > 0 && listState && visibleState ? '0px' : '0.5rem',
-                borderBottomRightRadius:
-                  coinData.length > 0 && listState && visibleState ? '0px' : '0.5rem',
+                borderBottomLeftRadius: coinData.length > 0 && listState ? '0px' : '0.5rem',
+                borderBottomRightRadius: coinData.length > 0 && listState ? '0px' : '0.5rem',
                 width: '100%',
                 padding: '0.5rem',
                 paddingLeft: '2.8rem',
                 outline: 'none',
               }}
-              onBlur={() => setVisibleState(false)}
-              onFocus={() => setVisibleState(true)}
               value={searchedCoinName}
               onChange={(e) => setSearchedCoinName(e.target.value)}
             />
           </form>
         </FormControl>
       </Box>
-      {/* {listState && coinData.length > 0 && visibleState && (
+
+      {listState && coinData.length > 0 && (
         <Box
           backgroundColor={colorMode === 'light' ? '#fff' : '#2d3748'}
           border={'1px'}
           borderTop={'0px'}
           borderBottomRadius={'0.5rem'}
-          px={'1rem'}
         >
           <Box py={'0.5rem'}>
             {coinData.slice(0, 5).map((coin) => (
-              <SearchedCoin
-                key={coin.id}
-                Coin={coin}
-                setListState={setListState}
-                setSearchedCoinName={setSearchedCoinName}
-              />
-            ))}
-          </Box>
-        </Box>
-      )} */}
-      {listState && coinData.length > 0 && (
-        <Box
-          backgroundColor={'white'}
-          border={'1px'}
-          borderTop={'0px'}
-          borderBottomRadius={'0.5rem'}
-          px={'1rem'}
-        >
-          <Box py={'0.5rem'}>
-            {coinData.slice(0, 5).map((coin) => (
-              <SearchedCoin
-                key={coin.id}
-                Coin={coin}
-                setListState={setListState}
-                setSearchedCoinName={setSearchedCoinName}
-              />
+              <Box _hover={{ backgroundColor: '#262e3e' }} key={coin.id}>
+                <SearchedCoin
+                  coin={coin}
+                  setListState={setListState}
+                  setSearchedCoinName={setSearchedCoinName}
+                />
+              </Box>
             ))}
           </Box>
         </Box>
