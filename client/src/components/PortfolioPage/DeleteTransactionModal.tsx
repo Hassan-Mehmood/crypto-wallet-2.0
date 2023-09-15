@@ -21,10 +21,12 @@ interface IDeleteTransactionModal {
   isOpen: boolean;
   transactionID: number;
   onClose: () => void;
+  refetch: () => void;
 }
 export const DeleteTransactionModal = ({
   isOpen,
   onClose,
+  refetch,
   transactionID,
 }: IDeleteTransactionModal) => {
   const { colorMode } = useColorMode();
@@ -48,7 +50,9 @@ export const DeleteTransactionModal = ({
       onSettled: () => setLoadingBtn(false),
 
       onSuccess: () => {
-        showToast('Success', 'Coin bought successfully', 'success');
+        showToast('Success', 'Transaction deleted successfully', 'success');
+        refetch();
+        onClose();
       },
       onError: () => {
         showToast('Error', 'Something went wrong', 'error');

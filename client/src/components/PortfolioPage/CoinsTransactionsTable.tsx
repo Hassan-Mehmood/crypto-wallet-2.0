@@ -31,7 +31,9 @@ interface props {
 export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: props) {
   const [transactionID, setTransactionID] = useState(0);
 
-  const { data, isLoading } = useQuery('coinTransaction', () => getCoinTransactions(activeCoinId));
+  const { data, isLoading, refetch } = useQuery('coinTransaction', () =>
+    getCoinTransactions(activeCoinId)
+  );
 
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
@@ -44,6 +46,7 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
         isOpen={isDeleteOpen}
         onClose={onDeleteClose}
         transactionID={transactionID}
+        refetch={refetch}
       />
       <EditTransactionModal isOpen={isEditOpen} onClose={onEditClose} />
       <Box>
@@ -74,22 +77,15 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
               flexDir={{ base: 'column', md: 'row' }}
               align={{ md: 'center' }}
               width={{ md: '45rem', lg: '58rem' }}
-              // border={{ md: `1px solid ${colorMode === 'light' ? '#000' : '#fff'}` }}
-              // borderRadius={{ md: '0.5rem' }}
               py={{ md: '1.5rem' }}
               gap={{ base: 2, lg: 6 }}
             >
               <Flex
                 flexDir={'column'}
                 alignItems={'center'}
-                // border={{
-                //   base: `1px solid ${colorMode === 'light' ? '#000' : '#fff'}`,
-                //   md: 'none',
-                // }}
                 width={['20rem', '25rem']}
                 px={{ base: '1.5rem', md: '0rem' }}
                 py={{ base: '0.7rem', md: '0rem' }}
-                // borderRadius={'0.5rem'}
                 gap={2}
               >
                 <Box>
