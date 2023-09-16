@@ -6,11 +6,6 @@ import {
   ModalCloseButton,
   ModalBody,
   FormControl,
-  FormLabel,
-  NumberInput,
-  NumberInputField,
-  Flex,
-  Button,
   useColorMode,
   Input,
   Box,
@@ -23,7 +18,6 @@ import SearchedCoin from './SearchedCoin';
 interface props {
   isOpen: boolean;
   onClose: () => void;
-  // onOpen: () => void;
 }
 
 export default function AddCoinModal({ isOpen, onClose }: props) {
@@ -46,9 +40,7 @@ export default function AddCoinModal({ isOpen, onClose }: props) {
       }
     }, 250);
 
-    return () => {
-      clearTimeout(delay);
-    };
+    return () => clearTimeout(delay);
   }, [searchedCoinName]);
 
   return (

@@ -22,6 +22,29 @@ interface AuthenticatedRequest extends Request {
   user: tokenPayload;
 }
 
+export async function addCoinToPortfolio(req: AuthenticatedRequest, res: Response) {
+  try {
+    const coin = req.body.coin;
+    const user = req.user;
+
+    const createdCoin = await prisma.coin.create({
+      data: {
+        name: coin.name,
+        apiSymbol: coin.symbol,
+        symbol: coin.symbol,
+        thump: coin.thumb,
+        large: coin.large,
+        marketCapRank: coin.market_cap_rank,
+        user: { connect: { id: user.id } },
+      },
+    });
+
+    return res.status(200).json({ message: 'Coin added successfully', coin: createdCoin });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
 export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
   try {
     let portfolioWorth = 0;
