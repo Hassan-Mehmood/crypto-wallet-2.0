@@ -374,7 +374,7 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
     const latestPrice = parseFloat(latestPriceData.data.price);
 
     coin.holdingsInDollers = coin.totalQuantity * latestPrice;
-    coin.profitLoss += (latestPrice - coin.totalInvestment) * coin.totalQuantity + coin.realizedPNL;
+    coin.profitLoss += coin.holdingsInDollers - coin.totalInvestment + coin.realizedPNL;
 
     const transactionsWithoutCoin = transactions.map(({ Coin, ...rest }) => rest);
 
@@ -401,30 +401,37 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
     const user = await prisma.user.findUnique({ where: { id: req.user.id } });
     const coin = await prisma.coin.findUnique({ where: { id: transaction.coinId } });
 
-    const TRANSACTION_COST = transaction.price * transaction.quantity;
+    const TRANSACTION_COST = transaction.costBasis;
 
     if (transaction.type === 'BUY') {
       user.dollerBalance += TRANSACTION_COST;
-      user.cryptoBalance -= TRANSACTION_COST;
-
       coin.totalInvestment -= TRANSACTION_COST;
       coin.cost -= TRANSACTION_COST;
-
       coin.totalQuantity -= transaction.quantity;
     }
 
     if (transaction.type === 'SELL') {
       user.dollerBalance -= TRANSACTION_COST;
-      user.cryptoBalance += TRANSACTION_COST;
-
       coin.totalInvestment += TRANSACTION_COST;
       coin.cost -= TRANSACTION_COST;
-
       coin.totalQuantity += transaction.quantity;
     }
 
-    if (coin.totalQuantity > 0) coin.averageBuyPrice = coin.totalInvestment / coin.totalQuantity;
-    else coin.averageBuyPrice = 0;
+    if (coin.totalQuantity > 0) {
+      coin.averageBuyPrice = coin.totalInvestment / coin.totalQuantity;
+    } else {
+      coin.averageBuyPrice = 0;
+    }
+
+    if (coin.cost < 0) {
+      coin.cost = 0;
+    }
+
+    console.log('Doller Balance', user.dollerBalance);
+    console.log('Total Investment', coin.totalInvestment);
+    console.log('Cost', coin.cost);
+    console.log('Total Quantity', coin.totalQuantity);
+    console.log('Avrg Buy Price', coin.averageBuyPrice);
 
     await prisma.user.update({
       where: { id: req.user.id },

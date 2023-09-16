@@ -21,33 +21,33 @@ import { AiOutlineDelete } from 'react-icons/ai';
 
 interface props {
   coins:
-  | {
-    id: number;
-    name: string;
-    apiSymbol: string;
-    symbol: string;
-    thump: string;
-    large: string;
-    marketCapRank: number;
-    averageBuyPrice: number;
-    latestPrice: number;
-    totalQuantity: number;
-    holdingsInDollers: number;
-    profitLoss: number;
-    totalInvestment: number;
-    userId: number;
-    createdAt: Date;
-    updatedAt: Date;
-    transactions: {
-      id: number;
-      price: number;
-      quantity: number;
-      timeBought: Date;
-      createdAt: Date;
-      updatedAt: Date;
-    }[];
-  }[]
-  | undefined;
+    | {
+        id: number;
+        name: string;
+        apiSymbol: string;
+        symbol: string;
+        thump: string;
+        large: string;
+        marketCapRank: number;
+        averageBuyPrice: number;
+        latestPrice: number;
+        totalQuantity: number;
+        holdingsInDollers: number;
+        profitLoss: number;
+        totalInvestment: number;
+        userId: number;
+        createdAt: Date;
+        updatedAt: Date;
+        transactions: {
+          id: number;
+          price: number;
+          quantity: number;
+          timeBought: Date;
+          createdAt: Date;
+          updatedAt: Date;
+        }[];
+      }[]
+    | undefined;
   setShowTable: React.Dispatch<React.SetStateAction<string>>;
   setActiveCoinId: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -57,7 +57,6 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
   const navigate = useNavigate();
-
 
   return (
     <>
@@ -83,59 +82,63 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
         </Button>
       ) : null}
 
-      <TableContainer mt={"2rem"}>
+      <TableContainer mt={'2rem'}>
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th textAlign={"center"}>Name</Th>
-              <Th textAlign={"center"}>Price</Th>
-              <Th textAlign={"center"}>Holding</Th>
-              <Th textAlign={"center"}>Avg Buy Price</Th>
-              <Th textAlign={"center"}>Profit/Loss</Th>
-              <Th textAlign={"center"}>Actions</Th>
+              <Th textAlign={'center'}>Name</Th>
+              <Th textAlign={'center'}>Price</Th>
+              <Th textAlign={'center'}>Holding</Th>
+              <Th textAlign={'center'}>Avg Buy Price</Th>
+              <Th textAlign={'center'}>Profit/Loss</Th>
+              <Th textAlign={'center'}>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
             {coins?.map((coin: any) => (
               <Tr
                 key={coin.id}
-                _hover={{ backgroundColor: colorMode === "light" ? '#f4f4f4' : "#212835", cursor: 'pointer' }}
+                _hover={{
+                  backgroundColor: colorMode === 'light' ? '#f4f4f4' : '#212835',
+                  cursor: 'pointer',
+                }}
                 onClick={() => {
                   setShowTable('transactionsTable');
                   setActiveCoinId(coin.id);
                 }}
               >
                 <Td>
-                  <Flex alignItems="center" justifyContent={"center"} gap={2} fontWeight="semibold">
+                  <Flex alignItems="center" justifyContent={'center'} gap={2} fontWeight="semibold">
                     <Image src={coin.thump} width="25px" height="auto" />
                     {coin.name}
                   </Flex>
                 </Td>
-                <Td textAlign={"center"}>$ {coin.latestPrice.toLocaleString('en')}</Td>
-                <Td textAlign={"center"}>
+                <Td textAlign={'center'}>$ {coin.latestPrice.toLocaleString('en')}</Td>
+                <Td textAlign={'center'}>
                   <Flex flexDirection="column">
                     <Box fontWeight="semibold">
-                      {coin.totalQuantity}{' '}
+                      {coin.totalQuantity.toFixed(4)}{' '}
                       <Box as="span" fontSize="12px">
                         {coin.symbol}
                       </Box>
                     </Box>
                     <Box fontSize="14px">
-                      ($ {coin.holdingsInDollers.toLocaleString('en', { maximumFractionDigits: 2 })})
+                      ($ {coin.holdingsInDollers.toLocaleString('en', { maximumFractionDigits: 2 })}
+                      )
                     </Box>
                   </Flex>
                 </Td>
-                <Td textAlign={"center"}>$ {coin.averageBuyPrice.toLocaleString('en')}</Td>
-                <Td textAlign={"center"} color={getProfitLossColor(coin.profitLoss, colorMode)}>
+                <Td textAlign={'center'}>$ {coin.averageBuyPrice.toLocaleString('en')}</Td>
+                <Td textAlign={'center'} color={getProfitLossColor(coin.profitLoss, colorMode)}>
                   <Flex flexDirection="column">
                     <Box>
-                      {coin.profitLoss > 0 ? '+' : ''}$ {" "}
+                      {coin.profitLoss > 0 ? '+' : ''}${' '}
                       {coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })}
                     </Box>
                     <Box fontSize="14px">{calculatePercentage(coin.profitLoss, coin.cost)}%</Box>
                   </Flex>
                 </Td>
-                <Td textAlign={"center"}>
+                <Td textAlign={'center'}>
                   <Box as="span" display="inline-block" cursor="pointer">
                     <AiOutlineDelete
                       size={24}

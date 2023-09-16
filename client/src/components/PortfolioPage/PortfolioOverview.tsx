@@ -213,7 +213,7 @@ export default function PortfolioOverview({
               color={getProfitLossColor(allTimeProfit, colorMode)}
             >
               {allTimeProfit !== undefined && allTimeProfit > 0 ? '+' : ''}$
-              {allTimeProfit?.toFixed(2)}
+              {allTimeProfit?.toFixed(2) || '0.00'}
             </Text>
           </Flex>
           <Flex alignItems="center">

@@ -76,14 +76,14 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
             <Flex
               flexDir={{ base: 'column', md: 'row' }}
               align={{ md: 'center' }}
-              width={{ md: '45rem', lg: '58rem' }}
-              py={{ md: '1.5rem' }}
+              width={'100%'}
+              p={{ md: '1.5rem' }}
               gap={{ base: 2, lg: 6 }}
             >
               <Flex
                 flexDir={'column'}
                 alignItems={'center'}
-                width={['20rem', '25rem']}
+                // width={['20rem', '25rem']}
                 px={{ base: '1.5rem', md: '0rem' }}
                 py={{ base: '0.7rem', md: '0rem' }}
                 gap={2}
@@ -102,79 +102,64 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
                   <Flex alignItems={'center'} gap={2}>
                     <Image src={data?.coin.thump} width="1.7rem" height="1.7rem" />
                     <Heading fontSize={{ base: '1.85rem', lg: '1.91rem' }} fontWeight={'semibold'}>
-                      $ {data?.coin.holdingsInDollers.toLocaleString('en')}
+                      ${data?.coin.holdingsInDollers.toLocaleString('en')}
                     </Heading>
                   </Flex>
-                  <Box
-                    color={`${getProfitLossColor(data?.coin.profitLoss, colorMode)}`}
-                    fontSize="0.9rem"
-                    fontWeight="semibold"
-                  >
-                    {calculatePercentage(data?.coin.profitLoss, data?.coin.cost)}%
-                  </Box>
                 </Flex>
               </Flex>
-              <Box
+              {/* <Box
                 display={{ base: 'none', md: 'block' }}
                 background={colorMode === 'light' ? '#000' : '#fff'}
                 width="0.05rem"
                 height="100%"
-              />
+              /> */}
               <Flex
                 flexDir={{ base: 'row', md: 'column' }}
-                border={{
-                  base: `1px solid ${colorMode === 'light' ? '#000' : '#fff'}`,
-                  md: 'none',
-                }}
                 justifyContent={'center'}
                 alignItems={'center'}
-                width={['20rem', '25rem']}
+                flex={1}
                 gap={[5, 10, 1]}
                 px={{ base: '1.5rem', md: '0rem' }}
                 py={{ base: '0.7rem', md: '0rem' }}
                 borderRadius={'0.5rem'}
               >
                 <Flex gap={[5, 10, 9]}>
-                  <Flex flexDir={'column'} alignItems={'center'} gap={1}>
+                  <Box textAlign="center">
                     <Text color="#a3b1bf" fontSize={{ base: '0.9rem', lg: '1.05rem' }}>
                       Total Cost
                     </Text>
                     <Text fontWeight={'semibold'} fontSize={{ base: '1.1rem', lg: '1.3rem' }}>
-                      $ {data?.coin.cost}
+                      $ {data?.coin.cost.toFixed(3)}
                     </Text>
-                  </Flex>
-                  <Flex flexDir={'column'} alignItems={'center'} gap={1}>
+                  </Box>
+                  <Box textAlign="center">
                     <Text color="#a3b1bf" fontSize={{ base: '0.9rem', lg: '1.05rem' }}>
                       Quantity
                     </Text>
                     <Text fontWeight={'semibold'} fontSize={{ base: '1.1rem', lg: '1.3rem' }}>
-                      {data?.coin.totalQuantity} {data?.coin.symbol}
+                      {data?.coin.totalQuantity.toFixed(3)} {data?.coin.symbol}
                     </Text>
-                  </Flex>
-                </Flex>
-                <Flex flexDir={'column'} alignItems={'center'} gap={1}>
-                  <Text color="#a3b1bf" fontSize={{ base: '0.9rem', lg: '1.05rem' }}>
-                    Avg Buy price
-                  </Text>
-                  <Text fontWeight={'semibold'} fontSize={{ base: '1.1rem', lg: '1.3rem' }}>
-                    $ {data?.coin.averageBuyPrice}
-                  </Text>
+                  </Box>
+                  <Box>
+                    <Text color="#a3b1bf" fontSize={{ base: '0.9rem', lg: '1.05rem' }}>
+                      Avg Buy price
+                    </Text>
+                    <Text fontWeight={'semibold'} fontSize={{ base: '1.1rem', lg: '1.3rem' }}>
+                      $ {data?.coin.averageBuyPrice.toFixed(3)}
+                    </Text>
+                  </Box>
                 </Flex>
               </Flex>
-              <Box
+              {/* <Box
                 display={{ base: 'none', md: 'block' }}
                 background={colorMode === 'light' ? '#000' : '#fff'}
                 width="0.05rem"
                 height="100%"
-              />
+              /> */}
               <Flex
-                border={{
-                  base: `1px solid ${colorMode === 'light' ? '#000' : '#fff'}`,
-                  md: 'none',
-                }}
                 px={{ base: '2rem', md: '0rem' }}
                 py={{ base: '0.7rem', md: '0rem' }}
-                width={['20rem', '25rem']}
+                // width={['20rem', '25rem']}
                 flexDir={'column'}
                 alignItems={'center'}
                 gap={1}

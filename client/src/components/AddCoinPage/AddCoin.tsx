@@ -298,7 +298,7 @@ export default function AddCoin() {
                 <NumberInput
                   color={'#a3b1bf'}
                   step={0.01}
-                  precision={2}
+                  precision={4}
                   min={0}
                   value={coinQuantity}
                   onChange={(valueString) => handleQuantityInput(valueString)}
@@ -335,7 +335,7 @@ export default function AddCoin() {
                 <NumberInput
                   color={'#a3b1bf'}
                   step={0.01}
-                  precision={2}
+                  precision={4}
                   value={coinPrice}
                   onChange={(valueString) => handlePriceInput(valueString)}
                 >
