@@ -80,6 +80,7 @@ export default function PortfolioSizeModal({ isOpen, onClose }: props) {
     e.preventDefault();
     setPortfolioSize.mutate();
   }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />

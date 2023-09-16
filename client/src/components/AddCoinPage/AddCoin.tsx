@@ -34,8 +34,6 @@ export default function AddCoin() {
   const dispatch = useDispatch();
   const toast = useToast();
 
-  // console.log(coinData);
-
   const { data: accountBalance, refetch: refetchBalance } = useQuery(
     'accountBalance',
     getUserBalance
