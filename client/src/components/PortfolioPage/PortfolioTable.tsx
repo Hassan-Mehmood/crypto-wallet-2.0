@@ -18,6 +18,11 @@ import { useNavigate } from 'react-router-dom';
 import DeleteCoinModal from './DeleteCoinModal';
 import { useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
+import { IoMdAddCircleOutline } from 'react-icons/io';
+import TransactionModal from './TransactionModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { addCoin } from '../../slices/coinSlice';
 
 interface props {
   coins:
@@ -36,6 +41,7 @@ interface props {
         profitLoss: number;
         totalInvestment: number;
         userId: number;
+        cost: number;
         createdAt: Date;
         updatedAt: Date;
         transactions: {
@@ -54,13 +60,39 @@ interface props {
 
 export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }: props) {
   const [coinId, setCoinId] = useState<number | null>(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [coinName, setCoinName] = useState<string | null>(null);
+
+  const {
+    isOpen: isDeleteModalOpen,
+    onOpen: onDeleteModalOpen,
+    onClose: onDeleteModalClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isTransactionModalOpen,
+    onOpen: onTransactionModelOpen,
+    onClose: onTransactionModalClose,
+  } = useDisclosure();
+
   const { colorMode } = useColorMode();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   return (
     <>
-      <DeleteCoinModal isOpen={isOpen} onClose={onClose} id={coinId} setCoinId={setCoinId} />
+      <DeleteCoinModal
+        isOpen={isDeleteModalOpen}
+        onClose={onDeleteModalClose}
+        id={coinId}
+        setCoinId={setCoinId}
+      />
+      <TransactionModal
+        isOpen={isTransactionModalOpen}
+        onClose={onTransactionModalClose}
+        coinName={coinName}
+        coinId={coinId}
+      />
+
       {coins?.length === 0 ? (
         <Button
           onClick={() => navigate('/addCoin')}
@@ -95,7 +127,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
             </Tr>
           </Thead>
           <Tbody>
-            {coins?.map((coin: any) => (
+            {coins?.map((coin) => (
               <Tr
                 key={coin.id}
                 _hover={{
@@ -113,7 +145,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                     {coin.name}
                   </Flex>
                 </Td>
-                <Td textAlign={'center'}>$ {coin.latestPrice.toLocaleString('en')}</Td>
+                <Td textAlign={'center'}>${coin.latestPrice.toLocaleString('en')}</Td>
                 <Td textAlign={'center'}>
                   <Flex flexDirection="column">
                     <Box fontWeight="semibold">
@@ -123,8 +155,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                       </Box>
                     </Box>
                     <Box fontSize="14px">
-                      ($ {coin.holdingsInDollers.toLocaleString('en', { maximumFractionDigits: 2 })}
-                      )
+                      (${coin.holdingsInDollers.toLocaleString('en', { maximumFractionDigits: 2 })})
                     </Box>
                   </Flex>
                 </Td>
@@ -139,14 +170,38 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                   </Flex>
                 </Td>
                 <Td textAlign={'center'}>
+                  <Box as="span" display="inline-block" cursor="pointer" mr="0.5rem">
+                    {/* ADD ICON */}
+                    <IoMdAddCircleOutline
+                      size={24}
+                      color={colorMode === 'light' ? 'rgb(105, 162, 53)' : '#0facf0'}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCoinName(coin.name);
+                        dispatch(
+                          addCoin({
+                            id: coin.name.toString().toLowerCase(), // Change this id to name
+                            name: coin.name,
+                            api_symbol: coin.apiSymbol,
+                            symbol: coin.symbol,
+                            market_cap_rank: coin.marketCapRank,
+                            thumb: coin.thump,
+                            large: coin.large,
+                          })
+                        );
+                        onTransactionModelOpen();
+                      }}
+                    />
+                  </Box>
                   <Box as="span" display="inline-block" cursor="pointer">
+                    {/* DELETE ICON */}
                     <AiOutlineDelete
                       size={24}
                       color="rgb(255, 0, 0)"
                       onClick={(e) => {
                         e.stopPropagation();
                         setCoinId(coin.id);
-                        onOpen();
+                        onDeleteModalOpen();
                       }}
                     />
                   </Box>

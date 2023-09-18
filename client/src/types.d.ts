@@ -242,6 +242,7 @@ interface UserTransactionsData {
     latestPrice: number;
     totalQuantity: number;
     holdingsInDollers: number;
+    cost: number;
     profitLoss: number;
     totalInvestment: number;
     userId: number;
@@ -273,7 +274,7 @@ export interface coinTransaction {
     totalInvestment: number;
     holdingsInDollers: number;
     profitLoss: number;
-    cost:number
+    cost: number;
   };
   transactions: Transaction[];
 }
