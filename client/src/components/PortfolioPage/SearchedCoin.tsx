@@ -2,18 +2,15 @@ import { Box, Button, Flex, Image, Text, useColorMode, useToast } from '@chakra-
 import { SearchCoin } from '../../types';
 import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
+import useCustomToast from '../../hooks/useCustomToast';
 
-interface Props {
-  coin: SearchCoin;
-  setListState: React.Dispatch<React.SetStateAction<boolean>>;
-  setSearchedCoinName: React.Dispatch<React.SetStateAction<string>>;
-}
-
-const SearchedCoin = ({ coin, setListState, setSearchedCoinName }: Props) => {
+const SearchedCoin = ({ coin }: { coin: SearchCoin }) => {
   const { colorMode } = useColorMode();
-  const toast = useToast();
+  const showToast = useCustomToast();
 
   const queryClient = useQueryClient();
+
+  console.log(coin);
 
   const addCoin = useMutation(
     async () => {
@@ -30,25 +27,14 @@ const SearchedCoin = ({ coin, setListState, setSearchedCoinName }: Props) => {
     },
     {
       onSuccess: () => {
-        showToast('Success', 'Coin added to portfolio', 'success');
+        showToast({ title: 'Success', description: 'Coin added to portfolio', status: 'success' });
         queryClient.invalidateQueries('userCoins');
       },
       onError: () => {
-        showToast('Error', 'Something went wrong', 'error');
+        showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
       },
     }
   );
-
-  function showToast(title: string, description: string, status: 'error' | 'success') {
-    return toast({
-      title,
-      description,
-      position: 'top',
-      status,
-      duration: 3000,
-      isClosable: true,
-    });
-  }
 
   return (
     <Box p="0.5rem 1rem">

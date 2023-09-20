@@ -106,7 +106,7 @@ export default function PortfolioStats({
             fontSize={{ base: '1rem', md: '0.85rem', lg: '0.92rem' }}
             fontWeight={{ base: 'medium', md: 'semibold' }}
           >
-            Doller Balance
+            Dollar Balance
           </Text>
           <Text fontSize={{ base: '1.25rem', lg: '1.5rem' }} fontWeight="semibold">
             $ {dollerBalance?.toLocaleString('en', { maximumFractionDigits: 2 })}

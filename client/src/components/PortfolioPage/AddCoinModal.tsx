@@ -69,11 +69,7 @@ export default function AddCoinModal({ isOpen, onClose }: props) {
               <Box py={'0.5rem'}>
                 {coinData.slice(0, 7).map((coin) => (
                   <Box _hover={{ backgroundColor: '#262e3e' }} key={coin.id}>
-                    <SearchedCoin
-                      coin={coin}
-                      setListState={setListState}
-                      setSearchedCoinName={setSearchedCoinName}
-                    />
+                    <SearchedCoin coin={coin} />
                   </Box>
                 ))}
               </Box>

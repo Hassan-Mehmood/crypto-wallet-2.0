@@ -184,7 +184,7 @@ export default function AddCoin() {
       return;
     }
 
-    if (coinHoldingQuantity && parseFloat(coinQuantity) > coinHoldingQuantity) {
+    if (coinHoldingQuantity && parseFloat(coinQuantity) > coinHoldingQuantity.holdingsInPortfolio) {
       showToast('Error', 'Insufficient coins', 'error');
       return;
     }
@@ -267,7 +267,7 @@ export default function AddCoin() {
             textTransform="capitalize"
             m={'0 0 1.3rem 0.5rem'}
           >
-            {coinHoldingQuantity || 0} {coinData.name} in portfolio
+            {coinHoldingQuantity?.holdingsInPortfolio || 0} {coinData.name} in portfolio
           </Heading>
         </Box>
       )}

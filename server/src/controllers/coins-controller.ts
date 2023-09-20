@@ -30,6 +30,7 @@ export async function addCoinToPortfolio(req: AuthenticatedRequest, res: Respons
     const createdCoin = await prisma.coin.create({
       data: {
         name: coin.name,
+        apiId: coin.id,
         apiSymbol: coin.symbol,
         symbol: coin.symbol,
         thump: coin.thumb,
@@ -135,6 +136,7 @@ export async function buyTransaction(req: Request, res: Response) {
       coinRecord = await prisma.coin.create({
         data: {
           name: coin.name,
+          apiId: coin.id,
           apiSymbol: coin.symbol,
           symbol: coin.symbol,
           thump: coin.thumb,
@@ -479,15 +481,17 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
 
 export async function getCoinHoldingQuantity(req: AuthenticatedRequest, res: Response) {
   try {
-    const coinSymbol = req.params.coinSymbol;
+    const coinApiId = req.params.coinId;
 
     const coin = await prisma.coin.findFirst({
-      where: { symbol: coinSymbol },
+      where: { apiId: coinApiId },
       select: {
         totalQuantity: true,
         symbol: true,
       },
     });
+
+    console.log(coin);
 
     if (!coin) {
       return res.status(200).json({ holdingsInPortfolio: 0 });

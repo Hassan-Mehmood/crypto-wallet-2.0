@@ -79,6 +79,6 @@ router.delete('/deleteCoinAndTransactions/:id', verifyToken, deleteCoinAndTransa
 router.get('/transactions/:id', verifyToken, getTransactions);
 router.delete('/transactions/delete/:id', verifyToken, deleteTransaction);
 
-router.get('/holdings/:coinSymbol', getCoinHoldingQuantity);
+router.get('/holdings/:coinId', getCoinHoldingQuantity);
 
 export default router;

@@ -233,6 +233,7 @@ interface UserTransactionsData {
   coins: {
     id: number;
     name: string;
+    apiId: string;
     apiSymbol: string;
     symbol: string;
     thump: string;

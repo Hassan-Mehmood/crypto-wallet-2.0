@@ -23,6 +23,7 @@ model User {
 model Coin {
   id                Int           @id @default(autoincrement())
   name              String
+  apiId             String
   apiSymbol         String
   symbol            String
   thump             String

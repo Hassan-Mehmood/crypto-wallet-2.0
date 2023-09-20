@@ -20,8 +20,7 @@ import { useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import TransactionModal from './TransactionModal';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
+import { useDispatch } from 'react-redux';
 import { addCoin } from '../../slices/coinSlice';
 
 interface props {
@@ -29,6 +28,7 @@ interface props {
     | {
         id: number;
         name: string;
+        apiId: string;
         apiSymbol: string;
         symbol: string;
         thump: string;
@@ -60,7 +60,7 @@ interface props {
 
 export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }: props) {
   const [coinId, setCoinId] = useState<number | null>(null);
-  const [coinName, setCoinName] = useState<string | null>(null);
+  const [, setCoinName] = useState<string | null>(null);
 
   const {
     isOpen: isDeleteModalOpen,
@@ -75,6 +75,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
   } = useDisclosure();
 
   const { colorMode } = useColorMode();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -86,12 +87,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
         id={coinId}
         setCoinId={setCoinId}
       />
-      <TransactionModal
-        isOpen={isTransactionModalOpen}
-        onClose={onTransactionModalClose}
-        coinName={coinName}
-        coinId={coinId}
-      />
+      <TransactionModal isOpen={isTransactionModalOpen} onClose={onTransactionModalClose} />
 
       {coins?.length === 0 ? (
         <Button
@@ -163,7 +159,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                 <Td textAlign={'center'} color={getProfitLossColor(coin.profitLoss, colorMode)}>
                   <Flex flexDirection="column">
                     <Box>
-                      {coin.profitLoss > 0 ? '+' : ''}${' '}
+                      {coin.profitLoss > 0 ? '+' : ''}$
                       {coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })}
                     </Box>
                     <Box fontSize="14px">{calculatePercentage(coin.profitLoss, coin.cost)}%</Box>
@@ -180,7 +176,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                         setCoinName(coin.name);
                         dispatch(
                           addCoin({
-                            id: coin.name.toString().toLowerCase(), // Change this id to name
+                            id: coin.apiId,
                             name: coin.name,
                             api_symbol: coin.apiSymbol,
                             symbol: coin.symbol,

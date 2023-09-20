@@ -1,5 +1,6 @@
 import {
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -15,33 +16,40 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  Text,
   useColorMode,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { getCoinByName, getCoinMarketData } from '../../api/axios';
+import { getCoinHoldingQuantity, getCoinMarketData } from '../../api/axios';
 import { removeCoin } from '../../slices/coinSlice';
+import useCustomToast from '../../hooks/useCustomToast';
+import { UserTransactionsData } from '../../types';
 
 interface props {
   isOpen: boolean;
   onClose: () => void;
-  coinName: string | null;
-  coinId: number | null;
 }
 
-export default function TransactionModal({ isOpen, onClose, coinName, coinId }: props) {
+export default function TransactionModal({ isOpen, onClose }: props) {
   const [loadingBtn, setLoadingBtn] = useState(false);
   const [pricePerCoin, setPricePerCoin] = useState('0');
   const [coinQuantity, setCoinQuantity] = useState('0');
+  const [coinHoldingQuantity, setCoinHoldingQuantity] = useState(0);
 
   const { colorMode } = useColorMode();
+  const showToast = useCustomToast();
 
   const coinData = useSelector((state: RootState) => state.searchCoinReducer);
   const userData = useSelector((state: RootState) => state.userReducer);
   const dispatch = useDispatch();
+
+  const queryClient = useQueryClient();
+
+  const userPortfolioData = queryClient.getQueryData<UserTransactionsData>('userCoins');
 
   const buyCoin = useMutation(
     async () => {
@@ -59,11 +67,10 @@ export default function TransactionModal({ isOpen, onClose, coinName, coinId }: 
       onSettled: () => setLoadingBtn(false),
 
       onSuccess: () => {
-        // showToast('Success', 'Coin bought successfully', 'success');
-        // refetchBalance();
+        showToast({ title: 'Success', description: 'Coin bought successfully', status: 'success' });
       },
       onError: () => {
-        // showToast('Error', 'Something went wrong', 'error');
+        showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
       },
     }
   );
@@ -74,7 +81,7 @@ export default function TransactionModal({ isOpen, onClose, coinName, coinId }: 
         user: userData.id,
         coin: coinData,
         coinQuantity,
-        coinPrice: pricePerCoin, // This is the price @ which the coin was sold
+        coinPrice: pricePerCoin,
         type: 'SELL',
       });
       return response.data;
@@ -85,11 +92,10 @@ export default function TransactionModal({ isOpen, onClose, coinName, coinId }: 
       onSettled: () => setLoadingBtn(false),
 
       onSuccess: () => {
-        // showToast('Success', 'Coin sold successfully', 'success');
-        // refetchBalance();
+        showToast({ title: 'Success', description: 'Coin sold successfully', status: 'success' });
       },
       onError: () => {
-        // showToast('Error', 'Something went wrong', 'error');
+        showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
       },
     }
   );
@@ -100,23 +106,52 @@ export default function TransactionModal({ isOpen, onClose, coinName, coinId }: 
     const quantity = parseFloat(coinQuantity);
     const price = parseFloat(pricePerCoin);
 
-    if (quantity && price) {
-      buyCoin.mutate();
-    } else {
-      console.log('Error');
+    if (!quantity || !price) {
+      showToast({
+        title: 'Error',
+        description: 'Incorrect price or quantity',
+        status: 'error',
+      });
+      return;
     }
+
+    if (userPortfolioData?.dollerBalance && quantity * price > userPortfolioData?.dollerBalance) {
+      showToast({
+        title: 'Error',
+        description: 'You do not have enough money to buy this coin',
+        status: 'error',
+      });
+      return;
+    }
+
+    buyCoin.mutate();
   }
+
   function handleSellFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const quantity = parseFloat(coinQuantity);
     const price = parseFloat(pricePerCoin);
 
-    if (quantity && price) {
-      sellCoin.mutate();
-    } else {
-      console.log('Error');
+    if (!quantity || !price) {
+      showToast({
+        title: 'Error',
+        description: 'Incorrect price or quantity',
+        status: 'error',
+      });
+      return;
     }
+
+    if (quantity > coinHoldingQuantity) {
+      showToast({
+        title: 'Error',
+        description: 'You do not have enough coins to sell this coin',
+        status: 'error',
+      });
+      return;
+    }
+
+    sellCoin.mutate();
   }
 
   useEffect(() => {
@@ -127,17 +162,21 @@ export default function TransactionModal({ isOpen, onClose, coinName, coinId }: 
       return;
     }
 
+    if (!isMounted) return;
     getCoinMarketData(coinData.id).then((res) => {
-      if (!isMounted) return;
-
       const marketData = res.market_data;
 
       if (!marketData) return;
-
       setPricePerCoin(marketData.current_price?.usd.toString() || '0');
     });
 
-    // refetchCoinQuantity();
+    if (!isMounted) return;
+    getCoinHoldingQuantity(coinData.id).then((res) => {
+      const quantity = res.holdingsInPortfolio;
+
+      if (!quantity) return;
+      setCoinHoldingQuantity(quantity);
+    });
 
     return () => {
       isMounted = false;
@@ -172,8 +211,11 @@ export default function TransactionModal({ isOpen, onClose, coinName, coinId }: 
                     <Input value={coinQuantity} onChange={(e) => setCoinQuantity(e.target.value)} />
                   </FormControl>
                   <FormControl mt={'1.5rem'}>
-                    <FormLabel>Total Spent</FormLabel>
-                    <Input value={parseFloat(pricePerCoin) * parseFloat(coinQuantity)} readOnly />
+                    <FormLabel>Total Spent (USD)</FormLabel>
+                    <Input
+                      value={parseFloat(pricePerCoin) * parseFloat(coinQuantity) || '0'}
+                      readOnly
+                    />
                   </FormControl>
                   <FormControl mt={'1.5rem'}>
                     <FormLabel>Date</FormLabel>
@@ -212,8 +254,16 @@ export default function TransactionModal({ isOpen, onClose, coinName, coinId }: 
                     <Input value={coinQuantity} onChange={(e) => setCoinQuantity(e.target.value)} />
                   </FormControl>
                   <FormControl mt={'1.5rem'}>
-                    <FormLabel>Total Spent</FormLabel>
-                    <Input value={parseFloat(pricePerCoin) * parseFloat(coinQuantity)} readOnly />
+                    <Flex justify="space-between" alignItems="center">
+                      <FormLabel display="inline-block">Total Recieved (USD)</FormLabel>
+                      <Text as="span" display="inline-block" mb="8px">
+                        Balance: {coinHoldingQuantity || '0'} {coinData.symbol}
+                      </Text>
+                    </Flex>
+                    <Input
+                      value={parseFloat(pricePerCoin) * parseFloat(coinQuantity) || '0'}
+                      readOnly
+                    />
                   </FormControl>
                   <FormControl mt={'1.5rem'}>
                     <FormLabel>Date</FormLabel>

@@ -80,13 +80,15 @@ export async function getCoinTransactions(coinId: number): Promise<coinTransacti
   return data;
 }
 
-export async function getCoinHoldingQuantity(coinSymbol: string): Promise<number> {
+export async function getCoinHoldingQuantity(
+  coinId: string
+): Promise<{ holdingsInPortfolio: number }> {
   const { data } = await axios.get(
-    `${process.env.REACT_APP_SERVER_URL}/portfolio/holdings/${coinSymbol}`,
+    `${process.env.REACT_APP_SERVER_URL}/portfolio/holdings/${coinId}`,
     {
       withCredentials: true,
     }
   );
 
-  return data.holdingsInPortfolio;
+  return data;
 }
