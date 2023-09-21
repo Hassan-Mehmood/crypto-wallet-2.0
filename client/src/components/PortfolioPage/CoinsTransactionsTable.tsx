@@ -189,6 +189,7 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
                   <Th textAlign={'center'}>Type</Th>
                   <Th textAlign={'center'}>Price</Th>
                   <Th textAlign={'center'}>Amount</Th>
+                  <Th textAlign={'center'}>Date</Th>
                   <Th textAlign={'center'}>Actions</Th>
                 </Tr>
               </Thead>
@@ -208,9 +209,11 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
                     <Td textAlign={'center'}>
                       <Text>{transaction.type}</Text>
                     </Td>
+
                     <Td textAlign={'center'}>
                       <Text>$ {transaction.price}</Text>
                     </Td>
+
                     <Td textAlign={'center'}>
                       <Box>
                         <Text>
@@ -233,6 +236,9 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
                         </Text>
                       </Box>
                     </Td>
+
+                    <Td textAlign={'center'}>{transaction.date.toString().split('T')[0]}</Td>
+
                     <Td textAlign={'center'}>
                       <Flex justifyContent={'center'} gap={2}>
                         <Box color={colorMode === 'light' ? '#8bc53f' : '#0facf0'}>

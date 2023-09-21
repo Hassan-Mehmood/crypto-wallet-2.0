@@ -15,6 +15,7 @@ interface reqBodyType {
   coinQuantity: string;
   coin: transactionCoin;
   user: number;
+  transactionDate: string;
   type: 'BUY' | 'SELL';
 }
 
@@ -113,10 +114,13 @@ export async function buyTransaction(req: Request, res: Response) {
     const {
       coinPrice: coinBuyPrice,
       coinQuantity: coinBuyQuantity,
+      transactionDate: transactionDate,
       type: transactionType,
       user: userID,
       coin,
     } = req.body as reqBodyType;
+
+    const transaction_date = new Date(transactionDate);
 
     const userData = await prisma.user.findUnique({
       where: { id: userID },
@@ -149,7 +153,7 @@ export async function buyTransaction(req: Request, res: Response) {
               quantity: parseFloat(coinBuyQuantity),
               costBasis: transactionWorth,
               type: transactionType,
-              timeBought: new Date(),
+              date: transaction_date,
               User: { connect: { id: userData.id } },
             },
           },
@@ -162,7 +166,7 @@ export async function buyTransaction(req: Request, res: Response) {
           quantity: parseFloat(coinBuyQuantity),
           costBasis: transactionWorth,
           type: transactionType,
-          timeBought: new Date(),
+          date: transaction_date,
           Coin: { connect: { id: coinRecord.id } },
           User: { connect: { id: userData.id } },
         },
@@ -198,9 +202,12 @@ export async function sellTransaction(req: Request, res: Response) {
       coinPrice: coinSellPrice,
       coinQuantity: coinSellQuantity,
       type: transactionType,
+      transactionDate,
       user: userID,
       coin,
     } = req.body as reqBodyType;
+
+    const transaction_date = new Date(transactionDate);
 
     const userData = await prisma.user.findUnique({
       where: { id: userID },
@@ -221,7 +228,7 @@ export async function sellTransaction(req: Request, res: Response) {
         price: parseFloat(coinSellPrice),
         quantity: parseFloat(coinSellQuantity),
         costBasis: transactionWorth,
-        timeBought: new Date(),
+        date: transaction_date,
         type: transactionType,
         Coin: { connect: { id: coinRecord.id } },
         User: { connect: { id: userData.id } },
@@ -354,6 +361,7 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
     const coinId = Number(req.params.id);
 
     const transactions = await prisma.transaction.findMany({
+      orderBy: [{ date: 'desc' }],
       where: { coinId },
       include: {
         Coin: {

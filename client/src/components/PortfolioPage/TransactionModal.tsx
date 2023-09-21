@@ -39,6 +39,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
   const [pricePerCoin, setPricePerCoin] = useState('0');
   const [coinQuantity, setCoinQuantity] = useState('0');
   const [coinHoldingQuantity, setCoinHoldingQuantity] = useState(0);
+  const [transactionDate, setTransactionDate] = useState('');
 
   const { colorMode } = useColorMode();
   const showToast = useCustomToast();
@@ -58,6 +59,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
         coin: coinData,
         coinPrice: pricePerCoin,
         coinQuantity,
+        transactionDate: transactionDate,
         type: 'BUY',
       });
       return response.data;
@@ -68,6 +70,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
 
       onSuccess: () => {
         showToast({ title: 'Success', description: 'Coin bought successfully', status: 'success' });
+        queryClient.invalidateQueries('userCoins');
       },
       onError: () => {
         showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
@@ -82,6 +85,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
         coin: coinData,
         coinQuantity,
         coinPrice: pricePerCoin,
+        transactionDate: transactionDate,
         type: 'SELL',
       });
       return response.data;
@@ -93,6 +97,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
 
       onSuccess: () => {
         showToast({ title: 'Success', description: 'Coin sold successfully', status: 'success' });
+        queryClient.invalidateQueries('userCoins');
       },
       onError: () => {
         showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
@@ -100,18 +105,47 @@ export default function TransactionModal({ isOpen, onClose }: props) {
     }
   );
 
-  function handleBuyFormSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const quantity = parseFloat(coinQuantity);
-    const price = parseFloat(pricePerCoin);
-
+  function validateFormData(quantity: number, price: number) {
     if (!quantity || !price) {
       showToast({
         title: 'Error',
         description: 'Incorrect price or quantity',
         status: 'error',
       });
+      return false;
+    }
+
+    const inputDate = new Date(transactionDate);
+    const currentDate = new Date();
+
+    if (!transactionDate) {
+      showToast({
+        title: 'Error',
+        description: 'Transaction date is required',
+        status: 'error',
+      });
+      return false;
+    }
+
+    if (inputDate > currentDate) {
+      showToast({
+        title: 'Error',
+        description: 'Transaction date must be in the past',
+        status: 'error',
+      });
+      return false;
+    }
+
+    return true;
+  }
+
+  function handleBuyFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const quantity = parseFloat(coinQuantity);
+    const price = parseFloat(pricePerCoin);
+
+    if (!validateFormData(quantity, price)) {
       return;
     }
 
@@ -133,12 +167,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
     const quantity = parseFloat(coinQuantity);
     const price = parseFloat(pricePerCoin);
 
-    if (!quantity || !price) {
-      showToast({
-        title: 'Error',
-        description: 'Incorrect price or quantity',
-        status: 'error',
-      });
+    if (!validateFormData(quantity, price)) {
       return;
     }
 
@@ -219,7 +248,11 @@ export default function TransactionModal({ isOpen, onClose }: props) {
                   </FormControl>
                   <FormControl mt={'1.5rem'}>
                     <FormLabel>Date</FormLabel>
-                    <Input value="" onChange={(e) => ''} />
+                    <Input
+                      placeholder="Select Date and Time"
+                      type="date"
+                      onChange={(e) => setTransactionDate(e.target.value)}
+                    />
                   </FormControl>
 
                   <Button
@@ -267,13 +300,16 @@ export default function TransactionModal({ isOpen, onClose }: props) {
                   </FormControl>
                   <FormControl mt={'1.5rem'}>
                     <FormLabel>Date</FormLabel>
-                    <Input value="" onChange={(e) => ''} />
+                    <Input
+                      placeholder="Select Date and Time"
+                      type="date"
+                      onChange={(e) => setTransactionDate(e.target.value)}
+                    />
                   </FormControl>
 
                   <Button
-                    // onClick={(e) => buyTransaction(e)}
-                    isLoading={loadingBtn}
                     type="submit"
+                    isLoading={loadingBtn}
                     fontSize="md"
                     borderRadius="0.3rem"
                     color={colorMode === 'light' ? '#8bc53f' : '#0facf0'}

@@ -43,6 +43,20 @@ router.post(
     .notEmpty()
     .custom((num: number) => num > 0)
     .withMessage('Coin Price must be greater than 0'),
+  body('transactionDate')
+    .isDate()
+    .withMessage('Invalid date format')
+    .custom((value) => {
+      const inputDate = new Date(value);
+      const currentDate = new Date();
+
+      if (inputDate > currentDate) {
+        return false;
+      }
+
+      return true;
+    })
+    .withMessage('Transaction date must be in the past'),
 
   buyTransaction
 );
@@ -63,6 +77,20 @@ router.post(
     .notEmpty()
     .custom((num: number) => num > 0)
     .withMessage('Coin Price must be greater than 0'),
+  body('transactionDate')
+    .isDate()
+    .withMessage('Invalid date format')
+    .custom((value) => {
+      const inputDate = new Date(value);
+      const currentDate = new Date();
+
+      if (inputDate > currentDate) {
+        return false;
+      }
+
+      return true;
+    })
+    .withMessage('Transaction date must be in the past'),
 
   sellTransaction
 );

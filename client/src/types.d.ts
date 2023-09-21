@@ -285,6 +285,7 @@ interface Transaction {
   createdAt: string;
   id: number;
   type: string;
+  date: Date;
   price: number;
   quantity: number;
   timeBought: string;
