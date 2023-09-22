@@ -2,7 +2,7 @@ import { Box } from '@chakra-ui/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './pages/layout/Layout';
 import HomePage from './pages/HomePage';
-import AddCoinPage from './pages/AddCoinPage';
+// import AddCoinPage from './pages/AddCoinPage';
 import ProtectedRoutes from './pages/ProtectedRoutes';
 import PortfolioPage from './pages/PortfolioPage';
 
@@ -14,7 +14,7 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/" element={<HomePage />} />
             <Route element={<ProtectedRoutes />}>
-              <Route path="/addcoin" element={<AddCoinPage />} />
+              {/* <Route path="/addcoin" element={<AddCoinPage />} /> */}
               <Route path="/portfolio" element={<PortfolioPage />} />
             </Route>
           </Route>

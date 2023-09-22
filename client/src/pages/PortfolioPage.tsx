@@ -2,8 +2,8 @@ import { useQuery } from 'react-query';
 import { getUserPortfolio } from '../api/axios';
 import PortfolioOverview from '../components/PortfolioPage/PortfolioOverview';
 import PortfolioTable from '../components/PortfolioPage/PortfolioTable';
-import { Box, Spinner } from '@chakra-ui/react';
-import Loading from '../utils/Loading';
+import { Box, Skeleton, Spinner } from '@chakra-ui/react';
+// import Loading from '../utils/Loading';
 import { useState } from 'react';
 import CoinsTransactionsTable from '../components/PortfolioPage/CoinsTransactionsTable';
 
@@ -14,9 +14,7 @@ export default function PortfolioPage() {
 
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
+      <Skeleton isLoaded={!isLoading}>
         <Box as="section" position="relative">
           {isFetching ? <Spinner position="absolute" top="50%" left="50%" /> : null}
           {showTable === 'coinsTable' ? (
@@ -39,7 +37,7 @@ export default function PortfolioPage() {
             <CoinsTransactionsTable setShowTable={setShowTable} activeCoinId={activeCoinId} />
           )}
         </Box>
-      )}
+      </Skeleton>
     </>
   );
 }
