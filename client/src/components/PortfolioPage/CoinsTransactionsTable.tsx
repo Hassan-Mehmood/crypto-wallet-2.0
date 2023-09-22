@@ -1,7 +1,18 @@
-import { Skeleton, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useColorMode, useDisclosure } from '@chakra-ui/react';
+import {
+  Skeleton,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useColorMode,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
 import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { getCoinTransactions } from '../../api/axios';
 import { BiArrowBack, BiEdit } from 'react-icons/bi';
 import { AiOutlineDelete } from 'react-icons/ai';
@@ -10,7 +21,7 @@ import { Transaction } from '../../types';
 import { Image } from '@chakra-ui/image';
 import { DeleteTransactionModal } from './DeleteTransactionModal';
 import { EditTransactionModal } from './EditTransactionModal';
-import axios from 'axios';
+import { useState } from 'react';
 
 interface props {
   setShowTable: React.Dispatch<React.SetStateAction<string>>;
@@ -18,163 +29,150 @@ interface props {
 }
 
 export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: props) {
-  const { data, isLoading } = useQuery('coinTransaction', () => getCoinTransactions(activeCoinId));
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
-  const { colorMode } = useColorMode();
+  const [transactionID, setTransactionID] = useState(0);
 
-  const delTransaction = useMutation(
-    async (id: number) => {
-      const response = await axios.delete(
-        `${process.env.REACT_APP_SERVER_URL}/portfolio/transactions/delete/${id}`,
-        {
-          withCredentials: true,
-        }
-      );
-
-      return response.data;
-    },
-    {
-      // onMutate: () => setLoadingBtn(true),
-      // onSettled: () => setLoadingBtn(false),
-
-      onSuccess: () => {
-        // showToast('Success', 'Coin bought successfully', 'success');
-        // refetchBalance();
-      },
-      onError: () => {
-        // showToast('Error', 'Something went wrong', 'error');
-      },
-    }
+  const { data, isLoading, refetch } = useQuery('coinTransaction', () =>
+    getCoinTransactions(activeCoinId)
   );
 
-  function deleteTransaction(id: number) {
-    delTransaction.mutate(id);
-  }
+  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
+
+  const { colorMode } = useColorMode();
 
   return (
     <>
-      <DeleteTransactionModal isOpen={isOpen} onClose={onClose} />
+      <DeleteTransactionModal
+        isOpen={isDeleteOpen}
+        onClose={onDeleteClose}
+        transactionID={transactionID}
+        refetch={refetch}
+      />
       <EditTransactionModal isOpen={isEditOpen} onClose={onEditClose} />
       <Box>
         <Button
-          display={"flex"}
-          mb={"1rem"}
-          alignItems={"center"}
-          marginLeft={"2rem"}
-          backgroundColor={"transparent"}
+          display={'flex'}
+          mb={'1rem'}
+          alignItems={'center'}
+          marginLeft={'2rem'}
+          backgroundColor={'transparent'}
           px={0}
           gap={1}
           _hover={{
-            backgroundColor: "none",
-            color: colorMode === "light" ? "#8bc53f" : "#0facf0"
+            backgroundColor: 'none',
+            color: colorMode === 'light' ? '#8bc53f' : '#0facf0',
           }}
           _active={{
-            backgroundColor: "none",
+            backgroundColor: 'none',
           }}
         >
           <BiArrowBack />
-          <Text
-            fontSize={"1.2rem"}
-            onClick={() => setShowTable('coinsTable')}>
+          <Text fontSize={'1.2rem'} onClick={() => setShowTable('coinsTable')}>
             Back
           </Text>
         </Button>
         <Skeleton isLoaded={!isLoading}>
-          <Flex justify="center" mb={{ md: "4rem" }}>
+          <Flex justify="center" mb={{ md: '4rem' }}>
             <Flex
-              flexDir={{ base: "column", md: "row" }}
-              align={{ md: "center" }}
-              width={{ md: "45rem", lg: "58rem" }}
-              border={{ md: `1px solid ${colorMode === "light" ? "#000" : "#fff"}` }}
-              borderRadius={{ md: "0.5rem" }}
-              py={{ md: "1.5rem" }}
-              gap={{ base: 2, lg: 6 }}>
+              flexDir={{ base: 'column', md: 'row' }}
+              align={{ md: 'center' }}
+              width={'100%'}
+              p={{ md: '1.5rem' }}
+              gap={{ base: 2, lg: 6 }}
+            >
               <Flex
-                flexDir={"column"}
-                alignItems={"center"}
-                border={{ base: `1px solid ${colorMode === "light" ? "#000" : "#fff"}`, md: "none" }}
-                width={["20rem", "25rem"]}
-                px={{ base: "1.5rem", md: "0rem" }} py={{ base: "0.7rem", md: "0rem" }}
-                borderRadius={"0.5rem"}
-                gap={2}>
+                flexDir={'column'}
+                alignItems={'center'}
+                // width={['20rem', '25rem']}
+                px={{ base: '1.5rem', md: '0rem' }}
+                py={{ base: '0.7rem', md: '0rem' }}
+                gap={2}
+              >
                 <Box>
-                  <Text color="#a3b1bf" fontSize={{ base: "0.9rem", lg: "1.05rem" }}>
+                  <Text color="#a3b1bf" fontSize={{ base: '0.9rem', lg: '1.05rem' }}>
                     {data?.coin.name} ({data?.coin.symbol}) Balance
                   </Text>
                 </Box>
-                <Flex flexDir={{ base: "column", md: "row" }} alignItems={{ base: "center", md: "end" }} justify={"center"} gap={1}>
-                  <Flex alignItems={"center"} gap={2}>
+                <Flex
+                  flexDir={{ base: 'column', md: 'row' }}
+                  alignItems={{ base: 'center', md: 'end' }}
+                  justify={'center'}
+                  gap={1}
+                >
+                  <Flex alignItems={'center'} gap={2}>
                     <Image src={data?.coin.thump} width="1.7rem" height="1.7rem" />
-                    <Heading fontSize={{ base: "1.85rem", lg: "1.91rem" }} fontWeight={"semibold"}>
-                      $ {data?.coin.holdingsInDollers.toLocaleString('en')}
+                    <Heading fontSize={{ base: '1.85rem', lg: '1.91rem' }} fontWeight={'semibold'}>
+                      ${data?.coin.holdingsInDollers.toLocaleString('en')}
                     </Heading>
                   </Flex>
-                  <Box
-                    color={`${getProfitLossColor(data?.coin.profitLoss, colorMode)}`}
-                    fontSize="0.9rem"
-                    fontWeight="semibold"
-                  >
-                    {calculatePercentage(data?.coin.profitLoss, data?.coin.cost)}%
+                </Flex>
+              </Flex>
+              {/* <Box
+                display={{ base: 'none', md: 'block' }}
+                background={colorMode === 'light' ? '#000' : '#fff'}
+                width="0.05rem"
+                height="100%"
+              /> */}
+              <Flex
+                flexDir={{ base: 'row', md: 'column' }}
+                justifyContent={'center'}
+                alignItems={'center'}
+                flex={1}
+                gap={[5, 10, 1]}
+                px={{ base: '1.5rem', md: '0rem' }}
+                py={{ base: '0.7rem', md: '0rem' }}
+                borderRadius={'0.5rem'}
+              >
+                <Flex gap={[5, 10, 9]}>
+                  <Box textAlign="center">
+                    <Text color="#a3b1bf" fontSize={{ base: '0.9rem', lg: '1.05rem' }}>
+                      Total Cost
+                    </Text>
+                    <Text fontWeight={'semibold'} fontSize={{ base: '1.1rem', lg: '1.3rem' }}>
+                      $ {data?.coin.cost.toFixed(3)}
+                    </Text>
+                  </Box>
+                  <Box textAlign="center">
+                    <Text color="#a3b1bf" fontSize={{ base: '0.9rem', lg: '1.05rem' }}>
+                      Quantity
+                    </Text>
+                    <Text fontWeight={'semibold'} fontSize={{ base: '1.1rem', lg: '1.3rem' }}>
+                      {data?.coin.totalQuantity.toFixed(3)} {data?.coin.symbol}
+                    </Text>
+                  </Box>
+                  <Box>
+                    <Text color="#a3b1bf" fontSize={{ base: '0.9rem', lg: '1.05rem' }}>
+                      Avg Buy price
+                    </Text>
+                    <Text fontWeight={'semibold'} fontSize={{ base: '1.1rem', lg: '1.3rem' }}>
+                      $ {data?.coin.averageBuyPrice.toFixed(3)}
+                    </Text>
                   </Box>
                 </Flex>
               </Flex>
-              <Box
-                display={{ base: "none", md: "block" }}
-                background={colorMode === "light" ? "#000" : "#fff"}
+              {/* <Box
+                display={{ base: 'none', md: 'block' }}
+                background={colorMode === 'light' ? '#000' : '#fff'}
                 width="0.05rem"
                 height="100%"
-              />
+              /> */}
               <Flex
-                flexDir={{ base: "row", md: "column" }}
-                border={{ base: `1px solid ${colorMode === "light" ? "#000" : "#fff"}`, md: "none" }}
-                justifyContent={"center"}
-                alignItems={"center"}
-                width={["20rem", "25rem"]}
-                gap={[5, 10, 1]}
-                px={{ base: "1.5rem", md: "0rem" }} py={{ base: "0.7rem", md: "0rem" }}
-                borderRadius={"0.5rem"}>
-                <Flex gap={[5, 10, 9]}>
-                  <Flex flexDir={"column"} alignItems={"center"} gap={1}>
-                    <Text color="#a3b1bf" fontSize={{ base: "0.9rem", lg: "1.05rem" }}>Total Cost</Text>
-                    <Text fontWeight={"semibold"} fontSize={{ base: "1.1rem", lg: "1.3rem" }}>
-                      $ {data?.coin.cost}
-                    </Text>
-                  </Flex>
-                  <Flex flexDir={"column"} alignItems={"center"} gap={1}>
-                    <Text color="#a3b1bf" fontSize={{ base: "0.9rem", lg: "1.05rem" }}>Quantity</Text>
-                    <Text fontWeight={"semibold"} fontSize={{ base: "1.1rem", lg: "1.3rem" }}>
-                      {data?.coin.totalQuantity} {data?.coin.symbol}
-                    </Text>
-                  </Flex>
-                </Flex>
-                <Flex flexDir={"column"} alignItems={"center"} gap={1}>
-                  <Text color="#a3b1bf" fontSize={{ base: "0.9rem", lg: "1.05rem" }}>Avg Buy price</Text>
-                  <Text fontWeight={"semibold"} fontSize={{ base: "1.1rem", lg: "1.3rem" }}>
-                    $ {data?.coin.averageBuyPrice}
-                  </Text>
-                </Flex>
-              </Flex>
-              <Box
-                display={{ base: "none", md: "block" }}
-                background={colorMode === "light" ? "#000" : "#fff"}
-                width="0.05rem"
-                height="100%"
-              />
-              <Flex
-                border={{ base: `1px solid ${colorMode === "light" ? "#000" : "#fff"}`, md: "none" }}
-                px={{ base: "2rem", md: "0rem" }}
-                py={{ base: "0.7rem", md: "0rem" }}
-                width={["20rem", "25rem"]}
-                flexDir={"column"}
-                alignItems={"center"}
+                px={{ base: '2rem', md: '0rem' }}
+                py={{ base: '0.7rem', md: '0rem' }}
+                // width={['20rem', '25rem']}
+                flexDir={'column'}
+                alignItems={'center'}
                 gap={1}
-                borderRadius={"0.5rem"}>
-                <Text color="#a3b1bf" fontSize={{ base: "0.9rem", lg: "1.05rem" }}>Total Profit / Loss</Text>
+                borderRadius={'0.5rem'}
+              >
+                <Text color="#a3b1bf" fontSize={{ base: '0.9rem', lg: '1.05rem' }}>
+                  Total Profit / Loss
+                </Text>
                 <Text
                   fontWeight="semibold"
                   color={getProfitLossColor(data?.coin.profitLoss, colorMode)}
-                  fontSize={{ base: "1.1rem", lg: "1.3rem" }}>
+                  fontSize={{ base: '1.1rem', lg: '1.3rem' }}
+                >
                   {calculatePercentage(data?.coin.profitLoss, data?.coin.cost)}% [$
                   {data?.coin.profitLoss.toLocaleString('en', { maximumFractionDigits: 2 })}]
                 </Text>
@@ -182,42 +180,55 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
             </Flex>
           </Flex>
         </Skeleton>
+
         <Skeleton isLoaded={!isLoading}>
           <TableContainer mt="3rem">
             <Table variant="simple">
               <Thead>
                 <Tr>
-                  <Th textAlign={"center"}>Type</Th>
-                  <Th textAlign={"center"}>Price</Th>
-                  <Th textAlign={"center"}>Amount</Th>
-                  <Th textAlign={"center"}>Actions</Th>
+                  <Th textAlign={'center'}>Type</Th>
+                  <Th textAlign={'center'}>Price</Th>
+                  <Th textAlign={'center'}>Amount</Th>
+                  <Th textAlign={'center'}>Date</Th>
+                  <Th textAlign={'center'}>Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {data?.transactions.map((transaction: Transaction) => (
                   <Tr
                     key={transaction.id}
-                    _hover={{ backgroundColor: colorMode === "light" ? '#f4f4f4' : "#212835", cursor: 'pointer' }}
+                    _hover={{
+                      backgroundColor: colorMode === 'light' ? '#f4f4f4' : '#212835',
+                      cursor: 'pointer',
+                    }}
                     onClick={() => {
                       setShowTable('transactionsTable');
                       // setActiveCoinId(coin.id);
                     }}
                   >
-                    <Td textAlign={"center"}>
+                    <Td textAlign={'center'}>
                       <Text>{transaction.type}</Text>
                     </Td>
-                    <Td textAlign={"center"}>
+
+                    <Td textAlign={'center'}>
                       <Text>$ {transaction.price}</Text>
                     </Td>
-                    <Td textAlign={"center"}>
+
+                    <Td textAlign={'center'}>
                       <Box>
                         <Text>
-                          {transaction.type === 'BUY' ? '-' : '+'}${" "}
+                          {transaction.type === 'BUY' ? '-' : '+'}${' '}
                           {parseFloat(transaction.quantity.toString()) *
                             parseFloat(transaction.price.toString())}
                         </Text>
                         <Text
-                          color={transaction.type === 'BUY' ? (colorMode === "light" ? '#8bc53f' : "#0facf0") : "rgb(255, 0, 0)"}
+                          color={
+                            transaction.type === 'BUY'
+                              ? colorMode === 'light'
+                                ? '#8bc53f'
+                                : '#0facf0'
+                              : 'rgb(255, 0, 0)'
+                          }
                           fontWeight="semibold"
                         >
                           {transaction.type === 'BUY' ? '+' : '-'}
@@ -225,13 +236,22 @@ export default function CoinsTransactionsTable({ setShowTable, activeCoinId }: p
                         </Text>
                       </Box>
                     </Td>
-                    <Td textAlign={"center"}>
-                      <Flex justifyContent={"center"} gap={2}>
-                        <Box color={colorMode === 'light' ? "#8bc53f" : "#0facf0"}>
+
+                    <Td textAlign={'center'}>{transaction.date.toString().split('T')[0]}</Td>
+
+                    <Td textAlign={'center'}>
+                      <Flex justifyContent={'center'} gap={2}>
+                        <Box color={colorMode === 'light' ? '#8bc53f' : '#0facf0'}>
                           <BiEdit size={24} onClick={() => onEditOpen()} />
                         </Box>
                         <Box color="rgb(255, 0, 0)">
-                          <AiOutlineDelete size={24} onClick={() => onOpen()} />
+                          <AiOutlineDelete
+                            size={24}
+                            onClick={() => {
+                              setTransactionID(transaction.id);
+                              onDeleteOpen();
+                            }}
+                          />
                         </Box>
                       </Flex>
                     </Td>

@@ -233,6 +233,7 @@ interface UserTransactionsData {
   coins: {
     id: number;
     name: string;
+    apiId: string;
     apiSymbol: string;
     symbol: string;
     thump: string;
@@ -242,6 +243,7 @@ interface UserTransactionsData {
     latestPrice: number;
     totalQuantity: number;
     holdingsInDollers: number;
+    cost: number;
     profitLoss: number;
     totalInvestment: number;
     userId: number;
@@ -273,7 +275,7 @@ export interface coinTransaction {
     totalInvestment: number;
     holdingsInDollers: number;
     profitLoss: number;
-    cost:number
+    cost: number;
   };
   transactions: Transaction[];
 }
@@ -283,6 +285,7 @@ interface Transaction {
   createdAt: string;
   id: number;
   type: string;
+  date: Date;
   price: number;
   quantity: number;
   timeBought: string;

@@ -23,6 +23,7 @@ model User {
 model Coin {
   id                Int           @id @default(autoincrement())
   name              String
+  apiId             String
   apiSymbol         String
   symbol            String
   thump             String
@@ -42,19 +43,21 @@ model Coin {
   updatedAt         DateTime      @updatedAt
   user              User          @relation(fields: [userId], references: [id])
   transactions      Transaction[]
+
+  @@unique([symbol, id])
 }
 
 model Transaction {
-  id         Int      @id @default(autoincrement())
-  price      Float
-  quantity   Float
-  timeBought DateTime
-  type       String
-  costBasis  Float
-  coinId     Int
-  user       Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  User       User     @relation(fields: [user], references: [id])
-  Coin       Coin     @relation(fields: [coinId], references: [id])
+  id        Int      @id @default(autoincrement())
+  price     Float
+  quantity  Float
+  type      String
+  costBasis Float
+  coinId    Int
+  user      Int
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [user], references: [id])
+  Coin      Coin     @relation(fields: [coinId], references: [id])
 }

@@ -15,11 +15,36 @@ interface reqBodyType {
   coinQuantity: string;
   coin: transactionCoin;
   user: number;
+  transactionDate: string;
   type: 'BUY' | 'SELL';
 }
 
 interface AuthenticatedRequest extends Request {
   user: tokenPayload;
+}
+
+export async function addCoinToPortfolio(req: AuthenticatedRequest, res: Response) {
+  try {
+    const coin = req.body.coin;
+    const user = req.user;
+
+    const createdCoin = await prisma.coin.create({
+      data: {
+        name: coin.name,
+        apiId: coin.id,
+        apiSymbol: coin.symbol,
+        symbol: coin.symbol,
+        thump: coin.thumb,
+        large: coin.large,
+        marketCapRank: coin.market_cap_rank,
+        user: { connect: { id: user.id } },
+      },
+    });
+
+    return res.status(200).json({ message: 'Coin added successfully', coin: createdCoin });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
 export async function getPortfolio(req: AuthenticatedRequest, res: Response) {
@@ -89,10 +114,13 @@ export async function buyTransaction(req: Request, res: Response) {
     const {
       coinPrice: coinBuyPrice,
       coinQuantity: coinBuyQuantity,
+      transactionDate: transactionDate,
       type: transactionType,
       user: userID,
       coin,
     } = req.body as reqBodyType;
+
+    const transaction_date = new Date(transactionDate);
 
     const userData = await prisma.user.findUnique({
       where: { id: userID },
@@ -112,6 +140,7 @@ export async function buyTransaction(req: Request, res: Response) {
       coinRecord = await prisma.coin.create({
         data: {
           name: coin.name,
+          apiId: coin.id,
           apiSymbol: coin.symbol,
           symbol: coin.symbol,
           thump: coin.thumb,
@@ -124,7 +153,7 @@ export async function buyTransaction(req: Request, res: Response) {
               quantity: parseFloat(coinBuyQuantity),
               costBasis: transactionWorth,
               type: transactionType,
-              timeBought: new Date(),
+              date: transaction_date,
               User: { connect: { id: userData.id } },
             },
           },
@@ -137,7 +166,7 @@ export async function buyTransaction(req: Request, res: Response) {
           quantity: parseFloat(coinBuyQuantity),
           costBasis: transactionWorth,
           type: transactionType,
-          timeBought: new Date(),
+          date: transaction_date,
           Coin: { connect: { id: coinRecord.id } },
           User: { connect: { id: userData.id } },
         },
@@ -173,9 +202,12 @@ export async function sellTransaction(req: Request, res: Response) {
       coinPrice: coinSellPrice,
       coinQuantity: coinSellQuantity,
       type: transactionType,
+      transactionDate,
       user: userID,
       coin,
     } = req.body as reqBodyType;
+
+    const transaction_date = new Date(transactionDate);
 
     const userData = await prisma.user.findUnique({
       where: { id: userID },
@@ -196,7 +228,7 @@ export async function sellTransaction(req: Request, res: Response) {
         price: parseFloat(coinSellPrice),
         quantity: parseFloat(coinSellQuantity),
         costBasis: transactionWorth,
-        timeBought: new Date(),
+        date: transaction_date,
         type: transactionType,
         Coin: { connect: { id: coinRecord.id } },
         User: { connect: { id: userData.id } },
@@ -206,12 +238,12 @@ export async function sellTransaction(req: Request, res: Response) {
     coinRecord.transactions.push(newTransaction);
     const { totalCostBasis, realizedPNL } = calculateCostBasis(coinRecord.transactions);
 
-    console.log('-----Sell Transaction Function -------');
-    console.log('Total Cost Basis: ', totalCostBasis);
-    console.log('Sale Made: ', transactionWorth);
-    console.log('Coin Sold at', coinSellPrice);
-    console.log('Realized Profit/Loss: ', realizedPNL);
-    console.log('-----Sell Transaction Function -------');
+    // console.log('-----Sell Transaction Function -------');
+    // console.log('Total Cost Basis: ', totalCostBasis);
+    // console.log('Sale Made: ', transactionWorth);
+    // console.log('Coin Sold at', coinSellPrice);
+    // console.log('Realized Profit/Loss: ', realizedPNL);
+    // console.log('-----Sell Transaction Function -------');
 
     await prisma.user.update({
       where: {
@@ -291,7 +323,7 @@ export async function deleteCoinAndTransactions(req: AuthenticatedRequest, res: 
       },
     });
 
-    const latestPrice = await getCoinLatestPrice(deletedCoin.symbol + 'USDT');
+    // const latestPrice = await getCoinLatestPrice(deletedCoin.symbol + 'USDT');
 
     await prisma.user.update({
       where: { id: req.user.id },
@@ -329,6 +361,7 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
     const coinId = Number(req.params.id);
 
     const transactions = await prisma.transaction.findMany({
+      orderBy: [{ date: 'desc' }],
       where: { coinId },
       include: {
         Coin: {
@@ -374,7 +407,7 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
     const latestPrice = parseFloat(latestPriceData.data.price);
 
     coin.holdingsInDollers = coin.totalQuantity * latestPrice;
-    coin.profitLoss += (latestPrice - coin.totalInvestment) * coin.totalQuantity + coin.realizedPNL;
+    coin.profitLoss += coin.holdingsInDollers - coin.totalInvestment + coin.realizedPNL;
 
     const transactionsWithoutCoin = transactions.map(({ Coin, ...rest }) => rest);
 
@@ -401,41 +434,41 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
     const user = await prisma.user.findUnique({ where: { id: req.user.id } });
     const coin = await prisma.coin.findUnique({ where: { id: transaction.coinId } });
 
-    const TRANSACTION_COST = transaction.price * transaction.quantity;
-
-    // averageBuyPrice      (DONE)
-    // totalQuantity        (DONE)
-    // totalInvestment      (DONE)
+    const TRANSACTION_COST = transaction.costBasis;
 
     if (transaction.type === 'BUY') {
       user.dollerBalance += TRANSACTION_COST;
-      user.cryptoBalance -= TRANSACTION_COST;
-
       coin.totalInvestment -= TRANSACTION_COST;
       coin.cost -= TRANSACTION_COST;
-
       coin.totalQuantity -= transaction.quantity;
     }
 
     if (transaction.type === 'SELL') {
       user.dollerBalance -= TRANSACTION_COST;
-      user.cryptoBalance += TRANSACTION_COST;
-
       coin.totalInvestment += TRANSACTION_COST;
       coin.cost -= TRANSACTION_COST;
-
       coin.totalQuantity += transaction.quantity;
     }
 
-    if (coin.totalQuantity > 0) coin.averageBuyPrice = coin.totalInvestment / coin.totalQuantity;
-    else coin.averageBuyPrice = 0;
+    if (coin.totalQuantity > 0) {
+      coin.averageBuyPrice = coin.totalInvestment / coin.totalQuantity;
+    } else {
+      coin.averageBuyPrice = 0;
+    }
+
+    if (coin.cost < 0) {
+      coin.cost = 0;
+    }
+
+    console.log('Doller Balance', user.dollerBalance);
+    console.log('Total Investment', coin.totalInvestment);
+    console.log('Cost', coin.cost);
+    console.log('Total Quantity', coin.totalQuantity);
+    console.log('Avrg Buy Price', coin.averageBuyPrice);
 
     await prisma.user.update({
       where: { id: req.user.id },
-      data: {
-        dollerBalance: user.dollerBalance,
-        // cryptoBalance: user.cryptoBalance,
-      },
+      data: { dollerBalance: user.dollerBalance },
     });
 
     await prisma.coin.update({
@@ -451,5 +484,29 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
     return res.status(200).json({ message: 'Transaction deleted successfully.' });
   } catch (error) {
     return res.status(500).json({ message: 'Failed to delete transactions.' });
+  }
+}
+
+export async function getCoinHoldingQuantity(req: AuthenticatedRequest, res: Response) {
+  try {
+    const coinApiId = req.params.coinId;
+
+    const coin = await prisma.coin.findFirst({
+      where: { apiId: coinApiId },
+      select: {
+        totalQuantity: true,
+        symbol: true,
+      },
+    });
+
+    console.log(coin);
+
+    if (!coin) {
+      return res.status(200).json({ holdingsInPortfolio: 0 });
+    }
+
+    return res.status(200).json({ holdingsInPortfolio: coin.totalQuantity });
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to get coin.' });
   }
 }
