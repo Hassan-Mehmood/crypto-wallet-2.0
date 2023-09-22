@@ -25,9 +25,9 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { getCoinHoldingQuantity, getCoinMarketData } from '../../api/axios';
-import { removeCoin } from '../../slices/coinSlice';
 import useCustomToast from '../../hooks/useCustomToast';
 import { UserTransactionsData } from '../../types';
+import { removeCoin } from '../../slices/coinSlice';
 
 interface props {
   isOpen: boolean;
@@ -58,7 +58,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
         user: userData.id,
         coin: coinData,
         coinPrice: pricePerCoin,
-        coinQuantity,
+        coinQuantity: coinQuantity,
         transactionDate: transactionDate,
         type: 'BUY',
       });
@@ -184,34 +184,42 @@ export default function TransactionModal({ isOpen, onClose }: props) {
   }
 
   useEffect(() => {
-    let isMounted = true;
+    if (!isOpen) {
+      dispatch(removeCoin());
+    }
+  }, [dispatch, isOpen]);
 
-    if (!coinData?.id) {
-      setPricePerCoin('0');
-      return;
+  useEffect(() => {
+    if (isOpen) {
+      let isMounted = true;
+
+      if (!coinData?.id) {
+        setPricePerCoin('0');
+        return;
+      }
+
+      if (!isMounted) return;
+      getCoinMarketData(coinData.id).then((res) => {
+        const marketData = res.market_data;
+
+        if (!marketData) return;
+        setPricePerCoin(marketData.current_price?.usd.toString() || '0');
+      });
+
+      if (!isMounted) return;
+      getCoinHoldingQuantity(coinData.id).then((res) => {
+        const quantity = res.holdingsInPortfolio;
+
+        setCoinHoldingQuantity(quantity);
+      });
     }
 
-    if (!isMounted) return;
-    getCoinMarketData(coinData.id).then((res) => {
-      const marketData = res.market_data;
-
-      if (!marketData) return;
-      setPricePerCoin(marketData.current_price?.usd.toString() || '0');
-    });
-
-    if (!isMounted) return;
-    getCoinHoldingQuantity(coinData.id).then((res) => {
-      const quantity = res.holdingsInPortfolio;
-
-      if (!quantity) return;
-      setCoinHoldingQuantity(quantity);
-    });
-
     return () => {
-      isMounted = false;
-      dispatch(removeCoin());
+      // isMounted = false;
+      // dispatch(removeCoin());
+      // console.log('Clean up Transaction Modal');
     };
-  }, [coinData.id, dispatch]);
+  }, [coinData.id, dispatch, isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -236,7 +244,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
                     <Input value={pricePerCoin} onChange={(e) => setPricePerCoin(e.target.value)} />
                   </FormControl>
                   <FormControl mt={'1.5rem'}>
-                    <FormLabel>Quantity</FormLabel>
+                    <FormLabel>Quantity {coinData.symbol}</FormLabel>
                     <Input value={coinQuantity} onChange={(e) => setCoinQuantity(e.target.value)} />
                   </FormControl>
                   <FormControl mt={'1.5rem'}>
@@ -283,7 +291,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
                     <Input value={pricePerCoin} onChange={(e) => setPricePerCoin(e.target.value)} />
                   </FormControl>
                   <FormControl mt={'1.5rem'}>
-                    <FormLabel>Quantity</FormLabel>
+                    <FormLabel>Quantit {coinData.symbol}</FormLabel>
                     <Input value={coinQuantity} onChange={(e) => setCoinQuantity(e.target.value)} />
                   </FormControl>
                   <FormControl mt={'1.5rem'}>

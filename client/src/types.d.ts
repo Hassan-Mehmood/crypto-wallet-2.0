@@ -193,13 +193,19 @@ interface User {
   updatedAt: Date;
   coins: Coin[];
 }
-
 interface Coin {
   id: number;
   name: string;
+  apiId: string;
   apiSymbol: string;
   symbol: string;
   thump: string;
+  profitLoss: number;
+  cost: number;
+  averageBuyPrice: number;
+  latestPrice: number;
+  totalQuantity: number;
+  holdingsInDollers: number;
   large: string;
   marketCapRank: number;
   userId: number;
@@ -265,18 +271,9 @@ export interface userAccountBalance {
   cryptoBalance: number;
 }
 
+// id, api_symbol, market_cap_rank, thumb, large
 export interface coinTransaction {
-  coin: {
-    name: string;
-    symbol: string;
-    thump: string;
-    averageBuyPrice: number;
-    totalQuantity: number;
-    totalInvestment: number;
-    holdingsInDollers: number;
-    profitLoss: number;
-    cost: number;
-  };
+  coin: Coin;
   transactions: Transaction[];
 }
 

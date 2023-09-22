@@ -367,6 +367,8 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
         Coin: {
           select: {
             name: true,
+            apiId: true,
+            apiSymbol: true,
             symbol: true,
             thump: true,
             averageBuyPrice: true,
