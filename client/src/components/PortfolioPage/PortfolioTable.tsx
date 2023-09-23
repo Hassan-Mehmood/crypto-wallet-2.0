@@ -91,7 +91,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
 
       {coins?.length === 0 ? (
         <Button
-          onClick={() => navigate('/addCoin')}
+          onClick={() => 'onTransactionModelOpen()'}
           position="absolute"
           top="150%"
           left="50%"
@@ -165,6 +165,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                     <Box fontSize="14px">{calculatePercentage(coin.profitLoss, coin.cost)}%</Box>
                   </Flex>
                 </Td>
+
                 <Td textAlign={'center'}>
                   <Box as="span" display="inline-block" cursor="pointer" mr="0.5rem">
                     {/* ADD ICON */}

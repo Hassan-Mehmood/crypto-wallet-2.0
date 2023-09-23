@@ -20,11 +20,13 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { RootState } from '../../store';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCoinHoldingQuantity, getCoinMarketData } from '../../api/axios';
-import { removeCoin } from '../../slices/coinSlice';
+import useCustomToast from '../../hooks/useCustomToast';
+import { useMutation, useQueryClient } from 'react-query';
+import { UserTransactionsData } from '../../types';
+import axios from 'axios';
 
 interface IEditTransactionModal {
   isOpen: boolean;
@@ -40,47 +42,110 @@ export const EditTransactionModal = ({ isOpen, onClose, transactionID }: IEditTr
   const [transactionDate, setTransactionDate] = useState('');
 
   const coinData = useSelector((state: RootState) => state.searchCoinReducer);
-  const dispatch = useDispatch();
+  const userData = useSelector((state: RootState) => state.userReducer);
+  // const dispatch = useDispatch();
 
-  //  console.log('Coin data', coinData);
+  console.log(userData);
 
-  useEffect(() => {
-    if (!isOpen) {
-      dispatch(removeCoin());
+  const showToast = useCustomToast();
+  const queryClient = useQueryClient();
+
+  const userPortfolioData = queryClient.getQueryData<UserTransactionsData>('userCoins');
+
+  let transactionType = '';
+
+  const editTransaction = useMutation(
+    async () => {
+      const response = await axios.put(
+        `${process.env.REACT_APP_SERVER_URL}/portfolio/edit-transaction`,
+        {
+          user: userData.id,
+          coin_id: coinData.id,
+          coinPrice: pricePerCoin,
+          coinQuantity: coinQuantity,
+          transactionId: transactionID,
+          transactionDate: transactionDate,
+          type: transactionType,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    },
+    {
+      onMutate: () => setLoadingBtn(true),
+      onSettled: () => setLoadingBtn(false),
+
+      onSuccess: () => {
+        showToast({
+          title: 'Success',
+          description: 'Transaction updated successfully',
+          status: 'success',
+        });
+        queryClient.invalidateQueries('userCoins');
+      },
+      onError: () => {
+        showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
+      },
     }
-  }, [dispatch, isOpen]);
+  );
 
-  useEffect(() => {
-    if (isOpen) {
-      let isMounted = true;
-
-      if (!coinData?.id) {
-        setPricePerCoin('0');
-        return;
-      }
-
-      if (!isMounted) return;
-      getCoinMarketData(coinData.id).then((res) => {
-        const marketData = res.market_data;
-
-        if (!marketData) return;
-        setPricePerCoin(marketData.current_price?.usd.toString() || '0');
+  function validateFormData(quantity: number, price: number) {
+    if (!quantity || !price) {
+      showToast({
+        title: 'Error',
+        description: 'Incorrect price or quantity',
+        status: 'error',
       });
-
-      if (!isMounted) return;
-      getCoinHoldingQuantity(coinData.id).then((res) => {
-        const quantity = res.holdingsInPortfolio;
-
-        setCoinHoldingQuantity(quantity);
-      });
+      return false;
     }
 
-    return () => {
-      // isMounted = false;
-      // dispatch(removeCoin());
-      // console.log('Clean up Transaction Modal');
-    };
-  }, [coinData.id, dispatch, isOpen]);
+    const inputDate = new Date(transactionDate);
+    const currentDate = new Date();
+
+    if (!transactionDate) {
+      showToast({
+        title: 'Error',
+        description: 'Transaction date is required',
+        status: 'error',
+      });
+      return false;
+    }
+
+    if (inputDate > currentDate) {
+      showToast({
+        title: 'Error',
+        description: 'Transaction date must be in the past',
+        status: 'error',
+      });
+      return false;
+    }
+
+    return true;
+  }
+
+  function handleyFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const quantity = parseFloat(coinQuantity);
+    const price = parseFloat(pricePerCoin);
+
+    if (!validateFormData(quantity, price)) {
+      return;
+    }
+
+    if (userPortfolioData?.dollerBalance && quantity * price > userPortfolioData?.dollerBalance) {
+      showToast({
+        title: 'Error',
+        description: 'You do not have enough money to buy this coin',
+        status: 'error',
+      });
+      return;
+    }
+
+    editTransaction.mutate();
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -98,7 +163,12 @@ export const EditTransactionModal = ({ isOpen, onClose, transactionID }: IEditTr
             <TabPanels>
               <TabPanel>
                 {/* BUY */}
-                <form onSubmit={() => ''}>
+                <form
+                  onSubmit={(e) => {
+                    transactionType = 'BUY';
+                    handleyFormSubmit(e);
+                  }}
+                >
                   <FormControl mt={'1rem'}>
                     <FormLabel>Price per coin</FormLabel>
                     <Input value={pricePerCoin} onChange={(e) => setPricePerCoin(e.target.value)} />
@@ -145,7 +215,12 @@ export const EditTransactionModal = ({ isOpen, onClose, transactionID }: IEditTr
               </TabPanel>
               <TabPanel>
                 {/* SELL */}
-                <form onSubmit={() => ''}>
+                <form
+                  onSubmit={(e) => {
+                    transactionType = 'SELL';
+                    handleyFormSubmit(e);
+                  }}
+                >
                   <FormControl mt={'1rem'}>
                     <FormLabel>Price per coin</FormLabel>
                     <Input value={pricePerCoin} onChange={(e) => setPricePerCoin(e.target.value)} />

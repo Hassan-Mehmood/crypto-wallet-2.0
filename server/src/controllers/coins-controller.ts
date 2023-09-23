@@ -256,7 +256,8 @@ export async function sellTransaction(req: Request, res: Response) {
     });
 
     const coinRemainingQuantity = coinRecord.totalQuantity - parseFloat(coinSellQuantity);
-    const remainingInvestment = totalCostBasis * coinRemainingQuantity;
+    const remainingInvestment = coinRecord.totalInvestment - totalCostBasis;
+    // const remainingInvestment = totalCostBasis * coinRemainingQuantity;
 
     let coinAverageBuyPrice = coinRecord.averageBuyPrice;
 
@@ -489,6 +490,40 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
   }
 }
 
+export async function editTransaction(req: AuthenticatedRequest, res: Response) {
+  try {
+    let { coinQuantity, coinPrice, coin_id, transactionDate, transactionId, type } = req.body;
+
+    coinQuantity = parseFloat(coinQuantity);
+    coinPrice = parseFloat(coinPrice);
+    transactionDate = new Date(transactionDate);
+    const costBasis = coinQuantity * coinPrice;
+
+    console.log(costBasis);
+
+    const transaction = await prisma.transaction.update({
+      where: { id: transactionId },
+      data: {
+        price: coinPrice,
+        quantity: coinQuantity,
+        type: type,
+        costBasis: costBasis,
+        date: transactionDate,
+      },
+    });
+
+    if (!transaction) {
+      return res.status(404).json({ message: 'Transaction not found.' });
+    }
+
+    console.log(transaction);
+
+    return res.status(200).json({ message: 'Transaction updated' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to edit transactions.', error: error.message });
+  }
+}
+
 export async function getCoinHoldingQuantity(req: AuthenticatedRequest, res: Response) {
   try {
     const coinApiId = req.params.coinId;
@@ -501,7 +536,7 @@ export async function getCoinHoldingQuantity(req: AuthenticatedRequest, res: Res
       },
     });
 
-    console.log(coin);
+    // console.log(coin);
 
     if (!coin) {
       return res.status(200).json({ holdingsInPortfolio: 0 });

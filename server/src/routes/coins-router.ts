@@ -12,6 +12,7 @@ import {
   getCoinHoldingQuantity,
   deleteTransaction,
   addCoinToPortfolio,
+  editTransaction,
 } from '../controllers/coins-controller';
 import { verifyToken } from '../utils/jwt';
 
@@ -98,6 +99,7 @@ router.post(
 // /api/portfolio/
 router.get('/', verifyToken, getPortfolio);
 router.post('/addCoin', verifyToken, addCoinToPortfolio);
+router.put('/edit-transaction', verifyToken, editTransaction);
 
 router.get('/balance', verifyToken, getUserBalance);
 router.post('/balance', verifyToken, setUserBalance);
