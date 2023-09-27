@@ -120,8 +120,6 @@ export async function buyTransaction(req: Request, res: Response) {
       coin,
     } = req.body as reqBodyType;
 
-    const transaction_date = new Date(transactionDate);
-
     const userData = await prisma.user.findUnique({
       where: { id: userID },
       include: {
@@ -135,6 +133,7 @@ export async function buyTransaction(req: Request, res: Response) {
 
     let coinRecord = userData.coins[0];
     const transactionWorth = parseFloat(coinBuyPrice) * parseFloat(coinBuyQuantity);
+    const transaction_date = new Date(transactionDate);
 
     if (!coinRecord) {
       coinRecord = await prisma.coin.create({
@@ -152,6 +151,8 @@ export async function buyTransaction(req: Request, res: Response) {
               price: parseFloat(coinBuyPrice),
               quantity: parseFloat(coinBuyQuantity),
               costBasis: transactionWorth,
+              cost: transactionWorth,
+              proceeds: 0,
               type: transactionType,
               date: transaction_date,
               User: { connect: { id: userData.id } },
@@ -165,6 +166,8 @@ export async function buyTransaction(req: Request, res: Response) {
           price: parseFloat(coinBuyPrice),
           quantity: parseFloat(coinBuyQuantity),
           costBasis: transactionWorth,
+          cost: transactionWorth,
+          proceeds: 0,
           type: transactionType,
           date: transaction_date,
           Coin: { connect: { id: coinRecord.id } },
@@ -177,7 +180,6 @@ export async function buyTransaction(req: Request, res: Response) {
       where: { id: userID },
       data: {
         dollerBalance: { decrement: transactionWorth },
-        // cryptoBalance: { increment: transactionWorth }, // I am gonna calculate cryptoBalance based on data from api
       },
     });
 
@@ -228,6 +230,8 @@ export async function sellTransaction(req: Request, res: Response) {
         price: parseFloat(coinSellPrice),
         quantity: parseFloat(coinSellQuantity),
         costBasis: transactionWorth,
+        cost: 0,
+        proceeds: transactionWorth,
         date: transaction_date,
         type: transactionType,
         Coin: { connect: { id: coinRecord.id } },
@@ -236,14 +240,9 @@ export async function sellTransaction(req: Request, res: Response) {
     });
 
     coinRecord.transactions.push(newTransaction);
-    const { totalCostBasis, realizedPNL } = calculateCostBasis(coinRecord.transactions);
-
-    // console.log('-----Sell Transaction Function -------');
-    // console.log('Total Cost Basis: ', totalCostBasis);
-    // console.log('Sale Made: ', transactionWorth);
-    // console.log('Coin Sold at', coinSellPrice);
-    // console.log('Realized Profit/Loss: ', realizedPNL);
-    // console.log('-----Sell Transaction Function -------');
+    const { totalCostBasis, realizedPNL, averageNetCost } = calculateCostBasis(
+      coinRecord.transactions
+    );
 
     await prisma.user.update({
       where: {
@@ -251,13 +250,13 @@ export async function sellTransaction(req: Request, res: Response) {
       },
       data: {
         dollerBalance: { increment: transactionWorth },
-        // cryptoBalance: { decrement: totalCostBasis - coinRecord.averageBuyPrice }, // A HACK
       },
     });
 
     const coinRemainingQuantity = coinRecord.totalQuantity - parseFloat(coinSellQuantity);
-    const remainingInvestment = coinRecord.totalInvestment - totalCostBasis;
+    // const remainingInvestment = coinRecord.totalInvestment - transactionWorth;
     // const remainingInvestment = totalCostBasis * coinRemainingQuantity;
+    const remainingInvestment = averageNetCost * coinRemainingQuantity;
 
     let coinAverageBuyPrice = coinRecord.averageBuyPrice;
 
@@ -265,10 +264,20 @@ export async function sellTransaction(req: Request, res: Response) {
       coinAverageBuyPrice = 0;
     }
 
+    console.log('-----Sell Transaction Function -------');
+    console.log('Total Cost Basis: ', totalCostBasis);
+    console.log('Average net cost: ', averageNetCost);
+    console.log('Sale Made: ', transactionWorth);
+    console.log('Coin Sold at', coinSellPrice);
+    console.log('Realized Profit/Loss: ', realizedPNL);
+    console.log('remainingInvestment: ', remainingInvestment);
+    console.log('-----Sell Transaction Function -------');
+
     await prisma.coin.update({
       where: { id: coinRecord.id },
       data: {
         totalQuantity: coinRemainingQuantity,
+        averageNetCost: averageNetCost,
         totalInvestment: remainingInvestment,
         averageBuyPrice: coinAverageBuyPrice,
         realizedPNL: realizedPNL,
@@ -516,7 +525,7 @@ export async function editTransaction(req: AuthenticatedRequest, res: Response) 
       return res.status(404).json({ message: 'Transaction not found.' });
     }
 
-    console.log(transaction);
+    // console.log(transaction);
 
     return res.status(200).json({ message: 'Transaction updated' });
   } catch (error) {
