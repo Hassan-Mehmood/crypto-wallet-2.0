@@ -73,6 +73,10 @@ export class CostBasisCalculator {
     // console.log('Cost', cost);
     // console.log('Proceeds', proceeds);
 
+    if (totalQuantity <= 0) {
+      return 0;
+    }
+
     const averageNetCost = (cost - proceeds) / totalQuantity;
     return averageNetCost;
   }
