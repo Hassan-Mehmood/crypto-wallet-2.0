@@ -74,10 +74,7 @@ export default function TransactionsTable({ isLoading, data, setShowTable, refet
                     backgroundColor: colorMode === 'light' ? '#f4f4f4' : '#212835',
                     cursor: 'pointer',
                   }}
-                  onClick={() => {
-                    setShowTable('transactionsTable');
-                    // setActiveCoinId(coin.id);
-                  }}
+                  onClick={() => setShowTable('transactionsTable')}
                 >
                   <Td textAlign={'center'}>
                     <Text>{transaction.type}</Text>

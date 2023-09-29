@@ -106,7 +106,7 @@ export default function TransactionsOverview({ setShowTable, isLoading, data }: 
                   Avg net cost
                 </Text>
                 <Text fontWeight={'semibold'} fontSize={{ base: '1.1rem', lg: '1.3rem' }}>
-                  ${data?.coin.averageNetCost.toFixed(3)}
+                  ${data?.coin.averageNetCost?.toFixed(3) || '0'}
                 </Text>
               </Box>
             </Flex>

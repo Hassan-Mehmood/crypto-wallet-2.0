@@ -20,13 +20,15 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { RootState } from '../../store';
 import { useDispatch, useSelector } from 'react-redux';
 import useCustomToast from '../../hooks/useCustomToast';
 import { useMutation, useQueryClient } from 'react-query';
 import { UserTransactionsData } from '../../types';
 import axios from 'axios';
+import { removeCoin } from '../../slices/coinSlice';
+import { getCoinHoldingQuantity, getCoinMarketData } from '../../api/axios';
 
 interface IEditTransactionModal {
   isOpen: boolean;
@@ -43,9 +45,9 @@ export const EditTransactionModal = ({ isOpen, onClose, transactionID }: IEditTr
 
   const coinData = useSelector((state: RootState) => state.searchCoinReducer);
   const userData = useSelector((state: RootState) => state.userReducer);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  console.log(userData);
+  console.log(coinData);
 
   const showToast = useCustomToast();
   const queryClient = useQueryClient();
@@ -83,10 +85,14 @@ export const EditTransactionModal = ({ isOpen, onClose, transactionID }: IEditTr
           description: 'Transaction updated successfully',
           status: 'success',
         });
+
+        fetchCoinHoldings();
+        transactionType = '';
         queryClient.invalidateQueries('userCoins');
       },
       onError: () => {
         showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
+        transactionType = '';
       },
     }
   );
@@ -146,6 +152,46 @@ export const EditTransactionModal = ({ isOpen, onClose, transactionID }: IEditTr
 
     editTransaction.mutate();
   }
+
+  const fetchCoinHoldings = useCallback(() => {
+    if (!coinData.id) {
+      return;
+    }
+    console.log('Fetch coin holdings');
+    getCoinHoldingQuantity(coinData.id).then((res) => {
+      const quantity = res.holdingsInPortfolio;
+
+      setCoinHoldingQuantity(quantity);
+    });
+  }, [coinData.id]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      dispatch(removeCoin());
+    }
+  }, [dispatch, isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+      let isMounted = true;
+
+      if (!coinData?.id) {
+        setPricePerCoin('0');
+        return;
+      }
+
+      if (!isMounted) return;
+      getCoinMarketData(coinData.id).then((res) => {
+        const marketData = res.market_data;
+
+        if (!marketData) return;
+        setPricePerCoin(marketData.current_price?.usd.toString() || '0');
+      });
+
+      if (!isMounted) return;
+      fetchCoinHoldings();
+    }
+  }, [coinData.id, fetchCoinHoldings, dispatch, isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
