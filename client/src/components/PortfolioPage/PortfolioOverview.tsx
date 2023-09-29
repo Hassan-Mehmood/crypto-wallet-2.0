@@ -38,7 +38,6 @@ export default function PortfolioOverview({
       justifyContent={'center'}
       flexDir={{ base: 'column', xl: 'row' }}
       px={{ xl: '2rem' }}
-      gap={{ xl: 12 }}
       mb={'4rem'}
     >
       <PortfolioSizeModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
