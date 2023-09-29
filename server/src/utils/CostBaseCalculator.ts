@@ -3,7 +3,6 @@ export class CostBasisCalculator {
   private transactions: { quantity: number; pricePerUnit: number; type: string }[] = [];
   private realizedPNL: number = 0;
 
-  // Buy assets and add them to the FIFO queue
   buy(quantity: number, pricePerUnit: number, type: string): void {
     this.transactions.push({ quantity, pricePerUnit, type });
     this.assets.push({ quantity, pricePerUnit, type });
@@ -68,10 +67,6 @@ export class CostBasisCalculator {
         proceeds += transaction.quantity * transaction.pricePerUnit;
       }
     }
-
-    // console.log('Total Quantity', totalQuantity);
-    // console.log('Cost', cost);
-    // console.log('Proceeds', proceeds);
 
     if (totalQuantity <= 0) {
       return 0;

@@ -202,6 +202,7 @@ interface Coin {
   thump: string;
   profitLoss: number;
   cost: number;
+  averageNetCost: number;
   averageBuyPrice: number;
   latestPrice: number;
   totalQuantity: number;
@@ -245,6 +246,7 @@ interface UserTransactionsData {
     thump: string;
     large: string;
     marketCapRank: number;
+    averageNetCost: number;
     averageBuyPrice: number;
     latestPrice: number;
     totalQuantity: number;

@@ -382,6 +382,7 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
             symbol: true,
             thump: true,
             averageBuyPrice: true,
+            averageNetCost: true,
             totalQuantity: true,
             totalInvestment: true,
             holdingsInDollers: true,

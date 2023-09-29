@@ -29,8 +29,8 @@ export default async function updateCoinData(
       allTimeProfit += coin.profitLoss;
     } else {
       coin.holdingsInDollers = coin.totalQuantity * coin.latestPrice;
-      coin.profitLoss += coin.holdingsInDollers - coin.totalInvestment + coin.realizedPNL;
-      // coin.profitLoss += coin.holdingsInDollers - coin.totalInvestment;
+      // coin.profitLoss += coin.holdingsInDollers - coin.totalInvestment + coin.realizedPNL;
+      coin.profitLoss += coin.latestPrice - coin.averageNetCost;
 
       allTimeProfit += coin.profitLoss;
     }
@@ -45,7 +45,7 @@ export default async function updateCoinData(
       worstPerformer.thump = coin.thump;
     }
 
-    console.log('====update coin data funciton===========================');
+    console.log('====update coin data funciton==========');
     console.log('coin', coin.symbol);
     console.log('Holdings in Dollers', coin.holdingsInDollers);
     console.log('total quantity', coin.totalQuantity);
@@ -54,7 +54,7 @@ export default async function updateCoinData(
     console.log('profit loss', coin.profitLoss);
     console.log('Realized PNL', coin.realizedPNL);
     console.log('Coin cost', coin.cost);
-    console.log('====update coin data funciton===========================');
+    console.log('====update coin data funciton==========');
 
     return coin;
   });

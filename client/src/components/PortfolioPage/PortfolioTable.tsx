@@ -14,7 +14,6 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import { calculatePercentage, getProfitLossColor } from '../../utils/functions';
-import { useNavigate } from 'react-router-dom';
 import DeleteCoinModal from './DeleteCoinModal';
 import { useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
@@ -38,6 +37,7 @@ interface props {
         latestPrice: number;
         totalQuantity: number;
         holdingsInDollers: number;
+        averageNetCost: number;
         profitLoss: number;
         totalInvestment: number;
         userId: number;
@@ -77,7 +77,6 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
   const { colorMode } = useColorMode();
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   return (
     <>
@@ -117,7 +116,7 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
               <Th textAlign={'center'}>Name</Th>
               <Th textAlign={'center'}>Price</Th>
               <Th textAlign={'center'}>Holding</Th>
-              <Th textAlign={'center'}>Avg Buy Price</Th>
+              <Th textAlign={'center'}>Avg Net Cost</Th>
               <Th textAlign={'center'}>Profit/Loss</Th>
               <Th textAlign={'center'}>Actions</Th>
             </Tr>
@@ -141,7 +140,9 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                     {coin.name}
                   </Flex>
                 </Td>
+
                 <Td textAlign={'center'}>${coin.latestPrice.toLocaleString('en')}</Td>
+
                 <Td textAlign={'center'}>
                   <Flex flexDirection="column">
                     <Box fontWeight="semibold">
@@ -155,7 +156,9 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                     </Box>
                   </Flex>
                 </Td>
-                <Td textAlign={'center'}>$ {coin.averageBuyPrice.toLocaleString('en')}</Td>
+
+                <Td textAlign={'center'}>$ {coin.averageNetCost.toLocaleString('en')}</Td>
+
                 <Td textAlign={'center'} color={getProfitLossColor(coin.profitLoss, colorMode)}>
                   <Flex flexDirection="column">
                     <Box>
