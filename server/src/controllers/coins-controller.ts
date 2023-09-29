@@ -502,7 +502,7 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
 
 export async function editTransaction(req: AuthenticatedRequest, res: Response) {
   try {
-    let { coinQuantity, coinPrice, transactionDate, transactionId, type } = req.body;
+    let { coinQuantity, coinPrice, coin_id, transactionDate, transactionId, type } = req.body;
 
     coinQuantity = parseFloat(coinQuantity);
     coinPrice = parseFloat(coinPrice);
@@ -523,6 +523,12 @@ export async function editTransaction(req: AuthenticatedRequest, res: Response) 
     if (!transaction) {
       return res.status(404).json({ message: 'Transaction not found.' });
     }
+
+    const coin = await prisma.coin.findUnique({ where: { id: coin_id } });
+
+    console.log('------From Edit Transaction----------');
+    calculateCoinStats(coin);
+    console.log('------End From Edit Transaction----------');
 
     return res.status(200).json({ message: 'Transaction updated' });
   } catch (error) {

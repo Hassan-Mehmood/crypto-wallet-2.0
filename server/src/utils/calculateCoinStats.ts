@@ -7,8 +7,6 @@ export async function calculateCoinStats(coin: Coin): Promise<void> {
     where: { coinId: coin.id, user: coin.userId },
   });
 
-  console.log('---------buy Transaction calculateCoinStats()------------');
-
   const totalQuantity = transactions.reduce((total, transaction) => {
     if (transaction.type === 'BUY') total += transaction.quantity;
     if (transaction.type === 'SELL') total -= transaction.quantity;
@@ -26,6 +24,7 @@ export async function calculateCoinStats(coin: Coin): Promise<void> {
   let averageBuyPrice = 0;
   if (totalQuantity > 0) averageBuyPrice = totalCostBasis / totalQuantity;
 
+  console.log('---------buy Transaction calculateCoinStats()------------');
   console.log('Quantity', totalQuantity);
   console.log('Total Cost Basis', totalCostBasis);
   console.log('Average net cost', averageNetCost);
