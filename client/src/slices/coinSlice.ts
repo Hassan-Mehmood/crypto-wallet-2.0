@@ -4,6 +4,7 @@ import { SearchCoin } from '../types';
 
 interface coinSliceType {
   id: string | null;
+  apiId: string | null;
   name: string | null;
   api_symbol: string | null;
   symbol: string | null;
@@ -14,6 +15,7 @@ interface coinSliceType {
 
 const initialState: coinSliceType = {
   id: null,
+  apiId: null,
   name: null,
   api_symbol: null,
   symbol: null,
@@ -30,6 +32,7 @@ export const coinSlice = createSlice({
       return {
         ...state,
         id: action.payload.id,
+        apiId: action.payload.apiId,
         name: action.payload.name,
         api_symbol: action.payload.api_symbol,
         symbol: action.payload.symbol,
@@ -42,6 +45,7 @@ export const coinSlice = createSlice({
       return {
         ...state,
         id: null,
+        apiId: null,
         name: null,
         api_symbol: null,
         symbol: null,

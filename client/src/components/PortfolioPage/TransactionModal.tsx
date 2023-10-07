@@ -186,16 +186,16 @@ export default function TransactionModal({ isOpen, onClose }: props) {
   }
 
   const fetchCoinHoldings = useCallback(() => {
-    if (!coinData.id) {
+    if (!coinData.apiId) {
       return;
     }
     console.log('Fetch coin holdings');
-    getCoinHoldingQuantity(coinData.id).then((res) => {
+    getCoinHoldingQuantity(coinData.apiId).then((res) => {
       const quantity = res.holdingsInPortfolio;
 
       setCoinHoldingQuantity(quantity);
     });
-  }, [coinData.id]);
+  }, [coinData.apiId]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -207,13 +207,13 @@ export default function TransactionModal({ isOpen, onClose }: props) {
     if (isOpen) {
       let isMounted = true;
 
-      if (!coinData?.id) {
+      if (!coinData?.apiId) {
         setPricePerCoin('0');
         return;
       }
 
       if (!isMounted) return;
-      getCoinMarketData(coinData.id).then((res) => {
+      getCoinMarketData(coinData.apiId).then((res) => {
         const marketData = res.market_data;
 
         if (!marketData) return;
@@ -223,7 +223,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
       if (!isMounted) return;
       fetchCoinHoldings();
     }
-  }, [coinData.id, fetchCoinHoldings, dispatch, isOpen]);
+  }, [coinData.apiId, fetchCoinHoldings, dispatch, isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>

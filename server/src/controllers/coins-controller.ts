@@ -366,7 +366,7 @@ export async function deleteCoinAndKeepTransactions(req: AuthenticatedRequest, r
   }
 }
 
-export async function getTransactions(req: AuthenticatedRequest, res: Response) {
+export async function getAllTransactions(req: AuthenticatedRequest, res: Response) {
   try {
     const coinId = Number(req.params.id);
 
@@ -376,6 +376,7 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
       include: {
         Coin: {
           select: {
+            id: true,
             name: true,
             apiId: true,
             apiSymbol: true,
@@ -424,11 +425,27 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
 
     const transactionsWithoutCoin = transactions.map(({ Coin, ...rest }) => rest);
 
-    // console.log(coin);
-
     return res.status(200).json({ transactions: transactionsWithoutCoin, coin });
   } catch (error) {
     return res.status(500).json({ message: 'Failed to get transactions.' });
+  }
+}
+
+export async function getSingleTransaction(req: AuthenticatedRequest, res: Response) {
+  try {
+    const coinId = Number(req.params.id);
+
+    const transaction = await prisma.transaction.findUnique({
+      where: { id: coinId },
+    });
+
+    if (!transaction) {
+      return res.status(404).json({ message: 'Transaction not found.' });
+    }
+
+    return res.status(200).json(transaction);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 }
 
@@ -509,6 +526,12 @@ export async function editTransaction(req: AuthenticatedRequest, res: Response) 
     transactionDate = new Date(transactionDate);
     const costBasis = coinQuantity * coinPrice;
 
+    const originalTransaction = await prisma.transaction.findUnique({
+      where: { id: transactionId },
+    });
+
+    const dollarAmount = originalTransaction.costBasis - costBasis;
+
     const transaction = await prisma.transaction.update({
       where: { id: transactionId },
       data: {
@@ -524,11 +547,27 @@ export async function editTransaction(req: AuthenticatedRequest, res: Response) 
       return res.status(404).json({ message: 'Transaction not found.' });
     }
 
-    const coin = await prisma.coin.findUnique({ where: { id: coin_id } });
+    const coin = await prisma.coin.findUnique({ where: { id: Number(coin_id) } });
 
-    console.log('------From Edit Transaction----------');
     calculateCoinStats(coin);
-    console.log('------End From Edit Transaction----------');
+
+    console.log('Dollar Amount', dollarAmount);
+
+    if (type === 'BUY') {
+      await prisma.user.update({
+        where: { id: coin.userId },
+        data: {
+          dollerBalance: { decrement: dollarAmount },
+        },
+      });
+    }
+
+    if (type === 'SELL') {
+      await prisma.user.update({
+        where: { id: coin.userId },
+        data: { dollerBalance: { increment: dollarAmount } },
+      });
+    }
 
     return res.status(200).json({ message: 'Transaction updated' });
   } catch (error) {

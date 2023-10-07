@@ -7,11 +7,12 @@ import {
   getPortfolio,
   getUserBalance,
   setUserBalance,
-  getTransactions,
+  getAllTransactions,
   sellTransaction,
   getCoinHoldingQuantity,
   deleteTransaction,
   addCoinToPortfolio,
+  getSingleTransaction,
   editTransaction,
 } from '../controllers/coins-controller';
 import { verifyToken } from '../utils/jwt';
@@ -106,7 +107,10 @@ router.post('/balance', verifyToken, setUserBalance);
 router.delete('/deleteCoinAndKeepTransactions/:id', verifyToken, deleteCoinAndKeepTransactions);
 router.delete('/deleteCoinAndTransactions/:id', verifyToken, deleteCoinAndTransactions);
 
-router.get('/transactions/:id', verifyToken, getTransactions);
+router.get('/transactions/:id', verifyToken, getAllTransactions);
+
+router.get('/transaction/:id', verifyToken, getSingleTransaction);
+
 router.delete('/transactions/delete/:id', verifyToken, deleteTransaction);
 
 router.get('/holdings/:coinId', getCoinHoldingQuantity);

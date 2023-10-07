@@ -45,16 +45,16 @@ export default async function updateCoinData(
       worstPerformer.thump = coin.thump;
     }
 
-    console.log('====update coin data funciton==========');
-    console.log('coin', coin.symbol);
-    console.log('Holdings in Dollers', coin.holdingsInDollers);
-    console.log('total quantity', coin.totalQuantity);
-    console.log('latest price', coin.latestPrice);
-    console.log('total investment', coin.totalInvestment);
-    console.log('profit loss', coin.profitLoss);
-    console.log('Realized PNL', coin.realizedPNL);
-    console.log('Coin cost', coin.cost);
-    console.log('====update coin data funciton==========');
+    // console.log('====update coin data funciton==========');
+    // console.log('coin', coin.symbol);
+    // console.log('Holdings in Dollers', coin.holdingsInDollers);
+    // console.log('total quantity', coin.totalQuantity);
+    // console.log('latest price', coin.latestPrice);
+    // console.log('total investment', coin.totalInvestment);
+    // console.log('profit loss', coin.profitLoss);
+    // console.log('Realized PNL', coin.realizedPNL);
+    // console.log('Coin cost', coin.cost);
+    // console.log('====update coin data funciton==========');
 
     return coin;
   });

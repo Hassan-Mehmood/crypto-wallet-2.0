@@ -24,14 +24,14 @@ export async function calculateCoinStats(coin: Coin): Promise<void> {
   let averageBuyPrice = 0;
   if (totalQuantity > 0) averageBuyPrice = totalCostBasis / totalQuantity;
 
-  console.log('---------buy Transaction calculateCoinStats()------------');
-  console.log('Quantity', totalQuantity);
-  console.log('Total Cost Basis', totalCostBasis);
-  console.log('Average net cost', averageNetCost);
-  // console.log('Total investment', totalInvestment);
-  console.log('Average Buy Price', averageBuyPrice);
-  console.log('Realized PNL', realizedPNL);
-  console.log('---------buy Transaction calculateCoinStats()------------');
+  // console.log('---------buy Transaction calculateCoinStats()------------');
+  // console.log('Quantity', totalQuantity);
+  // console.log('Total Cost Basis', totalCostBasis);
+  // console.log('Average net cost', averageNetCost);
+  // // console.log('Total investment', totalInvestment);
+  // console.log('Average Buy Price', averageBuyPrice);
+  // console.log('Realized PNL', realizedPNL);
+  // console.log('---------buy Transaction calculateCoinStats()------------');
 
   await prisma.coin.update({
     where: { id: coin.id },

@@ -32,6 +32,7 @@ interface props {
 
 export default function TransactionsTable({ isLoading, data, setShowTable, refetch }: props) {
   const [transactionID, setTransactionID] = useState(0);
+  const [transactionType, setTransactionType] = useState('');
 
   const { colorMode } = useColorMode();
   const dispatch = useDispatch();
@@ -52,6 +53,7 @@ export default function TransactionsTable({ isLoading, data, setShowTable, refet
         isOpen={isEditOpen}
         onClose={onEditClose}
         transactionID={transactionID}
+        transactionType={transactionType}
       />
 
       <Skeleton isLoaded={!isLoading}>
@@ -116,9 +118,11 @@ export default function TransactionsTable({ isLoading, data, setShowTable, refet
                           size={24}
                           onClick={() => {
                             setTransactionID(transaction.id);
+                            setTransactionType(transaction.type);
                             dispatch(
                               addCoin({
-                                id: data.coin.apiId,
+                                id: data.coin.id.toString(),
+                                apiId: data.coin.apiId,
                                 name: data.coin.name,
                                 symbol: data.coin.symbol,
                                 api_symbol: data.coin.apiSymbol,

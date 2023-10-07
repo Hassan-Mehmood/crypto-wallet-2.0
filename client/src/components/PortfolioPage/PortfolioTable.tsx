@@ -180,7 +180,8 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
                         setCoinName(coin.name);
                         dispatch(
                           addCoin({
-                            id: coin.apiId,
+                            id: coin.id.toString(),
+                            apiId: coin.apiId,
                             name: coin.name,
                             api_symbol: coin.apiSymbol,
                             symbol: coin.symbol,

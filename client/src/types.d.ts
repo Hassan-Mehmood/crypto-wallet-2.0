@@ -101,6 +101,7 @@ export type LoginFormDataType = {
 
 export type SearchCoin = {
   id: string;
+  apiId: string;
   name: string;
   api_symbol: string;
   symbol: string;
