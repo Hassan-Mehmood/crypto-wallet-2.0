@@ -530,7 +530,9 @@ export async function editTransaction(req: AuthenticatedRequest, res: Response) 
       where: { id: transactionId },
     });
 
-    const costBasisDifference = Math.abs(originalTransaction.costBasis - costBasis);
+    const costBasisDifference = originalTransaction.costBasis - costBasis;
+
+    console.log(costBasisDifference);
 
     const transaction = await prisma.transaction.update({
       where: { id: transactionId },
@@ -552,12 +554,21 @@ export async function editTransaction(req: AuthenticatedRequest, res: Response) 
     calculateCoinStats(coin);
 
     if (type === 'BUY') {
-      await prisma.user.update({
-        where: { id: coin.userId },
-        data: {
-          dollerBalance: { decrement: costBasisDifference },
-        },
-      });
+      if (costBasisDifference > 0) {
+        await prisma.user.update({
+          where: { id: coin.userId },
+          data: {
+            dollerBalance: { increment: costBasisDifference },
+          },
+        });
+      } else {
+        await prisma.user.update({
+          where: { id: coin.userId },
+          data: {
+            dollerBalance: { decrement: Math.abs(costBasisDifference) },
+          },
+        });
+      }
     }
 
     // if (type === 'SELL') {

@@ -12,6 +12,7 @@ import { removeCoin } from '../../slices/coinSlice';
 interface props {
   transactionID: number;
   isOpen: boolean;
+  onClose: () => void;
   // pricePerCoin: string;
   // setPricePerCoin: React.Dispatch<React.SetStateAction<string>>;
   // coinQuantity: string;
@@ -24,7 +25,7 @@ interface props {
 // setCoinQuantity,
 // setTransactionDate,
 
-export default function EditTransactionBuyForm({ transactionID, isOpen }: props) {
+export default function EditTransactionBuyForm({ transactionID, isOpen, onClose }: props) {
   const [pricePerCoin, setPricePerCoin] = useState('0');
   const [coinQuantity, setCoinQuantity] = useState('0');
   const [transactionDate, setTransactionDate] = useState('');
@@ -66,15 +67,14 @@ export default function EditTransactionBuyForm({ transactionID, isOpen }: props)
       onMutate: () => setLoadingBtn(true),
       onSettled: () => setLoadingBtn(false),
 
-      onSuccess: () => {
+      onSuccess: async () => {
         showToast({
           title: 'Success',
           description: 'Transaction updated successfully',
           status: 'success',
         });
-
-        // fetchCoinHoldings();
-        queryClient.invalidateQueries('userCoins');
+        await queryClient.invalidateQueries('coinTransaction');
+        onClose();
       },
       onError: () => {
         showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
@@ -150,7 +150,6 @@ export default function EditTransactionBuyForm({ transactionID, isOpen }: props)
 
   function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
     const quantity = parseFloat(coinQuantity);
     const price = parseFloat(pricePerCoin);
 
@@ -160,7 +159,7 @@ export default function EditTransactionBuyForm({ transactionID, isOpen }: props)
       return;
     }
 
-    if (!userPortfolioData?.dollerBalance) {
+    if (userPortfolioData?.dollerBalance === undefined) {
       return;
     }
 
@@ -191,8 +190,8 @@ export default function EditTransactionBuyForm({ transactionID, isOpen }: props)
           <FormLabel>Total Spent (USD)</FormLabel>
           <Text as="span" display="inline-block" mb="8px">
             Balance: $
-            {userPortfolioData?.dollerBalance &&
-              (userPortfolioData.dollerBalance + originalTransactionWorth).toFixed(2)}
+            {userPortfolioData?.dollerBalance !== undefined &&
+              (userPortfolioData?.dollerBalance + originalTransactionWorth).toFixed(2)}
           </Text>
         </Flex>
         <Input value={parseFloat(pricePerCoin) * parseFloat(coinQuantity) || '0'} readOnly />

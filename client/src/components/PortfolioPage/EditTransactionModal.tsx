@@ -193,7 +193,7 @@ export const EditTransactionModal = ({
       if (!isMounted) return;
       fetchCoinHoldings();
       getTransactionData();
-      console.log('HERE');
+      // console.log('HERE');
       // return () => (isMounted = false);
     }
   }, [coinData.apiId, getTransactionData, fetchCoinHoldings, isOpen]);
@@ -209,6 +209,7 @@ export const EditTransactionModal = ({
             <EditTransactionBuyForm
               isOpen={isOpen}
               transactionID={transactionID}
+              onClose={onClose}
               // pricePerCoin={pricePerCoin}
               // setPricePerCoin={setPricePerCoin}
               // coinQuantity={coinQuantity}
