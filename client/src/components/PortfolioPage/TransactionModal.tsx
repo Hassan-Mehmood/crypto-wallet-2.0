@@ -20,7 +20,7 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -71,6 +71,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
       onSuccess: () => {
         showToast({ title: 'Success', description: 'Coin bought successfully', status: 'success' });
         queryClient.invalidateQueries('userCoins');
+        fetchCoinHoldings();
       },
       onError: () => {
         showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
@@ -98,6 +99,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
       onSuccess: () => {
         showToast({ title: 'Success', description: 'Coin sold successfully', status: 'success' });
         queryClient.invalidateQueries('userCoins');
+        fetchCoinHoldings();
       },
       onError: () => {
         showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
@@ -183,6 +185,18 @@ export default function TransactionModal({ isOpen, onClose }: props) {
     sellCoin.mutate();
   }
 
+  const fetchCoinHoldings = useCallback(() => {
+    if (!coinData.apiId) {
+      return;
+    }
+    console.log('Fetch coin holdings');
+    getCoinHoldingQuantity(coinData.apiId).then((res) => {
+      const quantity = res.holdingsInPortfolio;
+
+      setCoinHoldingQuantity(quantity);
+    });
+  }, [coinData.apiId]);
+
   useEffect(() => {
     if (!isOpen) {
       dispatch(removeCoin());
@@ -193,13 +207,13 @@ export default function TransactionModal({ isOpen, onClose }: props) {
     if (isOpen) {
       let isMounted = true;
 
-      if (!coinData?.id) {
+      if (!coinData?.apiId) {
         setPricePerCoin('0');
         return;
       }
 
       if (!isMounted) return;
-      getCoinMarketData(coinData.id).then((res) => {
+      getCoinMarketData(coinData.apiId).then((res) => {
         const marketData = res.market_data;
 
         if (!marketData) return;
@@ -207,19 +221,9 @@ export default function TransactionModal({ isOpen, onClose }: props) {
       });
 
       if (!isMounted) return;
-      getCoinHoldingQuantity(coinData.id).then((res) => {
-        const quantity = res.holdingsInPortfolio;
-
-        setCoinHoldingQuantity(quantity);
-      });
+      fetchCoinHoldings();
     }
-
-    return () => {
-      // isMounted = false;
-      // dispatch(removeCoin());
-      // console.log('Clean up Transaction Modal');
-    };
-  }, [coinData.id, dispatch, isOpen]);
+  }, [coinData.apiId, fetchCoinHoldings, dispatch, isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -264,7 +268,6 @@ export default function TransactionModal({ isOpen, onClose }: props) {
                   </FormControl>
 
                   <Button
-                    // onClick={(e) => buyTransaction(e)}
                     isLoading={loadingBtn}
                     type="submit"
                     fontSize="md"

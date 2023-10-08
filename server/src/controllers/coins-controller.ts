@@ -120,8 +120,6 @@ export async function buyTransaction(req: Request, res: Response) {
       coin,
     } = req.body as reqBodyType;
 
-    const transaction_date = new Date(transactionDate);
-
     const userData = await prisma.user.findUnique({
       where: { id: userID },
       include: {
@@ -135,6 +133,7 @@ export async function buyTransaction(req: Request, res: Response) {
 
     let coinRecord = userData.coins[0];
     const transactionWorth = parseFloat(coinBuyPrice) * parseFloat(coinBuyQuantity);
+    const transaction_date = new Date(transactionDate);
 
     if (!coinRecord) {
       coinRecord = await prisma.coin.create({
@@ -152,6 +151,8 @@ export async function buyTransaction(req: Request, res: Response) {
               price: parseFloat(coinBuyPrice),
               quantity: parseFloat(coinBuyQuantity),
               costBasis: transactionWorth,
+              cost: transactionWorth,
+              proceeds: 0,
               type: transactionType,
               date: transaction_date,
               User: { connect: { id: userData.id } },
@@ -165,6 +166,8 @@ export async function buyTransaction(req: Request, res: Response) {
           price: parseFloat(coinBuyPrice),
           quantity: parseFloat(coinBuyQuantity),
           costBasis: transactionWorth,
+          cost: transactionWorth,
+          proceeds: 0,
           type: transactionType,
           date: transaction_date,
           Coin: { connect: { id: coinRecord.id } },
@@ -177,7 +180,6 @@ export async function buyTransaction(req: Request, res: Response) {
       where: { id: userID },
       data: {
         dollerBalance: { decrement: transactionWorth },
-        // cryptoBalance: { increment: transactionWorth }, // I am gonna calculate cryptoBalance based on data from api
       },
     });
 
@@ -228,6 +230,8 @@ export async function sellTransaction(req: Request, res: Response) {
         price: parseFloat(coinSellPrice),
         quantity: parseFloat(coinSellQuantity),
         costBasis: transactionWorth,
+        cost: 0,
+        proceeds: transactionWorth,
         date: transaction_date,
         type: transactionType,
         Coin: { connect: { id: coinRecord.id } },
@@ -236,14 +240,9 @@ export async function sellTransaction(req: Request, res: Response) {
     });
 
     coinRecord.transactions.push(newTransaction);
-    const { totalCostBasis, realizedPNL } = calculateCostBasis(coinRecord.transactions);
-
-    // console.log('-----Sell Transaction Function -------');
-    // console.log('Total Cost Basis: ', totalCostBasis);
-    // console.log('Sale Made: ', transactionWorth);
-    // console.log('Coin Sold at', coinSellPrice);
-    // console.log('Realized Profit/Loss: ', realizedPNL);
-    // console.log('-----Sell Transaction Function -------');
+    const { totalCostBasis, realizedPNL, averageNetCost } = calculateCostBasis(
+      coinRecord.transactions
+    );
 
     await prisma.user.update({
       where: {
@@ -251,12 +250,13 @@ export async function sellTransaction(req: Request, res: Response) {
       },
       data: {
         dollerBalance: { increment: transactionWorth },
-        // cryptoBalance: { decrement: totalCostBasis - coinRecord.averageBuyPrice }, // A HACK
       },
     });
 
     const coinRemainingQuantity = coinRecord.totalQuantity - parseFloat(coinSellQuantity);
-    const remainingInvestment = totalCostBasis * coinRemainingQuantity;
+    // const remainingInvestment = coinRecord.totalInvestment - transactionWorth;
+    // const remainingInvestment = totalCostBasis * coinRemainingQuantity;
+    const remainingInvestment = averageNetCost * coinRemainingQuantity;
 
     let coinAverageBuyPrice = coinRecord.averageBuyPrice;
 
@@ -264,10 +264,20 @@ export async function sellTransaction(req: Request, res: Response) {
       coinAverageBuyPrice = 0;
     }
 
+    console.log('-----Sell Transaction Function -------');
+    console.log('Total Cost Basis: ', totalCostBasis);
+    console.log('Average net cost: ', averageNetCost);
+    console.log('Sale Made: ', transactionWorth);
+    console.log('Coin Sold at', coinSellPrice);
+    console.log('Realized Profit/Loss: ', realizedPNL);
+    console.log('remainingInvestment: ', remainingInvestment);
+    console.log('-----Sell Transaction Function -------');
+
     await prisma.coin.update({
       where: { id: coinRecord.id },
       data: {
         totalQuantity: coinRemainingQuantity,
+        averageNetCost: averageNetCost,
         totalInvestment: remainingInvestment,
         averageBuyPrice: coinAverageBuyPrice,
         realizedPNL: realizedPNL,
@@ -356,7 +366,7 @@ export async function deleteCoinAndKeepTransactions(req: AuthenticatedRequest, r
   }
 }
 
-export async function getTransactions(req: AuthenticatedRequest, res: Response) {
+export async function getAllTransactions(req: AuthenticatedRequest, res: Response) {
   try {
     const coinId = Number(req.params.id);
 
@@ -366,12 +376,14 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
       include: {
         Coin: {
           select: {
+            id: true,
             name: true,
             apiId: true,
             apiSymbol: true,
             symbol: true,
             thump: true,
             averageBuyPrice: true,
+            averageNetCost: true,
             totalQuantity: true,
             totalInvestment: true,
             holdingsInDollers: true,
@@ -413,11 +425,27 @@ export async function getTransactions(req: AuthenticatedRequest, res: Response) 
 
     const transactionsWithoutCoin = transactions.map(({ Coin, ...rest }) => rest);
 
-    // console.log(coin);
-
     return res.status(200).json({ transactions: transactionsWithoutCoin, coin });
   } catch (error) {
     return res.status(500).json({ message: 'Failed to get transactions.' });
+  }
+}
+
+export async function getSingleTransaction(req: AuthenticatedRequest, res: Response) {
+  try {
+    const coinId = Number(req.params.id);
+
+    const transaction = await prisma.transaction.findUnique({
+      where: { id: coinId },
+    });
+
+    if (!transaction) {
+      return res.status(404).json({ message: 'Transaction not found.' });
+    }
+
+    return res.status(200).json(transaction);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 }
 
@@ -489,6 +517,80 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
   }
 }
 
+export async function editTransaction(req: AuthenticatedRequest, res: Response) {
+  try {
+    let { coinQuantity, coinPrice, coin_id, transactionDate, transactionId, type } = req.body;
+
+    coinQuantity = parseFloat(coinQuantity);
+    coinPrice = parseFloat(coinPrice);
+    transactionDate = new Date(transactionDate);
+    const costBasis = coinQuantity * coinPrice;
+
+    const originalTransaction = await prisma.transaction.findUnique({
+      where: { id: transactionId },
+    });
+
+    const costBasisDifference = originalTransaction.costBasis - costBasis;
+
+    console.log(costBasisDifference);
+
+    const transaction = await prisma.transaction.update({
+      where: { id: transactionId },
+      data: {
+        price: coinPrice,
+        quantity: coinQuantity,
+        type: type,
+        costBasis: costBasis,
+        date: transactionDate,
+      },
+    });
+
+    if (!transaction) {
+      return res.status(404).json({ message: 'Transaction not found.' });
+    }
+
+    const coin = await prisma.coin.findUnique({ where: { id: Number(coin_id) } });
+
+    calculateCoinStats(coin);
+
+    if (type === 'BUY') {
+      if (costBasisDifference > 0) {
+        await prisma.user.update({
+          where: { id: coin.userId },
+          data: {
+            dollerBalance: { increment: costBasisDifference },
+          },
+        });
+      } else {
+        await prisma.user.update({
+          where: { id: coin.userId },
+          data: {
+            dollerBalance: { decrement: Math.abs(costBasisDifference) },
+          },
+        });
+      }
+    }
+
+    if (type === 'SELL') {
+      if (costBasisDifference > 0) {
+        await prisma.user.update({
+          where: { id: coin.userId },
+          data: { dollerBalance: { decrement: costBasisDifference } },
+        });
+      } else {
+        await prisma.user.update({
+          where: { id: coin.userId },
+          data: { dollerBalance: { increment: Math.abs(costBasisDifference) } },
+        });
+      }
+    }
+
+    return res.status(200).json({ message: 'Transaction updated' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to edit transactions.', error: error.message });
+  }
+}
+
 export async function getCoinHoldingQuantity(req: AuthenticatedRequest, res: Response) {
   try {
     const coinApiId = req.params.coinId;
@@ -501,7 +603,7 @@ export async function getCoinHoldingQuantity(req: AuthenticatedRequest, res: Res
       },
     });
 
-    console.log(coin);
+    // console.log(coin);
 
     if (!coin) {
       return res.status(200).json({ holdingsInPortfolio: 0 });

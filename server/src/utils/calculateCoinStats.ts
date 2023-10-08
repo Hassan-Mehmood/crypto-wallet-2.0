@@ -7,8 +7,6 @@ export async function calculateCoinStats(coin: Coin): Promise<void> {
     where: { coinId: coin.id, user: coin.userId },
   });
 
-  console.log('---------buy Transaction calculateCoinStats()------------');
-
   const totalQuantity = transactions.reduce((total, transaction) => {
     if (transaction.type === 'BUY') total += transaction.quantity;
     if (transaction.type === 'SELL') total -= transaction.quantity;
@@ -21,25 +19,19 @@ export async function calculateCoinStats(coin: Coin): Promise<void> {
     return total;
   }, 0);
 
-  // let totalInvestment = transactions.reduce((total, transaction) => {
-  //   if (transaction.type === 'BUY') total += transaction.price * transaction.quantity;
-  //   if (transaction.type === 'SELL') total -= transaction.price * transaction.quantity;
-  //   return total;
-  // }, 0);
-
-  let { totalCostBasis, realizedPNL } = calculateCostBasis(transactions);
-
-  // if (totalInvestment < 0) totalInvestment = 0;
+  let { totalCostBasis, realizedPNL, averageNetCost } = calculateCostBasis(transactions);
 
   let averageBuyPrice = 0;
   if (totalQuantity > 0) averageBuyPrice = totalCostBasis / totalQuantity;
 
-  console.log('Quantity', totalQuantity);
-  console.log('Total Cost Basis', totalCostBasis);
-  // console.log('Total investment', totalInvestment);
-  console.log('Average Buy Price', averageBuyPrice);
-  console.log('Realized PNL', realizedPNL);
-  console.log('---------buy Transaction calculateCoinStats()------------');
+  // console.log('---------buy Transaction calculateCoinStats()------------');
+  // console.log('Quantity', totalQuantity);
+  // console.log('Total Cost Basis', totalCostBasis);
+  // console.log('Average net cost', averageNetCost);
+  // // console.log('Total investment', totalInvestment);
+  // console.log('Average Buy Price', averageBuyPrice);
+  // console.log('Realized PNL', realizedPNL);
+  // console.log('---------buy Transaction calculateCoinStats()------------');
 
   await prisma.coin.update({
     where: { id: coin.id },
@@ -47,6 +39,7 @@ export async function calculateCoinStats(coin: Coin): Promise<void> {
       averageBuyPrice,
       totalQuantity,
       totalInvestment: totalCostBasis,
+      averageNetCost,
       cost: totalCost,
       realizedPNL,
     },

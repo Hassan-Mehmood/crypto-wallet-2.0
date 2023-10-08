@@ -6,19 +6,14 @@ import {
   ModalCloseButton,
   ModalBody,
   FormControl,
-  FormLabel,
-  NumberInput,
-  NumberInputField,
   Button,
-  useToast,
-  Flex,
   useColorMode,
+  Input,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useState } from 'react';
-// import { useMutation, useQueryClient } from 'react-query';
-import { useMutation } from 'react-query';
-// import { UserTransactionsData } from '../../types';
+import { useMutation, useQueryClient } from 'react-query';
+import useCustomToast from '../../hooks/useCustomToast';
 
 interface props {
   isOpen: boolean;
@@ -29,8 +24,8 @@ interface props {
 export default function PortfolioSizeModal({ isOpen, onClose }: props) {
   const [accountBalance, setAccountBalance] = useState('0');
   const { colorMode } = useColorMode();
-  const toast = useToast();
-  // const queryClient = useQueryClient();
+  const showToast = useCustomToast();
+  const queryClient = useQueryClient();
 
   const setPortfolioSize = useMutation(
     async () => {
@@ -43,41 +38,34 @@ export default function PortfolioSizeModal({ isOpen, onClose }: props) {
     },
     {
       onSuccess: () => {
-        showToast('Success', 'Portfolio size set successfully', 'success');
-        // queryClient.setQueryData(['userCoins'], (oldData: UserTransactionsData) => {
-        //   oldData.dollerBalance =
-        //   return [...oldData];
-        // });
+        showToast({
+          title: 'Success',
+          description: 'Portfolio size set successfully',
+          status: 'success',
+        });
+        queryClient.invalidateQueries(['userCoins']);
         onClose();
       },
       onError: () => {
-        showToast('Error', 'Something went wrong', 'error');
+        showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
       },
     }
   );
 
-  function showToast(title: string, description: string, status: 'error' | 'success') {
-    return toast({
-      title,
-      description,
-      position: 'top',
-      status,
-      duration: 3000,
-      isClosable: true,
-    });
-  }
-
-  const handleFormValue = (value: string) => {
-    const valueNumber = parseFloat(value);
-    if (isNaN(valueNumber)) {
-      setAccountBalance('0');
-      return;
-    }
-    setAccountBalance(value);
-  };
-
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    const balance = parseFloat(accountBalance);
+
+    if (!balance) {
+      showToast({
+        title: 'Error',
+        description: 'Balance must be a number',
+        status: 'error',
+      });
+      return;
+    }
+
     setPortfolioSize.mutate();
   }
 
@@ -89,36 +77,24 @@ export default function PortfolioSizeModal({ isOpen, onClose }: props) {
         <ModalCloseButton position={'absolute'} right={'0.8rem'} top={'2rem'} />
         <ModalBody>
           <form onSubmit={(e) => handleSubmit(e)}>
-            <FormControl display={'flex'} justifyContent={'center'} mt={'0.5rem'}>
-              <FormLabel>Total Quatity</FormLabel>
-              <NumberInput
-                min={0}
-                value={accountBalance}
-                precision={2}
-                onChange={(valueAsString) => handleFormValue(valueAsString)}
-              >
-                <NumberInputField
-                  h="35px"
-                  border={`1px solid ${colorMode === 'light' ? '#000' : '#fff'}`}
-                />
-              </NumberInput>
+            <FormControl mt={'0.5rem'}>
+              <FormControl mt={'1rem'}>
+                <Input value={accountBalance} onChange={(e) => setAccountBalance(e.target.value)} />
+              </FormControl>
             </FormControl>
 
-            <Flex mt="1.2rem" justify={'center'}>
-              <Button
-                type="submit"
-                mb="0.5rem"
-                color={colorMode === 'light' ? '#000' : '#fff'}
-                backgroundColor={colorMode === 'light' ? '#fff' : '#2d3748'}
-                maxW="100%"
-                width="21rem"
-                py={'1.35rem'}
-                border="1px solid"
-                _hover={{ backgroundColor: 'none' }}
-              >
-                Set portfolio size
-              </Button>
-            </Flex>
+            <Button
+              type="submit"
+              m="1.5rem auto 0"
+              color={colorMode === 'light' ? '#000' : '#fff'}
+              backgroundColor={colorMode === 'light' ? '#fff' : '#2d3748'}
+              width="100%"
+              py={'1.35rem'}
+              border="1px solid"
+              _hover={{ backgroundColor: 'none' }}
+            >
+              Set portfolio size
+            </Button>
           </form>
         </ModalBody>
       </ModalContent>

@@ -1,13 +1,15 @@
 export class CostBasisCalculator {
-  private assets: { quantity: number; pricePerUnit: number }[] = [];
+  private assets: { quantity: number; pricePerUnit: number; type: string }[] = [];
+  private transactions: { quantity: number; pricePerUnit: number; type: string }[] = [];
   private realizedPNL: number = 0;
 
-  // Buy assets and add them to the FIFO queue
-  buy(quantity: number, pricePerUnit: number): void {
-    this.assets.push({ quantity, pricePerUnit });
+  buy(quantity: number, pricePerUnit: number, type: string): void {
+    this.transactions.push({ quantity, pricePerUnit, type });
+    this.assets.push({ quantity, pricePerUnit, type });
   }
 
-  sell(quantitySold: number, sellingPrice: number) {
+  sell(quantitySold: number, sellingPrice: number, type: string) {
+    this.transactions.push({ quantity: quantitySold, pricePerUnit: sellingPrice, type });
     let quantityToBeSold = quantitySold;
 
     while (quantityToBeSold > 0 && this.assets.length > 0) {
@@ -28,6 +30,7 @@ export class CostBasisCalculator {
         const asset_costBasis = quantityToBeSold * sellingPrice;
 
         this.assets.unshift({
+          ...assetToBeSold,
           quantity: assetToBeSold.quantity - quantityToBeSold,
           pricePerUnit: assetToBeSold.pricePerUnit,
         });
@@ -46,5 +49,28 @@ export class CostBasisCalculator {
 
   getRealizedPNL(): number {
     return this.realizedPNL;
+  }
+
+  getAverageNetCost(): number {
+    let totalQuantity = 0;
+    let cost = 0;
+    let proceeds = 0;
+
+    for (const transaction of this.transactions) {
+      if (transaction.type === 'BUY') {
+        totalQuantity += transaction.quantity;
+        cost += transaction.quantity * transaction.pricePerUnit;
+      } else {
+        totalQuantity -= transaction.quantity;
+        proceeds += transaction.quantity * transaction.pricePerUnit;
+      }
+    }
+
+    if (totalQuantity <= 0) {
+      return 0;
+    }
+
+    const averageNetCost = (cost - proceeds) / totalQuantity;
+    return averageNetCost;
   }
 }

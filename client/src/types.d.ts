@@ -101,6 +101,7 @@ export type LoginFormDataType = {
 
 export type SearchCoin = {
   id: string;
+  apiId: string;
   name: string;
   api_symbol: string;
   symbol: string;
@@ -202,6 +203,7 @@ interface Coin {
   thump: string;
   profitLoss: number;
   cost: number;
+  averageNetCost: number;
   averageBuyPrice: number;
   latestPrice: number;
   totalQuantity: number;
@@ -245,6 +247,7 @@ interface UserTransactionsData {
     thump: string;
     large: string;
     marketCapRank: number;
+    averageNetCost: number;
     averageBuyPrice: number;
     latestPrice: number;
     totalQuantity: number;
@@ -271,7 +274,6 @@ export interface userAccountBalance {
   cryptoBalance: number;
 }
 
-// id, api_symbol, market_cap_rank, thumb, large
 export interface coinTransaction {
   coin: Coin;
   transactions: Transaction[];

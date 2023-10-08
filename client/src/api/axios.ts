@@ -2,6 +2,7 @@ import axios from 'axios';
 import {
   GlobalData,
   SearchCoin,
+  Transaction,
   TrendingCoin,
   UserTransactionsData,
   coinTransaction,
@@ -85,6 +86,17 @@ export async function getCoinHoldingQuantity(
 ): Promise<{ holdingsInPortfolio: number }> {
   const { data } = await axios.get(
     `${process.env.REACT_APP_SERVER_URL}/portfolio/holdings/${coinId}`,
+    {
+      withCredentials: true,
+    }
+  );
+
+  return data;
+}
+
+export async function getSingleTransaction(id: number): Promise<Transaction> {
+  const { data } = await axios.get(
+    `${process.env.REACT_APP_SERVER_URL}/portfolio/transaction/${id}`,
     {
       withCredentials: true,
     }

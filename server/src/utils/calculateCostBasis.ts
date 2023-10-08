@@ -6,16 +6,17 @@ export function calculateCostBasis(transactions: Transaction[]) {
 
   for (const transaction of transactions) {
     if (transaction.type === 'BUY') {
-      calculator.buy(transaction.quantity, transaction.price);
+      calculator.buy(transaction.quantity, transaction.price, transaction.type);
     }
 
     if (transaction.type === 'SELL') {
-      calculator.sell(transaction.quantity, transaction.price);
+      calculator.sell(transaction.quantity, transaction.price, transaction.type);
     }
   }
 
   const realizedPNL = calculator.getRealizedPNL();
   const totalCostBasis = calculator.getTotalCostBasis();
+  const averageNetCost = calculator.getAverageNetCost();
 
-  return { realizedPNL, totalCostBasis };
+  return { realizedPNL, totalCostBasis, averageNetCost };
 }

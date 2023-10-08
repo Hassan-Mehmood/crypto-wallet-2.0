@@ -29,6 +29,7 @@ model Coin {
   thump             String
   large             String
   marketCapRank     Int
+  averageNetCost    Float         @default(0)
   averageBuyPrice   Float         @default(0)
   totalQuantity     Float         @default(0)
   latestPrice       Float         @default(0)
@@ -53,6 +54,8 @@ model Transaction {
   quantity  Float
   type      String
   costBasis Float
+  cost      Float
+  proceeds  Float
   coinId    Int
   user      Int
   date      DateTime

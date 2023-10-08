@@ -49,7 +49,6 @@ export default function TransactionsOverview({ setShowTable, isLoading, data }: 
           <Flex
             flexDir={'column'}
             alignItems={'center'}
-            // width={['20rem', '25rem']}
             px={{ base: '1.5rem', md: '0rem' }}
             py={{ base: '0.7rem', md: '0rem' }}
             gap={2}
@@ -78,7 +77,6 @@ export default function TransactionsOverview({ setShowTable, isLoading, data }: 
             flexDir={{ base: 'row', md: 'column' }}
             justifyContent={'center'}
             alignItems={'center'}
-            // flex={1}
             gap={[5, 10, 1]}
             px={{ base: '1.5rem', md: '0rem' }}
             py={{ base: '0.7rem', md: '0rem' }}
@@ -103,10 +101,10 @@ export default function TransactionsOverview({ setShowTable, isLoading, data }: 
               </Box>
               <Box>
                 <Text color="#a3b1bf" fontSize={{ base: '0.9rem', lg: '1.05rem' }}>
-                  Avg Buy price
+                  Avg net cost
                 </Text>
                 <Text fontWeight={'semibold'} fontSize={{ base: '1.1rem', lg: '1.3rem' }}>
-                  ${data?.coin.averageBuyPrice.toFixed(3)}
+                  ${data?.coin.averageNetCost?.toFixed(3) || '0'}
                 </Text>
               </Box>
             </Flex>
@@ -115,7 +113,6 @@ export default function TransactionsOverview({ setShowTable, isLoading, data }: 
           <Flex
             px={{ base: '2rem', md: '0rem' }}
             py={{ base: '0.7rem', md: '0rem' }}
-            // width={['20rem', '25rem']}
             flexDir={'column'}
             alignItems={'center'}
             gap={1}

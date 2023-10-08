@@ -3,7 +3,6 @@ import { getUserPortfolio } from '../api/axios';
 import PortfolioOverview from '../components/PortfolioPage/PortfolioOverview';
 import PortfolioTable from '../components/PortfolioPage/PortfolioTable';
 import { Box, Skeleton, Spinner } from '@chakra-ui/react';
-// import Loading from '../utils/Loading';
 import { useState } from 'react';
 import CoinsTransactionsTable from '../components/PortfolioPage/CoinsTransactionsTable';
 
