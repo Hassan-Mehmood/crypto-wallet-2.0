@@ -35,21 +35,11 @@ const CoinRow: FC<PropsType> = ({ coin, coinCounter }) => {
   return (
     <Tr
       cursor="pointer"
-      _hover={{ backgroundColor: colorMode === "light" ? '#f4f4f4' : "#212835", cursor: 'pointer' }}
+      _hover={{ backgroundColor: colorMode === 'light' ? '#f4f4f4' : '#212835', cursor: 'pointer' }}
     >
-      <Td textAlign={"center"}>{coinCounter}</Td>
-      <Td
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems="center"
-        fontWeight="semibold">
-        <Image
-          src={image}
-          maxW="1.25rem"
-          mr="0.5rem"
-          display="inline-block"
-          alignItems="center"
-        />
+      <Td textAlign={'center'}>{coinCounter}</Td>
+      <Td display={'flex'} alignItems="center" fontWeight="semibold">
+        <Image src={image} maxW="1.25rem" mr="0.5rem" display="inline-block" alignItems="center" />
         <Text>
           {name}
           <Text
@@ -63,18 +53,18 @@ const CoinRow: FC<PropsType> = ({ coin, coinCounter }) => {
           </Text>
         </Text>
       </Td>
-      <Td textAlign={"center"}>{currentPrice}</Td>
-      <Td textAlign={"center"} color={getPercentageColor(oneHourChange)}>
+      <Td textAlign={'center'}>{currentPrice}</Td>
+      <Td textAlign={'center'} color={getPercentageColor(oneHourChange)}>
         {oneHourChange ? oneHourChange.toFixed(2) : ''}
       </Td>
-      <Td textAlign={"center"} color={getPercentageColor(twoFourHourChange)}>
+      <Td textAlign={'center'} color={getPercentageColor(twoFourHourChange)}>
         {twoFourHourChange ? twoFourHourChange.toFixed(2) : ''}
       </Td>
-      <Td textAlign={"center"} color={getPercentageColor(sevenDayChange)}>
+      <Td textAlign={'center'} color={getPercentageColor(sevenDayChange)}>
         {sevenDayChange ? sevenDayChange.toFixed(2) : ''}
       </Td>
-      <Td textAlign={"center"}>${totalVolume?.toLocaleString('en-US')}</Td>
-      <Td textAlign={"center"}>${marketCap?.toLocaleString('en-US')}</Td>
+      <Td textAlign={'center'}>${totalVolume?.toLocaleString('en-US')}</Td>
+      <Td textAlign={'center'}>${marketCap?.toLocaleString('en-US')}</Td>
     </Tr>
   );
 };
