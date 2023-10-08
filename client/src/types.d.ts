@@ -274,7 +274,6 @@ export interface userAccountBalance {
   cryptoBalance: number;
 }
 
-// id, api_symbol, market_cap_rank, thumb, large
 export interface coinTransaction {
   coin: Coin;
   transactions: Transaction[];

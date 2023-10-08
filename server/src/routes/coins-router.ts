@@ -97,7 +97,6 @@ router.post(
   sellTransaction
 );
 
-// /api/portfolio/
 router.get('/', verifyToken, getPortfolio);
 router.post('/addCoin', verifyToken, addCoinToPortfolio);
 router.put('/edit-transaction', verifyToken, editTransaction);

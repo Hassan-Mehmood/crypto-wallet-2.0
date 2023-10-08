@@ -15,8 +15,6 @@ import { getCoinByName } from '../../api/axios';
 import { SearchCoin } from '../../types';
 import SearchedCoin from './SearchedCoin';
 
-// import { useQuery, useQueryClient } from 'react-query';
-
 interface props {
   isOpen: boolean;
   onClose: () => void;
@@ -28,8 +26,6 @@ export default function AddCoinModal({ isOpen, onClose }: props) {
   const [coinData, setCoinData] = useState<SearchCoin[]>([]);
 
   const { colorMode } = useColorMode();
-
-  // const { data: trendingCoins } = useQuery('trendingCoin_inModal', getTrendingCoins);
 
   useEffect(() => {
     const delay = setTimeout(() => {

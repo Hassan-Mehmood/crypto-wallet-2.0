@@ -3,7 +3,6 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import useCustomToast from '../../hooks/useCustomToast';
-// import { UserTransactionsData } from '../../types';
 import { removeCoin } from '../../slices/coinSlice';
 import { getCoinHoldingQuantity, getSingleTransaction } from '../../api/axios';
 import axios from 'axios';
@@ -34,7 +33,6 @@ export default function EditTransactionSellForm({ isOpen, transactionID, onClose
   const showToast = useCustomToast();
 
   const queryClient = useQueryClient();
-  // const userPortfolioData = queryClient.getQueryData<UserTransactionsData>('userCoins');
 
   const editTransaction = useMutation(
     async () => {

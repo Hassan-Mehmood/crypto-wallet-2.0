@@ -37,7 +37,6 @@ export default function PortfolioStats({
       gap={{ base: 6, md: '4rem' }}
       px={{ md: '2rem', xl: '0rem' }}
       py={{ base: '1.9rem', lg: '2.2rem' }}
-      // width={{ md: '45.5rem', lg: '55rem' }}
       width={'100%'}
     >
       <Flex

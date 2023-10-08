@@ -13,17 +13,7 @@ interface props {
   transactionID: number;
   isOpen: boolean;
   onClose: () => void;
-  // pricePerCoin: string;
-  // setPricePerCoin: React.Dispatch<React.SetStateAction<string>>;
-  // coinQuantity: string;
-  // setCoinQuantity: React.Dispatch<React.SetStateAction<string>>;
-  // setTransactionDate: React.Dispatch<React.SetStateAction<string>>;
 }
-
-// pricePerCoin,
-// setPricePerCoin,
-// setCoinQuantity,
-// setTransactionDate,
 
 export default function EditTransactionBuyForm({ transactionID, isOpen, onClose }: props) {
   const [pricePerCoin, setPricePerCoin] = useState('0');

@@ -268,7 +268,6 @@ export default function TransactionModal({ isOpen, onClose }: props) {
                   </FormControl>
 
                   <Button
-                    // onClick={(e) => buyTransaction(e)}
                     isLoading={loadingBtn}
                     type="submit"
                     fontSize="md"

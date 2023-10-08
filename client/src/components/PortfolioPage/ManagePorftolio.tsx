@@ -26,15 +26,9 @@ export default function ManagePorftolio({ onOpen }: { onOpen: () => void }) {
         >
           Manage Or Add Coins To Your Portfolio.
         </Text>
-        <Flex
-          flexDir={{ base: 'row', md: 'row' }}
-          // width={['20rem', '25rem', '14.5rem']}
-          justifyContent={'space-between'}
-          mt="1rem"
-        >
+        <Flex flexDir={{ base: 'row', md: 'row' }} justifyContent={'space-between'} mt="1rem">
           <Button
             onClick={onOpen}
-            // width={['9.5rem', '12rem', '7rem']}
             fontSize={{ base: '1rem', md: '0.9rem' }}
             border={`1px solid ${colorMode === 'light' ? '#8bc53f' : '#0facf0'}`}
             borderRadius="4px"
@@ -52,7 +46,6 @@ export default function ManagePorftolio({ onOpen }: { onOpen: () => void }) {
           <Button
             onClick={() => onAddCoinOpen()}
             fontSize={{ base: '1rem', md: '0.9rem' }}
-            // width={['9.5rem', '12rem', '7rem']}
             border={`1px solid ${colorMode === 'light' ? '#8bc53f' : '#0facf0'}`}
             borderRadius="4px"
             color={colorMode === 'light' ? '#fff' : '#1a202c'}

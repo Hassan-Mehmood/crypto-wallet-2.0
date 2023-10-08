@@ -56,8 +56,6 @@ export class CostBasisCalculator {
     let cost = 0;
     let proceeds = 0;
 
-    // console.log(this.transactions);
-
     for (const transaction of this.transactions) {
       if (transaction.type === 'BUY') {
         totalQuantity += transaction.quantity;
