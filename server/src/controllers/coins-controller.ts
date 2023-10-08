@@ -530,7 +530,7 @@ export async function editTransaction(req: AuthenticatedRequest, res: Response) 
       where: { id: transactionId },
     });
 
-    const dollarAmount = originalTransaction.costBasis - costBasis;
+    const costBasisDifference = Math.abs(originalTransaction.costBasis - costBasis);
 
     const transaction = await prisma.transaction.update({
       where: { id: transactionId },
@@ -551,23 +551,21 @@ export async function editTransaction(req: AuthenticatedRequest, res: Response) 
 
     calculateCoinStats(coin);
 
-    console.log('Dollar Amount', dollarAmount);
-
     if (type === 'BUY') {
       await prisma.user.update({
         where: { id: coin.userId },
         data: {
-          dollerBalance: { decrement: dollarAmount },
+          dollerBalance: { decrement: costBasisDifference },
         },
       });
     }
 
-    if (type === 'SELL') {
-      await prisma.user.update({
-        where: { id: coin.userId },
-        data: { dollerBalance: { increment: dollarAmount } },
-      });
-    }
+    // if (type === 'SELL') {
+    //   await prisma.user.update({
+    //     where: { id: coin.userId },
+    //     data: { dollerBalance: { increment: dollarAmount } },
+    //   });
+    // }
 
     return res.status(200).json({ message: 'Transaction updated' });
   } catch (error) {
