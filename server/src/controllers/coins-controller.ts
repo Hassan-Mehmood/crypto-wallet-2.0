@@ -571,12 +571,19 @@ export async function editTransaction(req: AuthenticatedRequest, res: Response) 
       }
     }
 
-    // if (type === 'SELL') {
-    //   await prisma.user.update({
-    //     where: { id: coin.userId },
-    //     data: { dollerBalance: { increment: dollarAmount } },
-    //   });
-    // }
+    if (type === 'SELL') {
+      if (costBasisDifference > 0) {
+        await prisma.user.update({
+          where: { id: coin.userId },
+          data: { dollerBalance: { decrement: costBasisDifference } },
+        });
+      } else {
+        await prisma.user.update({
+          where: { id: coin.userId },
+          data: { dollerBalance: { increment: Math.abs(costBasisDifference) } },
+        });
+      }
+    }
 
     return res.status(200).json({ message: 'Transaction updated' });
   } catch (error) {
