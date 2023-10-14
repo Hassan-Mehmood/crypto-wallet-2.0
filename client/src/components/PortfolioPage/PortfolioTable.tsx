@@ -9,7 +9,6 @@ import {
   Td,
   Flex,
   Image,
-  Button,
   useDisclosure,
   useColorMode,
 } from '@chakra-ui/react';
@@ -88,27 +87,6 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
       />
       <TransactionModal isOpen={isTransactionModalOpen} onClose={onTransactionModalClose} />
 
-      {coins?.length === 0 ? (
-        <Button
-          onClick={() => 'onTransactionModelOpen()'}
-          position="absolute"
-          top="150%"
-          left="50%"
-          transform="translate(-50%, -150%)"
-          fontSize="sm"
-          borderRadius="8px"
-          color="#fff"
-          background="rgb(105, 162, 53)"
-          padding={'0 16px'}
-          border="1px solid rgb(105, 162, 53)"
-          _hover={{
-            background: 'rgb(81, 126, 39)',
-          }}
-        >
-          Add Coins
-        </Button>
-      ) : null}
-
       <TableContainer mt={'2rem'}>
         <Table variant="simple">
           <Thead>
@@ -122,6 +100,13 @@ export default function PortfolioTable({ coins, setShowTable, setActiveCoinId }:
             </Tr>
           </Thead>
           <Tbody>
+            {coins?.length === 0 && (
+              <Tr>
+                <Td colSpan={6} textAlign={'center'}>
+                  No Coins added to your portfolio
+                </Td>
+              </Tr>
+            )}
             {coins?.map((coin) => (
               <Tr
                 key={coin.id}

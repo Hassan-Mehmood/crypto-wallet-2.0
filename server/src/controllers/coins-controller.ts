@@ -264,14 +264,14 @@ export async function sellTransaction(req: Request, res: Response) {
       coinAverageBuyPrice = 0;
     }
 
-    console.log('-----Sell Transaction Function -------');
-    console.log('Total Cost Basis: ', totalCostBasis);
-    console.log('Average net cost: ', averageNetCost);
-    console.log('Sale Made: ', transactionWorth);
-    console.log('Coin Sold at', coinSellPrice);
-    console.log('Realized Profit/Loss: ', realizedPNL);
-    console.log('remainingInvestment: ', remainingInvestment);
-    console.log('-----Sell Transaction Function -------');
+    // console.log('-----Sell Transaction Function -------');
+    // console.log('Total Cost Basis: ', totalCostBasis);
+    // console.log('Average net cost: ', averageNetCost);
+    // console.log('Sale Made: ', transactionWorth);
+    // console.log('Coin Sold at', coinSellPrice);
+    // console.log('Realized Profit/Loss: ', realizedPNL);
+    // console.log('remainingInvestment: ', remainingInvestment);
+    // console.log('-----Sell Transaction Function -------');
 
     await prisma.coin.update({
       where: { id: coinRecord.id },
@@ -421,7 +421,7 @@ export async function getAllTransactions(req: AuthenticatedRequest, res: Respons
     const latestPrice = parseFloat(latestPriceData.data.price);
 
     coin.holdingsInDollers = coin.totalQuantity * latestPrice;
-    coin.profitLoss += coin.holdingsInDollers - coin.totalInvestment + coin.realizedPNL;
+    coin.profitLoss += (latestPrice - coin.averageNetCost) * coin.totalQuantity;
 
     const transactionsWithoutCoin = transactions.map(({ Coin, ...rest }) => rest);
 
@@ -462,7 +462,12 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
     }
 
     const user = await prisma.user.findUnique({ where: { id: req.user.id } });
-    const coin = await prisma.coin.findUnique({ where: { id: transaction.coinId } });
+    const coin = await prisma.coin.findUnique({
+      where: { id: transaction.coinId },
+      include: { transactions: true },
+    });
+
+    const { averageNetCost } = calculateCostBasis(coin.transactions);
 
     const TRANSACTION_COST = transaction.costBasis;
 
@@ -490,11 +495,11 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
       coin.cost = 0;
     }
 
-    console.log('Doller Balance', user.dollerBalance);
-    console.log('Total Investment', coin.totalInvestment);
-    console.log('Cost', coin.cost);
-    console.log('Total Quantity', coin.totalQuantity);
-    console.log('Avrg Buy Price', coin.averageBuyPrice);
+    // console.log('Doller Balance', user.dollerBalance);
+    // console.log('Total Investment', coin.totalInvestment);
+    // console.log('Cost', coin.cost);
+    // console.log('Total Quantity', coin.totalQuantity);
+    // console.log('Avrg Buy Price', coin.averageBuyPrice);
 
     await prisma.user.update({
       where: { id: req.user.id },
@@ -505,6 +510,7 @@ export async function deleteTransaction(req: AuthenticatedRequest, res: Response
       where: { id: coin.id },
       data: {
         totalInvestment: coin.totalInvestment,
+        averageNetCost: averageNetCost,
         cost: coin.cost,
         totalQuantity: coin.totalQuantity,
         averageBuyPrice: coin.averageBuyPrice,
