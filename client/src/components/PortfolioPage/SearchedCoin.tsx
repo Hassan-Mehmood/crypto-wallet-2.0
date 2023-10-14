@@ -10,8 +10,6 @@ const SearchedCoin = ({ coin }: { coin: SearchCoin }) => {
 
   const queryClient = useQueryClient();
 
-  console.log(coin);
-
   const addCoin = useMutation(
     async () => {
       const response = await axios.post(

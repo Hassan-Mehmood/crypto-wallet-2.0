@@ -538,8 +538,6 @@ export async function editTransaction(req: AuthenticatedRequest, res: Response) 
 
     const costBasisDifference = originalTransaction.costBasis - costBasis;
 
-    console.log(costBasisDifference);
-
     const transaction = await prisma.transaction.update({
       where: { id: transactionId },
       data: {

@@ -189,7 +189,7 @@ export default function TransactionModal({ isOpen, onClose }: props) {
     if (!coinData.apiId) {
       return;
     }
-    console.log('Fetch coin holdings');
+
     getCoinHoldingQuantity(coinData.apiId).then((res) => {
       const quantity = res.holdingsInPortfolio;
 
