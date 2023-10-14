@@ -31,7 +31,6 @@ export default function UserInfoAvatar({ user }: props) {
     await axios.get(`${process.env.REACT_APP_SERVER_URL}/auth/logout`, {
       withCredentials: true,
     });
-
     dispatch(logout());
   }
 
@@ -55,18 +54,7 @@ export default function UserInfoAvatar({ user }: props) {
           <Icon as={colorMode === 'light' ? HiMoon : BiSolidSun} />
           <Text>{colorMode === 'light' ? 'dark' : 'light'} mode</Text>
         </Flex>
-        {/* <Link to={'/addcoin'}>
-          <Flex
-            alignItems={"center"}
-            cursor={"pointer"}
-            gap={2}
-            _hover={{
-              color: colorMode === "light" ? "#8bc53f" : "#0facf0",
-            }}>
-            <Icon as={BiBitcoin} />
-            <Text>Add Coin</Text>
-          </Flex>
-        </Link> */}
+
         <Link to={'/portfolio'}>
           <Flex
             alignItems={'center'}
@@ -89,7 +77,7 @@ export default function UserInfoAvatar({ user }: props) {
           }}
         >
           <Icon as={FiLogOut} />
-          <Text onClick={() => dispatch(logout())}>Logout</Text>
+          <Text onClick={handleLogout}>Logout</Text>
         </Flex>
       </Box>
       <Box zIndex={200} display={['block', 'block', 'none']}>
@@ -169,7 +157,7 @@ export default function UserInfoAvatar({ user }: props) {
               </MenuItem>
             </Link>
             <MenuItem
-              onClick={() => dispatch(logout())}
+              onClick={handleLogout}
               _hover={{
                 color: colorMode === 'light' ? '#8bc53f' : '#0facf0',
               }}

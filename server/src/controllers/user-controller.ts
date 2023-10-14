@@ -101,6 +101,7 @@ export async function checkUserStatus(req: AuthenticatedRequest, res: Response) 
 
 export async function logoutUser(req: AuthenticatedRequest, res: Response) {
   try {
+    console.log('Logout user');
     return res.clearCookie('access_token').status(200).json({ message: 'Logged out' });
   } catch (error) {
     return res.status(500).json({ error: error.message });
