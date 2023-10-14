@@ -8,7 +8,6 @@ import {
   FormControl,
   FormLabel,
   Button,
-  useToast,
   Text,
   Flex,
   useColorMode,
@@ -16,6 +15,7 @@ import {
 import axios from 'axios';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
+import useCustomToast from '../../hooks/useCustomToast';
 
 interface props {
   isOpen: boolean;
@@ -27,7 +27,7 @@ interface props {
 export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: props) {
   const queryClient = useQueryClient();
   const { colorMode } = useColorMode();
-  const toast = useToast();
+  const showToast = useCustomToast();
   const [disableBtn, setDisableBtn] = useState(false);
 
   const deleteCoinAndDataMutation = useMutation(
@@ -44,12 +44,20 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
 
       onSuccess: () => {
         queryClient.refetchQueries('userCoins');
-        showToast('Success', 'Coin and data successfully deleted.', 'success');
+        showToast({
+          title: 'Success',
+          description: 'Coin and data successfully deleted.',
+          status: 'success',
+        });
         onClose();
         setCoinId(null);
       },
       onError: () => {
-        showToast('Error', 'Failed to delete coin and data.', 'error');
+        showToast({
+          title: 'Error',
+          description: 'Failed to delete coin and data.',
+          status: 'error',
+        });
         setCoinId(null);
       },
     }
@@ -69,12 +77,16 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
 
       onSuccess: () => {
         queryClient.refetchQueries('userCoins');
-        showToast('Success', 'Coin successfully deleted.', 'success');
+        showToast({
+          title: 'Success',
+          description: 'Coin successfully deleted.',
+          status: 'success',
+        });
         onClose();
         setCoinId(null);
       },
       onError: () => {
-        showToast('Error', 'Failed to delete coin.', 'error');
+        showToast({ title: 'Error', description: 'Failed to delete coin.', status: 'error' });
         setCoinId(null);
       },
     }
@@ -96,44 +108,33 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
     deleteCoinAndKeepDataMutation.mutate(id);
   }
 
-  function showToast(title: string, description: string, status: 'error' | 'success') {
-    return toast({
-      title,
-      description,
-      position: 'top',
-      status,
-      duration: 3000,
-      isClosable: true,
-    });
-  }
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent width={"25.6rem"} position={"relative"}>
-        <ModalHeader textAlign={"center"}>Delete Coin?</ModalHeader>
-        <ModalCloseButton position={"absolute"} right={"0.8rem"} top={"1.1rem"} />
+      <ModalContent width={'25.6rem'} position={'relative'}>
+        <ModalHeader textAlign={'center'}>Delete Coin?</ModalHeader>
+        <ModalCloseButton position={'absolute'} right={'0.8rem'} top={'1.1rem'} />
         <ModalBody>
           <form>
             <FormControl>
-              <FormLabel textAlign={"center"}>
+              <FormLabel textAlign={'center'}>
                 All records of this coin in your <Text as={'b'}>Portfolio</Text> will be deleted.
-                <Text color={"#a3b1bf"} mt={"0.7rem"}>
+                <Text color={'#a3b1bf'} mt={'0.7rem'}>
                   This action cannot be undone.
                 </Text>
               </FormLabel>
             </FormControl>
-            <Flex flexDir={"column"} alignItems={"center"} my="1rem" gap={"0.6rem"}>
+            <Flex flexDir={'column'} alignItems={'center'} my="1rem" gap={'0.6rem'}>
               <Button
                 isDisabled={disableBtn}
                 type="submit"
-                width={"17rem"}
-                fontWeight={"normal"}
-                background={colorMode === "light" ? "#fff" : "none"}
+                width={'17rem'}
+                fontWeight={'normal'}
+                background={colorMode === 'light' ? '#fff' : 'none'}
                 color="rgb(255, 0, 0)"
                 border="1px solid rgb(255, 0, 0)"
                 _hover={{
-                  backgroundColor: "none"
+                  backgroundColor: 'none',
                 }}
                 onClick={deleteCoinAndData}
               >
@@ -142,14 +143,14 @@ export default function DeleteCoinModal({ isOpen, onClose, id, setCoinId }: prop
               <Button
                 isDisabled={disableBtn}
                 type="submit"
-                width={"17rem"}
-                fontWeight={"normal"}
-                background={colorMode === "light" ? "#fff" : "none"}
+                width={'17rem'}
+                fontWeight={'normal'}
+                background={colorMode === 'light' ? '#fff' : 'none'}
                 color="rgb(255, 0, 0)"
                 border="1px solid rgb(255, 0, 0)"
                 onClick={deleteCoinAndKeepTransaction}
                 _hover={{
-                  backgroundColor: "none"
+                  backgroundColor: 'none',
                 }}
               >
                 Delete Coin, Keep Transactions

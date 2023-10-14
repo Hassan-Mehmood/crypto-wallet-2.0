@@ -11,11 +11,11 @@ import {
   ModalOverlay,
   Text,
   useColorMode,
-  useToast,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
+import useCustomToast from '../../hooks/useCustomToast';
 
 interface IDeleteTransactionModal {
   isOpen: boolean;
@@ -30,7 +30,7 @@ export const DeleteTransactionModal = ({
   transactionID,
 }: IDeleteTransactionModal) => {
   const { colorMode } = useColorMode();
-  const toast = useToast();
+  const showToast = useCustomToast();
 
   const [loadingBtn, setLoadingBtn] = useState(false);
 
@@ -50,29 +50,22 @@ export const DeleteTransactionModal = ({
       onSettled: () => setLoadingBtn(false),
 
       onSuccess: () => {
-        showToast('Success', 'Transaction deleted successfully', 'success');
+        showToast({
+          title: 'Success',
+          description: 'Transaction deleted successfully',
+          status: 'success',
+        });
         refetch();
         onClose();
       },
       onError: () => {
-        showToast('Error', 'Something went wrong', 'error');
+        showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
       },
     }
   );
 
   function deleteTransaction(id: number) {
     delTransaction.mutate(id);
-  }
-
-  function showToast(title: string, description: string, status: 'error' | 'success') {
-    return toast({
-      title,
-      description,
-      position: 'top',
-      status,
-      duration: 3000,
-      isClosable: true,
-    });
   }
 
   return (

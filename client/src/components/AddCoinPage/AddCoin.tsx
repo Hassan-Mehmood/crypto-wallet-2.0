@@ -8,7 +8,6 @@ import {
   Button,
   Box,
   Image,
-  useToast,
   Divider,
   Text,
   useColorMode,
@@ -20,6 +19,7 @@ import { useEffect, useState } from 'react';
 import { getCoinHoldingQuantity, getCoinMarketData, getUserBalance } from '../../api/axios';
 import { useMutation, useQuery } from 'react-query';
 import axios from 'axios';
+import useCustomToast from '../../hooks/useCustomToast';
 
 export default function AddCoin() {
   const [coinQuantity, setCoinQuantity] = useState<string>('0.00');
@@ -32,7 +32,7 @@ export default function AddCoin() {
   const userData = useSelector((state: RootState) => state.userReducer);
 
   const dispatch = useDispatch();
-  const toast = useToast();
+  const showToast = useCustomToast();
 
   const { data: accountBalance, refetch: refetchBalance } = useQuery(
     'accountBalance',
@@ -65,11 +65,11 @@ export default function AddCoin() {
       onSettled: () => setLoadingBtn(false),
 
       onSuccess: () => {
-        showToast('Success', 'Coin bought successfully', 'success');
+        showToast({ title: 'Success', description: 'Coin bought successfully', status: 'success' });
         refetchBalance();
       },
       onError: () => {
-        showToast('Error', 'Something went wrong', 'error');
+        showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
       },
     }
   );
@@ -91,25 +91,14 @@ export default function AddCoin() {
       onSettled: () => setLoadingBtn(false),
 
       onSuccess: () => {
-        showToast('Success', 'Coin sold successfully', 'success');
+        showToast({ title: 'Success', description: 'Coin Sold successfully', status: 'success' });
         refetchBalance();
       },
       onError: () => {
-        showToast('Error', 'Something went wrong', 'error');
+        showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
       },
     }
   );
-
-  function showToast(title: string, description: string, status: 'error' | 'success') {
-    return toast({
-      title,
-      description,
-      position: 'top',
-      status,
-      duration: 3000,
-      isClosable: true,
-    });
-  }
 
   const handleQuantityInput = (value: string) => {
     const valueNumber = parseFloat(value);
@@ -159,12 +148,12 @@ export default function AddCoin() {
     e.preventDefault();
 
     if (!accountBalance) {
-      showToast('Error', 'Something went wrong', 'error');
+      showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
       return;
     }
 
     if (parseFloat(coinPrice) * parseFloat(coinQuantity) > accountBalance.dollerBalance) {
-      showToast('Error', 'Insufficient funds', 'error');
+      showToast({ title: 'Error', description: 'Insufficient funds', status: 'error' });
       return;
     }
 
@@ -175,17 +164,17 @@ export default function AddCoin() {
     e.preventDefault();
 
     if (!accountBalance) {
-      showToast('Error', 'Something went wrong', 'error');
+      showToast({ title: 'Error', description: 'Something went wrong', status: 'error' });
       return;
     }
 
     if (parseFloat(coinPrice) * parseFloat(coinQuantity) > accountBalance.dollerBalance) {
-      showToast('Error', 'Insufficient funds', 'error');
+      showToast({ title: 'Error', description: 'Insufficient funds', status: 'error' });
       return;
     }
 
     if (coinHoldingQuantity && parseFloat(coinQuantity) > coinHoldingQuantity.holdingsInPortfolio) {
-      showToast('Error', 'Insufficient coins', 'error');
+      showToast({ title: 'Error', description: 'Insufficient coins', status: 'error' });
       return;
     }
 
