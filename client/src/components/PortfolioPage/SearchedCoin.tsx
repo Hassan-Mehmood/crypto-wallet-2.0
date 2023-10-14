@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Image, Text, useColorMode, useToast } from '@chakra-ui/react';
+import { Box, Button, Flex, Image, Text, useColorMode } from '@chakra-ui/react';
 import { SearchCoin } from '../../types';
 import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
