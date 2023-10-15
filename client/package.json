@@ -33,8 +33,8 @@
     "react-scripts": "5.0.1",
     "redux-persist": "^6.0.0",
     "sort-by": "^1.2.0",
-    "typescript": "^5.2.2",
-    "web-vitals": "^2.1.4"
+    "typescript": "^4.9.5",
+    "web-vitals": "^3.5.0"
   },
   "scripts": {
     "start": "react-scripts start",
